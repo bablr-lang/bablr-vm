@@ -30,6 +30,8 @@ const ast = parseModule(sourceText, { ranges: true });
 // Use source text and locations to recursively tokenize
 rebuildAllTokens(ast, { sourceText });
 
+// Modify the AST however you like here.
+
 assert(print(ast) === sourceText); // It is! Yay!
 
 console.log(JSON.stringify(ast, undefined, 2));
