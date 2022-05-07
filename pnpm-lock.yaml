@@ -2,11 +2,13 @@ lockfileVersion: 5.3
 
 specifiers:
   '@babel/types': '*'
+  escape-string-regexp: 4.0.0
   iter-tools-es: ^7.3.1
   meriyah: ^4.2.1
 
 dependencies:
   '@babel/types': 7.17.10
+  escape-string-regexp: 4.0.0
   iter-tools-es: 7.3.1
 
 devDependencies:
@@ -25,6 +27,11 @@ packages:
     dependencies:
       '@babel/helper-validator-identifier': 7.16.7
       to-fast-properties: 2.0.0
+    dev: false
+
+  /escape-string-regexp/4.0.0:
+    resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
+    engines: {node: '>=10'}
     dev: false
 
   /iter-tools-es/7.3.1:

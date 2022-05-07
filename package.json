@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@babel/types": "*",
+    "escape-string-regexp": "4.0.0",
     "iter-tools-es": "^7.3.1"
   },
   "devDependencies": {
