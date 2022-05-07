@@ -1,6 +1,6 @@
-# cst-traverse
+# cst-tokens
 
-[![Gitter](https://badges.gitter.im/js-cst/community.svg)](https://gitter.im/js-cst/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Gitter](https://badges.gitter.im/cst-tokens/community.svg)](https://gitter.im/cst-tokens/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 This library provides tools for working with javascript expressed as a Concrete Syntax Tree, or CST. For our purposes a CST is a particular subtype of AST in which all text is represented in the tree, including non-semantic text like whitespace and comments. The primary goal of a CST is to ensure that `print(parse(text)) === text`, in other words to preserve formatting when the intent is to modify and reprint a program rather than just executing it.
 
@@ -8,20 +8,20 @@ This project is inspired by the [cst](https://github.com/cst/cst) library, and i
 
 ## Status
 
-This project is a proof-of-concept. It works on a small subset of JS grammar, and expanding its grammar is not the highest priority until core architectural issues are resolved. For more reading, see [Issue #1 - I need help.](https://github.com/conartist6/cst-traverse/issues/1)
+This project is a proof-of-concept. It works on a small subset of JS grammar, and expanding its grammar is not the highest priority until core architectural issues are resolved. For more reading, see [Issue #1 - I need help.](https://github.com/conartist6/cst-tokens/issues/1)
 
 ## Contributing
 
-If you want to ask questions, please use [gitter](https://gitter.im/js-cst/community). (I'll get an email and respond.)  
-If you want to make a proposal, please use [discussions](https://github.com/conartist6/cst-traverse/discussions).  
-If you want to see what work is prioritized, see [issues](https://github.com/conartist6/cst-traverse/issues).
+If you want to ask questions, please use [gitter](https://gitter.im/cst-tokens/community). (I'll get an email and respond.)  
+If you want to make a proposal, please use [discussions](https://github.com/conartist6/cst-tokens/discussions).  
+If you want to see what work is prioritized, see [issues](https://github.com/conartist6/cst-tokens/issues).
 Thanks for helping keep the project organized!
 
 ## Usage
 
 ```js
 import { parseModule } from 'meriyah';
-import { rebuildAllTokens, print } from 'ast-tokens';
+import { rebuildAllTokens, print } from 'cst-tokens';
 
 const sourceText = `import     def,{   foo  as/**/foo} from  'bar';\n`;
 

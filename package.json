@@ -1,5 +1,5 @@
 {
-  "name": "ast-tokens",
+  "name": "cst-tokens",
   "version": "0.0.0",
   "license": "MIT",
   "author": "Conrad Buck<conartist6@gmail.com>",

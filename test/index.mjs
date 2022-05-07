@@ -3,7 +3,7 @@ import { readFile } from 'fs/promises';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { parseModule } from 'meriyah';
-import { rebuildAllTokens, print } from 'ast-tokens';
+import { rebuildAllTokens, print } from 'cst-tokens';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
