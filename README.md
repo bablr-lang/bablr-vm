@@ -101,7 +101,10 @@ Which prints the following (edited for clarity):
         "tokens": []
       },
       "tokens": [
-        {},
+        {
+          "type": "Keyword",
+          "value": "import"
+        },
         {
           "type": "Whitespace",
           "value": " "
