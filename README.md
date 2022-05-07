@@ -14,7 +14,8 @@ This project is a proof-of-concept. It works on a small subset of JS grammar, an
 
 If you want to ask questions, please use [gitter](https://gitter.im/cst-tokens/community). (I'll get an email and respond.)  
 If you want to make a proposal, please use [discussions](https://github.com/conartist6/cst-tokens/discussions).  
-If you want to see what work is prioritized, see [issues](https://github.com/conartist6/cst-tokens/issues).
+If you want to see what work is prioritized, see [issues](https://github.com/conartist6/cst-tokens/issues).  
+If you have a private inquiry, send me an [email](mailto:conartist6@gmail.com).  
 Thanks for helping keep the project organized!
 
 ## Usage
