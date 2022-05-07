@@ -85,7 +85,8 @@ Which prints the following (edited for clarity):
               "value": "as"
             },
             {
-              "type": "Comment"
+              "type": "Comment",
+              "value": "/**/"
             },
             {
               "type": "Reference",
