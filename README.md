@@ -8,7 +8,14 @@ This project is inspired by the [cst](https://github.com/cst/cst) library, and i
 
 ## Status
 
-This project is a proof-of-concept. It works on a small subset of JS grammar, and expanding its grammar is not the highest priority until core architectural issues are resolved. For more reading, see [Issue #1 - I need help.](https://github.com/conartist6/cst-traverse/issues/1).
+This project is a proof-of-concept. It works on a small subset of JS grammar, and expanding its grammar is not the highest priority until core architectural issues are resolved. For more reading, see [Issue #1 - I need help.](https://github.com/conartist6/cst-traverse/issues/1)
+
+## Contributing
+
+If you want to ask questions, please use [gitter](https://gitter.im/js-cst/community). (I'll get an email and respond.)  
+If you want to make a proposal, please use [discussions](https://github.com/conartist6/cst-traverse/discussions).  
+If you want to see what work is prioritized, see [issues](https://github.com/conartist6/cst-traverse/issues).
+Thanks for helping keep the project organized!
 
 ## Usage
 
