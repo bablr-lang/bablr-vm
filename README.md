@@ -40,6 +40,7 @@ console.log(JSON.stringify(ast, undefined, 2));
 
 Which prints the following (edited for clarity):
 
+<!--prettier-ignore-->
 ```json
 {
   "type": "Program",
@@ -54,17 +55,11 @@ Which prints the following (edited for clarity):
             "type": "Identifier",
             "name": "def",
             "tokens": [
-              {
-                "type": "Identifier",
-                "value": "def"
-              }
+              { "type": "Identifier", "value": "def" }
             ]
           },
           "tokens": [
-            {
-              "type": "Reference",
-              "value": "local"
-            }
+            { "type": "Reference", "value": "local" }
           ]
         },
         {
@@ -73,100 +68,48 @@ Which prints the following (edited for clarity):
             "type": "Identifier",
             "name": "foo",
             "tokens": [
-              {
-                "type": "Identifier",
-                "value": "foo"
-              }
+              { "type": "Identifier", "value": "foo" }
             ]
           },
           "imported": {
             "type": "Identifier",
             "name": "foo",
             "tokens": [
-              {
-                "type": "Identifier",
-                "value": "foo"
-              }
+              { "type": "Identifier", "value": "foo" }
             ]
           },
           "tokens": [
-            {
-              "type": "Reference",
-              "value": "imported"
-            },
-            {
-              "type": "Whitespace",
-              "value": "  "
-            },
-            {
-              "type": "Identifier",
-              "value": "as"
-            },
-            {
-              "type": "Comment",
-              "value": "/**/"
-            },
-            {
-              "type": "Reference",
-              "value": "local"
-            }
+            { "type": "Reference", "value": "imported" },
+            { "type": "Whitespace", "value": "  " },
+            { "type": "Identifier", "value": "as" },
+            { "type": "Comment", "value": "/**/" },
+            { "type": "Reference", "value": "local" }
           ]
         }
       ],
       "source": {
         "type": "Literal",
         "value": "bar",
-        "tokens": []
+        "tokens": [
+          { "type": "String", "value": "'bar'" }
+        ]
       },
       "tokens": [
-        {
-          "type": "Keyword",
-          "value": "import"
-        },
-        {
-          "type": "Whitespace",
-          "value": " "
-        },
-        {
-          "type": "Reference",
-          "value": "specifiers"
-        },
-        {
-          "type": "Punctuator",
-          "value": ","
-        },
-        {
-          "type": "Punctuator",
-          "value": "{"
-        },
-        {
-          "type": "Reference",
-          "value": "specifiers"
-        },
-        {
-          "type": "Punctuator",
-          "value": "}"
-        },
-        {
-          "type": "Keyword",
-          "value": "from"
-        },
-        {
-          "type": "Reference",
-          "value": "source"
-        }
+        { "type": "Keyword", "value": "import" },
+        { "type": "Whitespace", "value": " " },
+        { "type": "Reference", "value": "specifiers" },
+        { "type": "Punctuator", "value": "," },
+        { "type": "Punctuator", "value": "{" },
+        { "type": "Reference", "value": "specifiers" },
+        { "type": "Punctuator", "value": "}" },
+        { "type": "Keyword", "value": "from" },
+        { "type": "Reference", "value": "source" }
       ]
     }
   ],
   "tokens": [
-    {
-      "type": "Reference",
-      "value": "body"
-    },
-    {
-      "type": "Whitespace",
-      "value": "\n"
-    }
+    { "type": "Reference", "value": "body" },
+    { "type": "Whitespace", "value": "\n" }
   ]
 }
 ```
