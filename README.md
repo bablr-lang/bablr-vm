@@ -8,7 +8,7 @@ This project is inspired by the [cst](https://github.com/cst/cst) library, and i
 
 ```js
 import { parseModule } from 'meriyah';
-import { rebuildAllTokens } from 'ast-tokens';
+import { rebuildAllTokens, print } from 'ast-tokens';
 
 const sourceText = `import     def,{   foo  as/**/foo} from  'bar';\n`;
 
@@ -16,6 +16,8 @@ const ast = parseModule(sourceText, { ranges: true });
 
 // Use source text and locations to recursively tokenize
 rebuildAllTokens(ast, { overwrite: true, sourceText });
+
+assert(print(ast) === sourceText); // It is! Yay!
 
 console.log(JSON.stringify(ast, undefined, 2));
 ```
