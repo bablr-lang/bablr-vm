@@ -1,0 +1,16 @@
+{
+  "name": "ast-tokens",
+  "version": "0.0.0",
+  "license": "MIT",
+  "author": "Conrad Buck<conartist6@gmail.com>",
+  "exports": {
+    ".": "./lib/index.js"
+  },
+  "dependencies": {
+    "@babel/types": "*",
+    "iter-tools-es": "^7.3.1"
+  },
+  "devDependencies": {
+    "meriyah": "^4.2.1"
+  }
+}
