@@ -28,7 +28,7 @@ const sourceText = `import     def,{   foo  as/**/foo} from  'bar';\n`;
 const ast = parseModule(sourceText, { ranges: true });
 
 // Use source text and locations to recursively tokenize
-rebuildAllTokens(ast, { overwrite: true, sourceText });
+rebuildAllTokens(ast, { sourceText });
 
 assert(print(ast) === sourceText); // It is! Yay!
 

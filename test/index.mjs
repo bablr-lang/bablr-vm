@@ -12,7 +12,7 @@ const readFixture = (path) => readFile(join(__dirname, 'fixtures', path), 'utf-8
 const sourceText = await readFixture('imports.js');
 const ast = parseModule(sourceText, { ranges: true });
 
-rebuildAllTokens(ast, { overwrite: true, sourceText });
+rebuildAllTokens(ast, { sourceText });
 
 if (print(ast) !== sourceText) {
   throw new Error('How has it all gone wrong?');
