@@ -6,6 +6,10 @@ This library provides tools for working with javascript expressed as a Concrete 
 
 This project is inspired by the [cst](https://github.com/cst/cst) library, and is intended as a direct successor to [recast](https://github.com/benjamn/recast). Its long term goal is [integration](https://github.com/prettier/prettier/issues/12806) with [prettier](https://github.com/prettier/prettier) to achieve perfect printing of arbitrarily modified code in a single pass.
 
+## Architecture
+
+`cst-tokens` is designed so that the code should be easy to read and change. Take a look at the [architecture documentation](https://github.com/conartist6/cst-tokens/blob/trunk/ARCHITECTURE.md)!
+
 ## Status
 
 This project is a proof-of-concept. It works on a small subset of JS grammar, and expanding its grammar is not the highest priority until core architectural issues are resolved. For more reading, see [Issue #1 - I need help.](https://github.com/conartist6/cst-tokens/issues/1)
