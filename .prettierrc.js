@@ -10,5 +10,11 @@ module.exports = {
         printWidth: 60,
       },
     },
+    {
+      files: 'ARCHITECTURE.md',
+      options: {
+        printWidth: 80,
+      },
+    },
   ],
 };

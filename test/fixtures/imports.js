@@ -1,1 +1,1 @@
-import     def,{   foo  as/**/foo} from  'bar';
+import     def,{   imported  as/**/local} from  'bar';
