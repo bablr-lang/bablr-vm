@@ -3,7 +3,7 @@ import { readFile } from 'fs/promises';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { parseModule } from 'meriyah';
-import { updateTokens } from 'cst-tokens';
+import { updateTokens, print } from 'cst-tokens';
 
 Error.stackTraceLimit = 20;
 
@@ -16,8 +16,10 @@ const ast = parseModule(sourceText);
 
 updateTokens(ast, { sourceText });
 
-// if (print(ast) !== sourceText) {
-//   throw new Error('How has it all gone wrong?');
-// }
+const printed = print(ast);
 
 console.log(JSON.stringify(ast, undefined, 2));
+
+if (printed !== sourceText) {
+  throw new Error('How has it all gone wrong?');
+}
