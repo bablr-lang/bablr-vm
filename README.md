@@ -22,6 +22,8 @@ If you want to see what work is prioritized, see [issues](https://github.com/con
 If you have a private inquiry, send me an [email](mailto:conartist6@gmail.com).  
 Thanks for helping keep the project organized!
 
+This project uses the [debug](https://www.npmjs.com/package/debug) package. To debug the code, set `DEBUG=cst-tokens;` in your environment. This will provide highly useful stack traces for debugging the grammar which, due to language limiations, are an all-or-nothing affair. The only possible place to generate such stack traces is before we know that there is an error!
+
 ## Usage
 
 ```js

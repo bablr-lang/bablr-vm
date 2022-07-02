@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@babel/types': '*'
   '@iter-tools/regex': 0.3.0
+  debug: 4.3.4
   escape-string-regexp: 4.0.0
   eslint: ^7.32.0
   iter-tools-es: ^7.3.1
@@ -12,6 +13,7 @@ specifiers:
 dependencies:
   '@babel/types': 7.17.10
   '@iter-tools/regex': 0.3.0
+  debug: 4.3.4
   escape-string-regexp: 4.0.0
   iter-tools-es: 7.3.1
   prettier: 2.6.2
@@ -239,7 +241,6 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
-    dev: true
 
   /deep-is/0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
@@ -577,7 +578,6 @@ packages:
 
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
-    dev: true
 
   /natural-compare/1.4.0:
     resolution: {integrity: sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=}
