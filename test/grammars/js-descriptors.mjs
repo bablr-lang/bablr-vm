@@ -1,7 +1,8 @@
-const { startsWithSeq, peekerate } = require('iter-tools-es');
-const { exec, parse } = require('@iter-tools/regex');
-const regexEscape = require('escape-string-regexp');
-const { isArray } = require('./utils/array.js');
+import { startsWithSeq, peekerate } from 'iter-tools-es';
+import { exec, parse } from '@iter-tools/regex';
+import regexEscape from 'escape-string-regexp';
+
+const { isArray } = Array;
 
 const match_ = (descriptors, source) => {
   const matchSource = source.fork();
@@ -316,31 +317,14 @@ const sep = Separator();
 
 const stripArray = (value) => (isArray(value) ? value[0] : value);
 
-module.exports = {
-  Optional,
-  CommentStart,
-  CommentEnd,
-  Comment,
-  Whitespace,
-  Punctuator,
-  Keyword,
-  Identifier,
-  Reference,
-  Separator,
-  SingleQuoteStringBody,
-  DoubleQuoteStringBody,
-  BlockCommentText,
-  LineCommentText,
-
-  // Shorthand names for more concise grammar definitions
-  // stripArray ensures that both ID`value` and ID(value) are valid
-  OPT: Optional,
-  WS: (value = '') => Whitespace(stripArray(value)),
-  PN: (value) => Punctuator(stripArray(value)),
-  KW: (value) => Keyword(stripArray(value)),
-  ID: (value) => Identifier(stripArray(value)),
-  STR: (value) => String(stripArray(value)),
-  ref: (value) => Reference(stripArray(value)),
-  _: Optional(sep),
-  __: sep,
-};
+// Shorthand names for more concise grammar definitions
+// stripArray ensures that both ID`value` and ID(value) are valid
+export const OPT = Optional;
+export const WS = (value = '') => Whitespace(stripArray(value));
+export const PN = (value) => Punctuator(stripArray(value));
+export const KW = (value) => Keyword(stripArray(value));
+export const ID = (value) => Identifier(stripArray(value));
+export const STR = (value) => String(stripArray(value));
+export const ref = (value) => Reference(stripArray(value));
+export const _ = Optional(sep);
+export const __ = sep;

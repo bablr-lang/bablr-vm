@@ -1,9 +1,9 @@
-const t = require('@babel/types');
-const { arrayLast } = require('iter-tools-es');
-const { OPT, ID, PN, KW, STR, ref, _, __ } = require('./descriptors.js');
-const { take, match, emit } = require('./commands.js');
+import t from '@babel/types';
+import { arrayLast } from 'iter-tools-es';
+import { take, match, emit } from 'cst-tokens/commands';
+import { OPT, ID, PN, KW, STR, ref, _, __ } from './js-descriptors.mjs';
 
-const visitors = {
+export default {
   *Program(node) {
     const { body } = node;
     yield take(_);
@@ -99,5 +99,3 @@ const visitors = {
     yield take(ID(name));
   },
 };
-
-module.exports = { visitors };
