@@ -3,7 +3,7 @@ import { readFile } from 'fs/promises';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { parseModule } from 'meriyah';
-import { updateTokens, print } from 'cst-tokens';
+import { updateTokens, updateRanges, print } from 'cst-tokens';
 
 Error.stackTraceLimit = 20;
 
