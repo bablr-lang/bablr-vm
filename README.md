@@ -35,9 +35,12 @@ const ast = parseModule(sourceText);
 // Use source text and locations to recursively tokenize
 updateTokens(ast, { sourceText });
 
+assert(print(ast) === sourceText); // It is! Yay!
+
 // Modify the AST however you like here.
 
-assert(print(ast) === sourceText); // It is! Yay!
+// The AST will be printed saving as much of the original formatting as possible.
+print(ast);
 
 console.log(JSON.stringify(ast, undefined, 2));
 ```

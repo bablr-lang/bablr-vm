@@ -16,9 +16,12 @@ const ast = parseModule(sourceText);
 
 updateTokens(ast, { sourceText });
 
+console.log(JSON.stringify(ast, undefined, 2));
+
 const printed = print(ast);
 
-console.log(JSON.stringify(ast, undefined, 2));
+console.log(sourceText);
+console.log(printed);
 
 if (printed !== sourceText) {
   throw new Error('How has it all gone wrong?');
