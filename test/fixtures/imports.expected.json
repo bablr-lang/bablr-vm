@@ -60,12 +60,8 @@
               "value": "as"
             },
             {
-              "type": "CommentStart",
-              "value": "/*"
-            },
-            {
-              "type": "CommentEnd",
-              "value": "*/"
+              "type": "Whitespace",
+              "value": " "
             },
             {
               "type": "Reference",

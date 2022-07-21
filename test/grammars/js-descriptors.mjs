@@ -60,81 +60,6 @@ const Text = (matchValue) => (value) => {
   };
 };
 
-const CommentStart = (value) => {
-  return {
-    type: 'CommentStart',
-    value,
-    build() {
-      return [{ type: 'CommentStart', value }];
-    },
-    matchTokens(cstTokens) {
-      const token = cstTokens.value;
-      const { type, value: tValue } = token;
-      return type === 'CommentStart' && tValue === value ? [token] : null;
-    },
-    matchChrs(chrs) {
-      return startsWithSeq(value, chrs) ? this.build() : null;
-    },
-  };
-};
-
-const CommentEnd = (value) => {
-  return {
-    type: 'CommentEnd',
-    value,
-    build() {
-      return [{ type: 'CommentEnd', value }];
-    },
-    matchTokens(cstTokens) {
-      const token = cstTokens.value;
-      const { type, value: tValue } = token;
-      return type === 'CommentEnd' && tValue === value ? [token] : null;
-    },
-    matchChrs(chrs) {
-      return startsWithSeq(value, chrs) ? this.build() : null;
-    },
-  };
-};
-
-const blockCommentTextPattern = parse(/(.+)\*\//sy);
-const BlockCommentText = Text((chrs, value) => {
-  return exec(blockCommentTextPattern, chrs)[1] || null;
-});
-
-const lineCommentTextPattern = parse(/[^\n]+/y);
-const LineCommentText = Text((chrs, value) => {
-  return exec(lineCommentTextPattern, chrs)[0] || null;
-});
-
-const Comment = (value) => {
-  const lcText = LineCommentText(value);
-  const bcText = BlockCommentText(value);
-  return {
-    type: 'Comment',
-    value,
-    build(value) {
-      if (value.startsWith('//')) {
-        return [...lcStart.build(), ...lcText.build(value.slice(2))];
-      } else if (value.startsWith('/*') && value.endsWith('*/')) {
-        return [...bcStart.build(), ...bcText.build(value.slice(2, -2)), ...bcEnd.build()];
-      } else {
-        throw new Error('Comment value was not a valid comment');
-      }
-    },
-    matchTokens(cstTokens) {
-      return (
-        match_([lcStart, lcText], cstTokens) ||
-        match_([lcStart], cstTokens) ||
-        match_([bcStart, bcText, bcEnd], cstTokens) ||
-        match_([bcStart, bcEnd], cstTokens)
-      );
-    },
-    matchChrs(chrs) {
-      return this.matchTokens(chrs);
-    },
-  };
-};
-
 const whitespacePattern = parse(/\s+/y);
 
 const Whitespace = (value = ' ') => {
@@ -244,7 +169,7 @@ const Separator = () => ({
     const matchSource = cstTokens.fork();
     const matches = [];
     let match;
-    while ((match = matchSource.match(ws) || matchSource.match(cmt))) {
+    while ((match = matchSource.match(ws))) {
       matchSource.advance(match);
       matches.push(...match);
     }
@@ -307,12 +232,8 @@ const String = (value) => {
 };
 
 const ws = Whitespace();
-const lcStart = CommentStart('//');
-const bcStart = CommentStart('/*');
-const bcEnd = CommentEnd('*/');
 const sQuot = Punctuator("'");
 const dQuot = Punctuator('"');
-const cmt = Comment();
 const sep = Separator();
 
 const stripArray = (value) => (isArray(value) ? value[0] : value);

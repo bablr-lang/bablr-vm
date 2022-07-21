@@ -1,12 +1,13 @@
 {
   "name": "cst-tokens",
-  "version": "0.0.0",
-  "license": "MIT",
+  "version": "0.1.0",
   "author": "Conrad Buck<conartist6@gmail.com>",
   "exports": {
     ".": "./lib/index.js",
-    "./commands": "./lib/commands.js"
+    "./commands": "./lib/commands.js",
+    "./doc-builders": "./lib/doc-builders.js"
   },
+  "sideEffects": false,
   "dependencies": {
     "debug": "4.3.4"
   },
@@ -18,5 +19,7 @@
     "iter-tools-es": "^7.3.1",
     "meriyah": "^4.2.1",
     "prettier": "^2.6.2"
-  }
+  },
+  "repository": "github:js-cst-tokens/cst-tokens",
+  "license": "MIT"
 }

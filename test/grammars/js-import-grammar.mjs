@@ -4,7 +4,8 @@ import { take, match, emit } from 'cst-tokens/commands';
 import { OPT, ID, PN, KW, STR, ref, _, __ } from './js-descriptors.mjs';
 
 export default {
-  *Program(node) {
+  *Program(path) {
+    const { node } = path;
     const { body } = node;
     yield take(_);
     for (const _n of body) {
@@ -12,7 +13,8 @@ export default {
     }
   },
 
-  *ImportDeclaration(node) {
+  *ImportDeclaration(path) {
+    const { node } = path;
     const { specifiers } = node;
     yield take(KW`import`);
     if (specifiers?.length) {
@@ -54,7 +56,8 @@ export default {
     yield take(ref`source`, _, OPT(PN`;`));
   },
 
-  *ImportSpecifier(node, { matchNodes }) {
+  *ImportSpecifier(path, { matchNodes }) {
+    const { node } = path;
     const { local, imported } = node;
 
     const importedMatch = yield match(ref`imported`);
@@ -79,22 +82,24 @@ export default {
     }
   },
 
-  *ImportDefaultSpecifier(node) {
+  *ImportDefaultSpecifier() {
     yield take(ref`local`);
   },
 
-  *ImportNamespaceSpecifier(node) {
+  *ImportNamespaceSpecifier() {
     yield take(PN`*`, _, ID`as`, __, ref`local`);
   },
 
-  *Literal(node) {
+  *Literal(path) {
+    const { node } = path;
     const { value } = node;
     if (typeof value === 'string') {
       yield take(STR(value));
     }
   },
 
-  *Identifier(node) {
+  *Identifier(path) {
+    const { node } = path;
     const { name } = node;
     yield take(ID(name));
   },

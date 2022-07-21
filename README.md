@@ -29,20 +29,22 @@ This project uses the [debug](https://www.npmjs.com/package/debug) package. To d
 ```js
 import { parseModule } from 'meriyah';
 import { updateTokens, print } from 'cst-tokens';
+import jsGrammar from '@cst-tokens/js-grammar-estree';
 
 const sourceText = `import     def,{   foo  as/**/foo} from  'bar';`;
 
 const ast = parseModule(sourceText);
 
 // Use source text and locations to recursively tokenize
-updateTokens(ast, { sourceText });
+updateTokens(ast, jsGrammar, { sourceText });
 
-assert(print(ast) === sourceText); // It is! Yay!
+assert(print(ast, jsGrammar) === sourceText); // It is! Yay!
 
 // Modify the AST however you like here.
+transform(ast);
 
 // The AST will be printed saving as much of the original formatting as possible.
-print(ast);
+print(ast, jsGrammar);
 
 console.log(JSON.stringify(ast, undefined, 2));
 ```
