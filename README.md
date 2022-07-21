@@ -2,17 +2,9 @@
 
 [![Gitter](https://badges.gitter.im/cst-tokens/community.svg)](https://gitter.im/cst-tokens/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-This library provides tools for working with javascript expressed as a Concrete Syntax Tree, or CST. For our purposes a CST is a particular subtype of AST in which all text is represented in the tree, including non-semantic text like whitespace and comments. The primary goal of a CST is to ensure that `print(parse(text)) === text`, in other words to preserve formatting when the intent is to modify and reprint a program rather than just executing it.
+This library provides tools for working with Concrete Syntax Trees, or CSTs. For our purposes a CST is a particular subtype of AST in which all text is represented in the tree, **including non-semantic text like whitespace and comments**. The primary goal of a CST is to ensure that `print(parse(text)) === text`, in other words to preserve formatting when the intent is to modify and reprint a program rather than just executing it.
 
-This project is inspired by the [cst](https://github.com/cst/cst) library, and is intended as a direct successor to [recast](https://github.com/benjamn/recast). Its long term goal is [integration](https://github.com/prettier/prettier/issues/12806) with [prettier](https://github.com/prettier/prettier) to achieve perfect printing of arbitrarily modified code in a single pass.
-
-## Architecture
-
-`cst-tokens` is designed so that the code should be easy to read and change. Take a look at the [architecture documentation](https://github.com/conartist6/cst-tokens/blob/trunk/ARCHITECTURE.md)!
-
-## Status
-
-This project is a proof-of-concept. It works on a small subset of JS grammar, and expanding its grammar is not the highest priority until core architectural issues are resolved. For more reading, see [Issue #1 - I need help.](https://github.com/conartist6/cst-tokens/issues/1)
+This project is inspired by the [cst](https://github.com/cst/cst) library, and is intended as a direct successor to [recast](https://github.com/benjamn/recast). Its long term goal is [integration](https://github.com/prettier/prettier/issues/12806) with [prettier](https://github.com/prettier/prettier) to achieve perfect printing of arbitrarily modified code.
 
 ## Contributing
 
@@ -43,13 +35,13 @@ assert(print(ast, jsGrammar) === sourceText); // It is! Yay!
 // Modify the AST however you like here.
 transform(ast);
 
-// The AST will be printed saving as much of the original formatting as possible.
-print(ast, jsGrammar);
-
-console.log(JSON.stringify(ast, undefined, 2));
+// print the AST saving as much of the original formatting as possible.
+console.log(print(ast, jsGrammar));
 ```
 
-Which prints the following (edited for clarity):
+## The CST
+
+Here's what the CST from the above example looks like:
 
 <!--prettier-ignore-->
 ```json
