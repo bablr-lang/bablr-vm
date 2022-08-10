@@ -11,12 +11,12 @@ specifiers:
   prettier: ^2.6.2
 
 dependencies:
+  '@iter-tools/regex': 0.3.0
   debug: 4.3.4
+  escape-string-regexp: 4.0.0
 
 devDependencies:
   '@babel/types': 7.17.10
-  '@iter-tools/regex': 0.3.0
-  escape-string-regexp: 4.0.0
   eslint: 7.32.0
   iter-tools-es: 7.3.1
   meriyah: 4.2.1
@@ -86,7 +86,6 @@ packages:
 
   /@iter-tools/imm-stack/1.1.0:
     resolution: {integrity: sha512-5wCL8xt4sZ3v0buB3HrzqL2FTkaYB+ZVwkACo1G80zXWWG/8tSGgRiz7EQSkgDRrPQtpoGXRdOKW+GAVmG/Uyg==}
-    dev: true
 
   /@iter-tools/regex/0.3.0:
     resolution: {integrity: sha512-sSFwoYgsEWMOIxqWZt9ugYlblD8W/AXj/aiaDLcrARg6Nlct7STnvlugaxpSZxtueyJr89HfGCaDsC++BKkWPw==}
@@ -96,7 +95,7 @@ packages:
       functional-red-black-tree: 1.0.1
       iter-tools-es: 7.3.1
       regexpp: 3.2.0
-    dev: true
+    dev: false
 
   /acorn-jsx/5.3.2_acorn@7.4.1:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -273,7 +272,6 @@ packages:
   /escape-string-regexp/4.0.0:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
-    dev: true
 
   /eslint-scope/5.1.1:
     resolution: {integrity: sha512-2NxwbF/hZ0KpepYN0cNbo+FN6XoK7GaHlQhgx/hIZl6Va0bF45RQOOwhLIy8lQDbuCiadSLCBnH2CFYquit5bw==}
@@ -430,7 +428,6 @@ packages:
 
   /functional-red-black-tree/1.0.1:
     resolution: {integrity: sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=}
-    dev: true
 
   /glob-parent/5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
@@ -519,7 +516,6 @@ packages:
 
   /iter-tools-es/7.3.1:
     resolution: {integrity: sha512-U4e1sPxQUFE8a4QAH/+1jIj5rZkHKtXguq1p3oOOuKJIbUYI5h2gSXM6CpYHcN9Od7A6hkoHOzIPrJ9afkRM4Q==}
-    dev: true
 
   /js-tokens/4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -645,7 +641,6 @@ packages:
   /regexpp/3.2.0:
     resolution: {integrity: sha512-pq2bWo9mVD43nbts2wGv17XLiNLya+GklZ8kaDLV2Z08gDCsGpnKn9BFMepvWuHCbyVvY7J5o5+BVvoQbmlJLg==}
     engines: {node: '>=8'}
-    dev: true
 
   /require-from-string/2.0.2:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}

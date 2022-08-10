@@ -1,251 +1,150 @@
-import { startsWithSeq, peekerate } from 'iter-tools-es';
-import { exec, parse } from '@iter-tools/regex';
-import regexEscape from 'escape-string-regexp';
+import { exec } from 'cst-tokens/commands';
 
 const { isArray } = Array;
 
-const match_ = (descriptors, source) => {
-  const matchSource = source.fork();
-  const matches = [];
-  for (const descriptor of descriptors) {
-    if (matchSource.done) return null;
-    const match = matchSource.match(descriptor);
-    if (!match) return null;
-    matches.push(...match);
-    matchSource.advance(match);
-  }
-  return matches;
-};
+const escapables = new Map(
+  Object.entries({
+    '\b': '\\b',
+    '\f': '\\f',
+    '\n': '\\n',
+    '\r': '\\r',
+    '\t': '\\t',
+    '\v': '\\v',
+    '\0': '\\0',
+  }),
+);
 
-const Optional = (descriptor) => {
-  return {
-    type: descriptor.type,
-    value: descriptor.value,
-    build() {
-      return [];
-    },
-    matchTokens(cstTokens) {
-      const match = descriptor.matchTokens(cstTokens);
-      return match === null ? [] : match;
-    },
-    matchChrs(chrs) {
-      const match = descriptor.matchChrs(chrs);
-      return match === null ? [] : match;
-    },
-  };
-};
-
-const breakPattern = /[(){}\s\/\\&#@!`+^%?<>,.;:'"|~-]|$/.source;
-
-const Text = (matchValue) => (value) => {
+export const StringText = (value) => {
   const defaultValue = value;
   return {
-    type: 'Text',
+    type: 'StringText',
     value,
+    mergeable: true,
+    hoistable: false,
     build(value) {
-      return [{ type: 'Text', value: value || defaultValue }];
+      return { type: 'StringText', value: value || defaultValue };
     },
-    matchTokens(cstTokens) {
-      const match = [];
-      const matchSource = cstTokens.fork();
-      while (!matchSource.done && matchSource.value.type === 'Text') {
-        match.push(matchSource.value);
-        matchSource.advance([cstTokens.value]);
+    *matchChrs() {
+      const { value } = this;
+      let result = '';
+
+      // prettier-ignore
+      for (const chr of value) {
+        let code = chr.charCodeAt(0);
+        let chrs = null;
+        if (
+          (chrs = yield* exec(chr))
+        ) {
+        } else if (
+          escapables.has(chr) && (chrs = yield* exec(escapables.get(chr)))
+        ) {
+        } else if (
+          code < 0xff &&
+          (chrs = yield* exec(new RegExp(`\\\\x${code.toString(16).padStart(2, '0')}`)))
+        ) {
+        } else if (
+          (chrs = yield* exec(new RegExp(`\\\\u${code.toString(16).padStart(4, '0')}`)))
+        ) {
+        }
+        // \u{00000f}
+
+        if (chrs) {
+          result += chrs;
+        } else {
+          return null;
+        }
       }
-      return match.length ? match : null;
+
+      return result;
     },
-    matchChrs(chrs) {
-      return matchValue(chrs, value) ? this.build() : null;
+    toString() {
+      return `StringText\`${value}\``;
     },
   };
 };
 
-const whitespacePattern = parse(/\s+/y);
-
-const Whitespace = (value = ' ') => {
+export const Whitespace = (value = ' ') => {
   const defaultValue = value;
   return {
     type: 'Whitespace',
     value,
+    mergeable: true,
+    hoistable: true,
     build(value) {
-      return [{ type: 'Whitespace', value: value || defaultValue }];
+      return { type: 'Whitespace', value: value || defaultValue };
     },
-    matchTokens(cstTokens) {
-      const match = [];
-      // What should I do with '' whitespace values?
-      const matchSource = cstTokens.fork();
-      while (!matchSource.done && matchSource.value.type === 'Whitespace') {
-        match.push(matchSource.value);
-        matchSource.advance([matchSource.value]);
-      }
-      return match.length ? match : null;
+    *matchChrs() {
+      return yield* exec(/\s+/);
     },
-    matchChrs(chrs) {
-      const value = exec(whitespacePattern, chrs)[0];
-      return value ? this.build(value) : null;
+    toString() {
+      return `Whitespace\`${value}\``;
     },
   };
 };
 
-const Punctuator = (value) => ({
-  type: 'Punctuator',
-  value,
-  build() {
-    return [{ type: 'Punctuator', value }];
-  },
-  matchTokens(cstTokens) {
-    const token = cstTokens.value;
-    const { type, value: tValue } = token;
-    return type === 'Punctuator' && tValue === value ? [token] : null;
-  },
-  matchChrs(chrs) {
-    return startsWithSeq(value, chrs) ? this.build() : null;
-  },
-});
+export const Punctuator = (value) => {
+  return {
+    type: 'Punctuator',
+    value,
+    mergeable: false,
+    hoistable: false,
+    build() {
+      return { type: 'Punctuator', value };
+    },
+    *matchChrs() {
+      return yield* exec(this.value);
+    },
+    toString() {
+      return `Punctuator\`${value}\``;
+    },
+  };
+};
 
-const Keyword = (value) => {
-  const pattern = parse(`(${regexEscape(value)})${breakPattern}`, 'y');
+export const Keyword = (value) => {
   return {
     type: 'Keyword',
     value,
+    mergeable: false,
+    hoistable: false,
     build() {
-      return [{ type: 'Keyword', value }];
+      return { type: 'Keyword', value };
     },
-    matchTokens(cstTokens) {
-      const token = cstTokens.value;
-      const { type, value: tValue } = token;
-      return type === 'Keyword' && tValue === value ? [token] : null;
+    *matchChrs() {
+      return yield* exec(this.value);
     },
-    matchChrs(chrs) {
-      return exec(pattern, chrs)[1] ? this.build() : null;
+    toString() {
+      return `Keyword\`${value}\``;
     },
   };
 };
 
-const Identifier = (value) => {
-  const defaultValue = value;
-  const pattern = parse(`(${regexEscape(value)})${breakPattern}`, 'y');
+export const Identifier = (value) => {
+  const expected = { type: 'Identifier', value };
   return {
     type: 'Identifier',
     value,
+    mergeable: false,
+    hoistable: false,
     build(value) {
-      return [{ type: 'Identifier', value: value || defaultValue }];
+      return { type: 'Identifier', value: value || expected.value };
     },
-    matchTokens(cstTokens) {
-      const token = cstTokens.value;
-      const { type, value: tValue } = token;
-      return type === 'Identifier' && tValue === value ? [token] : null;
+    *matchChrs() {
+      return yield* exec(this.value);
     },
-    matchChrs(chrs) {
-      return exec(pattern, chrs)[1] ? this.build() : null;
-    },
-  };
-};
-
-const Reference = (value) => ({
-  type: 'Reference',
-  value,
-  build() {
-    return [{ type: 'Reference', value }];
-  },
-  matchTokens(cstTokens) {
-    const token = cstTokens.value;
-    const { type, value: tValue } = token;
-    return type === 'Reference' && tValue === value ? [token] : null;
-  },
-  matchChrs(chrs) {
-    // The coroutine must evaluate the referenced node to determine if it matches
-    throw new Error('not implemented');
-  },
-});
-
-const Separator = () => ({
-  type: 'Separator',
-  value: undefined,
-  build() {
-    return ws.build();
-  },
-  matchTokens(cstTokens) {
-    const matchSource = cstTokens.fork();
-    const matches = [];
-    let match;
-    while ((match = matchSource.match(ws))) {
-      matchSource.advance(match);
-      matches.push(...match);
-    }
-    return matches;
-  },
-  matchChrs(chrs) {
-    return this.matchTokens(chrs);
-  },
-});
-
-const buildMatchStringChrs = (terminator) => {
-  return (chrs, value) => {
-    const peekr = peekerate(chrs.fork());
-
-    const match = [];
-    for (const chr of value) {
-      if (peekr.done) break;
-      // TODO escapes
-      //   necessary escapes, e.g. \'
-      //   unnecessary escapes, e.g. \d
-      //   unicode escapes, e.g. \u0064
-      if (peekr.value === chr) {
-        match.push(chr);
-        peekr.advance();
-      } else {
-        return null;
-      }
-    }
-    return match;
-  };
-};
-
-const SingleQuoteStringBody = Text(buildMatchStringChrs("'"));
-const DoubleQuoteStringBody = Text(buildMatchStringChrs('"'));
-
-const String = (value) => {
-  const sQuotText = SingleQuoteStringBody(value);
-  const dQuotText = DoubleQuoteStringBody(value);
-  const astValue = value;
-  return {
-    type: 'String',
-    value,
-    build(value) {
-      if (!value || (value.startsWith("'") && value.endsWith("'"))) {
-        return [...sQuot.build(), ...sQuotText.build(astValue), ...sQuot.build()];
-      } else if (value.startsWith('"') && value.endsWith('"')) {
-        return [...dQuot.build(), ...dQuotText.build(astValue), ...dQuot.build()];
-      } else {
-        throw new Error('String value was not a valid string');
-      }
-    },
-    matchTokens(cstTokens) {
-      // prettier-ignore
-      return match_([sQuot, sQuotText, sQuot], cstTokens) || match_([dQuot, dQuotText, dQuot], cstTokens);
-    },
-    matchChrs(chrs) {
-      return match_([sQuot, sQuotText, sQuot], chrs) || match_([dQuot, dQuotText, dQuot], chrs);
+    toString() {
+      return `Identifier\`${value}\``;
     },
   };
 };
 
 const ws = Whitespace();
-const sQuot = Punctuator("'");
-const dQuot = Punctuator('"');
-const sep = Separator();
 
 const stripArray = (value) => (isArray(value) ? value[0] : value);
 
 // Shorthand names for more concise grammar definitions
 // stripArray ensures that both ID`value` and ID(value) are valid
-export const OPT = Optional;
 export const WS = (value = '') => Whitespace(stripArray(value));
 export const PN = (value) => Punctuator(stripArray(value));
 export const KW = (value) => Keyword(stripArray(value));
 export const ID = (value) => Identifier(stripArray(value));
-export const STR = (value) => String(stripArray(value));
-export const ref = (value) => Reference(stripArray(value));
-export const _ = Optional(sep);
-export const __ = sep;
+export const _ = ws;
