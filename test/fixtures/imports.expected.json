@@ -10,14 +10,14 @@
           "local": {
             "type": "Identifier",
             "name": "def",
-            "tokens": [
+            "cstTokens": [
               {
                 "type": "Identifier",
                 "value": "def"
               }
             ]
           },
-          "tokens": [
+          "cstTokens": [
             {
               "type": "Reference",
               "value": "local"
@@ -28,25 +28,25 @@
           "type": "ImportSpecifier",
           "local": {
             "type": "Identifier",
-            "name": "foo",
-            "tokens": [
+            "name": "local",
+            "cstTokens": [
               {
                 "type": "Identifier",
-                "value": "foo"
+                "value": "local"
               }
             ]
           },
           "imported": {
             "type": "Identifier",
-            "name": "loc",
-            "tokens": [
+            "name": "imported",
+            "cstTokens": [
               {
                 "type": "Identifier",
-                "value": "loc"
+                "value": "imported"
               }
             ]
           },
-          "tokens": [
+          "cstTokens": [
             {
               "type": "Reference",
               "value": "imported"
@@ -68,12 +68,86 @@
               "value": "local"
             }
           ]
+        },
+        {
+          "type": "ImportSpecifier",
+          "local": {
+            "type": "Identifier",
+            "name": "shorthand",
+            "cstTokens": [
+              {
+                "type": "Identifier",
+                "value": "shorthand"
+              }
+            ]
+          },
+          "imported": {
+            "type": "Identifier",
+            "name": "shorthand",
+            "cstTokens": [
+              {
+                "type": "Identifier",
+                "value": "shorthand"
+              }
+            ]
+          },
+          "cstTokens": [
+            {
+              "type": "Reference",
+              "value": "imported"
+            }
+          ]
+        },
+        {
+          "type": "ImportSpecifier",
+          "local": {
+            "type": "Identifier",
+            "name": "name",
+            "cstTokens": [
+              {
+                "type": "Identifier",
+                "value": "name"
+              }
+            ]
+          },
+          "imported": {
+            "type": "Identifier",
+            "name": "name",
+            "cstTokens": [
+              {
+                "type": "Identifier",
+                "value": "name"
+              }
+            ]
+          },
+          "cstTokens": [
+            {
+              "type": "Reference",
+              "value": "imported"
+            },
+            {
+              "type": "Whitespace",
+              "value": " "
+            },
+            {
+              "type": "Identifier",
+              "value": "as"
+            },
+            {
+              "type": "Whitespace",
+              "value": " "
+            },
+            {
+              "type": "Reference",
+              "value": "local"
+            }
+          ]
         }
       ],
       "source": {
         "type": "Literal",
         "value": "bar",
-        "tokens": [
+        "cstTokens": [
           {
             "type": "Punctuator",
             "value": "'"
@@ -88,7 +162,7 @@
           }
         ]
       },
-      "tokens": [
+      "cstTokens": [
         {
           "type": "Keyword",
           "value": "import"
@@ -112,6 +186,30 @@
         {
           "type": "Whitespace",
           "value": "   "
+        },
+        {
+          "type": "Reference",
+          "value": "specifiers"
+        },
+        {
+          "type": "Punctuator",
+          "value": ","
+        },
+        {
+          "type": "Whitespace",
+          "value": " "
+        },
+        {
+          "type": "Reference",
+          "value": "specifiers"
+        },
+        {
+          "type": "Punctuator",
+          "value": ","
+        },
+        {
+          "type": "Whitespace",
+          "value": " "
         },
         {
           "type": "Reference",
@@ -144,7 +242,7 @@
       ]
     }
   ],
-  "tokens": [
+  "cstTokens": [
     {
       "type": "Reference",
       "value": "body"

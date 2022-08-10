@@ -57,11 +57,11 @@ Here's what the CST from the above example looks like:
           "local": {
             "type": "Identifier",
             "name": "def",
-            "tokens": [
+            "cstTokens": [
               { "type": "Identifier", "value": "def" }
             ]
           },
-          "tokens": [
+          "cstTokens": [
             { "type": "Reference", "value": "local" }
           ]
         },
@@ -70,21 +70,21 @@ Here's what the CST from the above example looks like:
           "local": {
             "type": "Identifier",
             "name": "foo",
-            "tokens": [
+            "cstTokens": [
               { "type": "Identifier", "value": "foo" }
             ]
           },
           "imported": {
             "type": "Identifier",
             "name": "foo",
-            "tokens": [
+            "cstTokens": [
               { "type": "Identifier", "value": "foo" }
             ]
           },
-          "tokens": [
+          "cstTokens": [
             { "type": "Reference", "value": "imported" },
             { "type": "Whitespace", "value": "  " },
-            { "type": "Identifier", "value": "as" },
+            { "type": "Keyword", "value": "as" },
             { "type": "CommentStart", "value": "/*" },
             { "type": "CommentEnd", "value": "*/" },
             { "type": "Reference", "value": "local" }
@@ -94,13 +94,13 @@ Here's what the CST from the above example looks like:
       "source": {
         "type": "Literal",
         "value": "bar",
-        "tokens": [
+        "cstTokens": [
           { "type": "Punctuator", "value": "'" },
           { "type": "Text", "value": "bar" },
           { "type": "Punctuator", "value": "'" }
         ]
       },
-      "tokens": [
+      "cstTokens": [
         { "type": "Keyword", "value": "import" },
         { "type": "Whitespace", "value": "     " },
         { "type": "Reference", "value": "specifiers" },
@@ -117,7 +117,7 @@ Here's what the CST from the above example looks like:
       ]
     }
   ],
-  "tokens": [
+  "cstTokens": [
     { "type": "Reference", "value": "body" }
   ]
 }

@@ -5,16 +5,16 @@
   "exports": {
     ".": "./lib/index.js",
     "./commands": "./lib/commands.js",
-    "./doc-builders": "./lib/doc-builders.js"
+    "./descriptors": "./lib/descriptors.js"
   },
   "sideEffects": false,
   "dependencies": {
-    "debug": "4.3.4"
+    "@iter-tools/regex": "0.3.0",
+    "debug": "4.3.4",
+    "escape-string-regexp": "4.0.0"
   },
   "devDependencies": {
     "@babel/types": "*",
-    "@iter-tools/regex": "0.3.0",
-    "escape-string-regexp": "4.0.0",
     "eslint": "^7.32.0",
     "iter-tools-es": "^7.3.1",
     "meriyah": "^4.2.1",
