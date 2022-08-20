@@ -1,6 +1,6 @@
 import t from '@babel/types';
 import { match, take, takeMatch, emit, ref } from 'cst-tokens/commands';
-import { ID, PN, KW, _, StringText } from './js-descriptors.mjs';
+import { ID, PN, LPN, RPN, KW, _, Text } from './js-descriptors.mjs';
 
 const spaceDelimitedTypes = ['Identifier', 'Keyword'];
 
@@ -144,14 +144,14 @@ export default {
             yield* take(PN`,`);
           }
           if (specifiers.length > 1) {
-            yield* take(PN`{`);
+            yield* take(LPN`{`);
             for (let i = 1; i < specifiers.length; i++) {
               yield* take(ref`specifiers`);
               const trailing = i === specifiers.length - 1;
 
               yield* trailing ? takeMatch(PN`,`) : take(PN`,`);
             }
-            yield* take(PN`}`);
+            yield* take(RPN`}`);
           }
         }
 
@@ -196,7 +196,7 @@ export default {
     *Literal(path) {
       const { value } = path.node;
       if (typeof value === 'string') {
-        yield* take(PN`'`, StringText(value), PN`'`);
+        yield* take(LPN`'`, Text(value), RPN`'`);
       }
     },
 

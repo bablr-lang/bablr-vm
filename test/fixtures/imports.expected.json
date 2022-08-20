@@ -149,7 +149,7 @@
         "value": "bar",
         "cstTokens": [
           {
-            "type": "Punctuator",
+            "type": "LeftPunctuator",
             "value": "'"
           },
           {
@@ -157,7 +157,7 @@
             "value": "bar"
           },
           {
-            "type": "Punctuator",
+            "type": "RightPunctuator",
             "value": "'"
           }
         ]
@@ -180,7 +180,7 @@
           "value": ","
         },
         {
-          "type": "Punctuator",
+          "type": "LeftPunctuator",
           "value": "{"
         },
         {
@@ -216,7 +216,7 @@
           "value": "specifiers"
         },
         {
-          "type": "Punctuator",
+          "type": "RightPunctuator",
           "value": "}"
         },
         {

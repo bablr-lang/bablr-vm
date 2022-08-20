@@ -95,9 +95,9 @@ Here's what the CST from the above example looks like:
         "type": "Literal",
         "value": "bar",
         "cstTokens": [
-          { "type": "Punctuator", "value": "'" },
+          { "type": "LeftPunctuator", "value": "'" },
           { "type": "Text", "value": "bar" },
-          { "type": "Punctuator", "value": "'" }
+          { "type": "RightPunctuator", "value": "'" }
         ]
       },
       "cstTokens": [
@@ -105,10 +105,10 @@ Here's what the CST from the above example looks like:
         { "type": "Whitespace", "value": "     " },
         { "type": "Reference", "value": "specifiers" },
         { "type": "Punctuator", "value": "," },
-        { "type": "Punctuator", "value": "{" },
+        { "type": "LeftPunctuator", "value": "{" },
         { "type": "Whitespace", "value": "   " },
         { "type": "Reference", "value": "specifiers" },
-        { "type": "Punctuator", "value": "}" },
+        { "type": "RightPunctuator", "value": "}" },
         { "type": "Whitespace", "value": " " },
         { "type": "Keyword", "value": "from" },
         { "type": "Whitespace", "value": "  " },

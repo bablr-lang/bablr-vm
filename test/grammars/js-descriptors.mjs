@@ -14,14 +14,14 @@ const escapables = new Map(
   }),
 );
 
-export const StringText = (value) => {
+export const Text = (value) => {
   const defaultValue = value;
   return {
-    type: 'StringText',
+    type: 'Text',
     value,
     mergeable: true,
     build(value) {
-      return { type: 'StringText', value: value || defaultValue };
+      return { type: 'Text', value: value || defaultValue };
     },
     *matchChrs() {
       const { value } = this;
@@ -57,7 +57,7 @@ export const StringText = (value) => {
       return result;
     },
     toString() {
-      return `StringText\`${value}\``;
+      return `Text\`${value}\``;
     },
   };
 };
@@ -94,6 +94,40 @@ export const Punctuator = (value) => {
     },
     toString() {
       return `Punctuator\`${value}\``;
+    },
+  };
+};
+
+export const LeftPunctuator = (value) => {
+  return {
+    type: 'LeftPunctuator',
+    value,
+    mergeable: false,
+    build() {
+      return { type: 'LeftPunctuator', value };
+    },
+    *matchChrs() {
+      return yield* exec(this.value);
+    },
+    toString() {
+      return `LeftPunctuator\`${value}\``;
+    },
+  };
+};
+
+export const RightPunctuator = (value) => {
+  return {
+    type: 'RightPunctuator',
+    value,
+    mergeable: false,
+    build() {
+      return { type: 'RightPunctuator', value };
+    },
+    *matchChrs() {
+      return yield* exec(this.value);
+    },
+    toString() {
+      return `RightPunctuator\`${value}\``;
     },
   };
 };
@@ -141,6 +175,8 @@ const stripArray = (value) => (isArray(value) ? value[0] : value);
 // stripArray ensures that both ID`value` and ID(value) are valid
 export const WS = (value = '') => Whitespace(stripArray(value));
 export const PN = (value) => Punctuator(stripArray(value));
+export const LPN = (value) => LeftPunctuator(stripArray(value));
+export const RPN = (value) => RightPunctuator(stripArray(value));
 export const KW = (value) => Keyword(stripArray(value));
 export const ID = (value) => Identifier(stripArray(value));
 export const _ = ws;
