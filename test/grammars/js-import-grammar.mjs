@@ -43,7 +43,6 @@ export const handleWhitespace = (visitor) =>
           break;
         }
 
-        case 'traverse':
         case 'reject':
         case 'fail': {
           returnValue = state = yield command;
