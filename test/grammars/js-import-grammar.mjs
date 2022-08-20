@@ -97,7 +97,7 @@ export const handleWhitespace = (visitor) =>
     }
   };
 
-const mapGrammar = (transform, visitors) => {
+const mapVisitors = (transform, visitors) => {
   const transformed = {};
   for (const [type, visitor] of Object.entries(visitors)) {
     transformed[type] = transform(visitor);
@@ -105,97 +105,104 @@ const mapGrammar = (transform, visitors) => {
   return transformed;
 };
 
-export default mapGrammar(handleWhitespace, {
-  *Program(path) {
-    const { body } = path.node;
-
-    for (const _n of body) {
-      yield* take(ref`body`);
-    }
-    yield* takeMatch(_);
+export default {
+  isHoistable(token) {
+    return (
+      token.type === 'Whitespace' || (token.type === 'Punctuator' && '()'.includes(token.value))
+    );
   },
+  visitors: mapVisitors(handleWhitespace, {
+    *Program(path) {
+      const { body } = path.node;
 
-  *ImportDeclaration(path) {
-    const { specifiers } = path.node;
-    yield* take(KW`import`);
-    if (specifiers?.length) {
-      const specialIdx = specifiers.findIndex((spec) => !t.isImportSpecifier(spec));
-      if (specialIdx >= 1) {
-        const special = specifiers[specialIdx];
-        // This is a limitation of Resolver.
-        throw new Error(
-          `${special.type} was at specifiers[${specialIdx}] but must be specifiers[0]`,
-        );
+      for (const _n of body) {
+        yield* take(ref`body`);
       }
-      const special = t.isImportSpecifier(specifiers[0]) ? null : specifiers[0];
-      if (special && t.isImportNamespaceSpecifier(special)) {
-        yield* take(ref`specifiers`);
-      } else {
-        if (special && t.isImportDefaultSpecifier(special)) {
+      yield* takeMatch(_);
+    },
+
+    *ImportDeclaration(path) {
+      const { specifiers } = path.node;
+      yield* take(KW`import`);
+      if (specifiers?.length) {
+        const specialIdx = specifiers.findIndex((spec) => !t.isImportSpecifier(spec));
+        if (specialIdx >= 1) {
+          const special = specifiers[specialIdx];
+          // This is a limitation of Resolver.
+          throw new Error(
+            `${special.type} was at specifiers[${specialIdx}] but must be specifiers[0]`,
+          );
+        }
+        const special = t.isImportSpecifier(specifiers[0]) ? null : specifiers[0];
+        if (special && t.isImportNamespaceSpecifier(special)) {
           yield* take(ref`specifiers`);
-        }
-        if (special && specifiers.length > 1) {
-          yield* take(PN`,`);
-        }
-        if (specifiers.length > 1) {
-          yield* take(PN`{`);
-          for (let i = 1; i < specifiers.length; i++) {
+        } else {
+          if (special && t.isImportDefaultSpecifier(special)) {
             yield* take(ref`specifiers`);
-            const trailing = i === specifiers.length - 1;
-
-            yield* trailing ? takeMatch(PN`,`) : take(PN`,`);
           }
-          yield* take(PN`}`);
+          if (special && specifiers.length > 1) {
+            yield* take(PN`,`);
+          }
+          if (specifiers.length > 1) {
+            yield* take(PN`{`);
+            for (let i = 1; i < specifiers.length; i++) {
+              yield* take(ref`specifiers`);
+              const trailing = i === specifiers.length - 1;
+
+              yield* trailing ? takeMatch(PN`,`) : take(PN`,`);
+            }
+            yield* take(PN`}`);
+          }
+        }
+
+        yield* take(KW`from`);
+      }
+      yield* take(ref`source`);
+      yield* takeMatch(PN`;`);
+    },
+
+    *ImportSpecifier(path, context) {
+      const { matchNodes } = context;
+      const { local, imported } = path.node;
+
+      const importedMatch = yield* take(ref`imported`);
+
+      if (local.name !== imported.name) {
+        yield* take(ID`as`, ref`local`);
+      } else {
+        // whitespace plugin sends
+        const asMatch = yield* match(ID`as`, ref`local`);
+
+        // Ensure that `foo as bar` becoming `foo as foo` only emits `foo`
+        const valid =
+          asMatch &&
+          matchNodes.get(getRef(importedMatch)).sourceType !== 'NoSource' &&
+          matchNodes.get(getRef(asMatch)).sourceType !== 'NoSource';
+
+        if (valid) {
+          yield* emit(asMatch);
         }
       }
+    },
 
-      yield* take(KW`from`);
-    }
-    yield* take(ref`source`);
-    yield* takeMatch(PN`;`);
-  },
+    *ImportDefaultSpecifier() {
+      yield* take(ref`local`);
+    },
 
-  *ImportSpecifier(path, context) {
-    const { matchNodes } = context;
-    const { local, imported } = path.node;
+    *ImportNamespaceSpecifier() {
+      yield* take(PN`*`, ID`as`, ref`local`);
+    },
 
-    const importedMatch = yield* take(ref`imported`);
-
-    if (local.name !== imported.name) {
-      yield* take(ID`as`, ref`local`);
-    } else {
-      // whitespace plugin sends
-      const asMatch = yield* match(ID`as`, ref`local`);
-
-      // Ensure that `foo as bar` becoming `foo as foo` only emits `foo`
-      const valid =
-        asMatch &&
-        matchNodes.get(getRef(importedMatch)).sourceType !== 'NoSource' &&
-        matchNodes.get(getRef(asMatch)).sourceType !== 'NoSource';
-
-      if (valid) {
-        yield* emit(asMatch);
+    *Literal(path) {
+      const { value } = path.node;
+      if (typeof value === 'string') {
+        yield* take(PN`'`, StringText(value), PN`'`);
       }
-    }
-  },
+    },
 
-  *ImportDefaultSpecifier() {
-    yield* take(ref`local`);
-  },
-
-  *ImportNamespaceSpecifier() {
-    yield* take(PN`*`, ID`as`, ref`local`);
-  },
-
-  *Literal(path) {
-    const { value } = path.node;
-    if (typeof value === 'string') {
-      yield* take(PN`'`, StringText(value), PN`'`);
-    }
-  },
-
-  *Identifier(path) {
-    const { name } = path.node;
-    yield* take(ID(name));
-  },
-});
+    *Identifier(path) {
+      const { name } = path.node;
+      yield* take(ID(name));
+    },
+  }),
+};

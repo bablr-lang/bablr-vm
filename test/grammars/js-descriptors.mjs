@@ -20,7 +20,6 @@ export const StringText = (value) => {
     type: 'StringText',
     value,
     mergeable: true,
-    hoistable: false,
     build(value) {
       return { type: 'StringText', value: value || defaultValue };
     },
@@ -87,7 +86,6 @@ export const Punctuator = (value) => {
     type: 'Punctuator',
     value,
     mergeable: false,
-    hoistable: false,
     build() {
       return { type: 'Punctuator', value };
     },
@@ -105,7 +103,6 @@ export const Keyword = (value) => {
     type: 'Keyword',
     value,
     mergeable: false,
-    hoistable: false,
     build() {
       return { type: 'Keyword', value };
     },
@@ -124,7 +121,6 @@ export const Identifier = (value) => {
     type: 'Identifier',
     value,
     mergeable: false,
-    hoistable: false,
     build(value) {
       return { type: 'Identifier', value: value || expected.value };
     },
