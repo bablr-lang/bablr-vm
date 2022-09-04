@@ -21,5 +21,6 @@
     "prettier": "^2.6.2"
   },
   "repository": "github:js-cst-tokens/cst-tokens",
+  "homepage": "https://github.com/js-cst-tokens/cst-tokens",
   "license": "MIT"
 }

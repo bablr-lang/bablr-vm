@@ -1,4 +1,4 @@
-import { exec } from 'cst-tokens/commands';
+import { takeChrs as take } from 'cst-tokens/commands';
 
 const { isArray } = Array;
 
@@ -14,38 +14,64 @@ const escapables = new Map(
   }),
 );
 
-export const Text = (value) => {
+export const StringStart = (value = "'") => {
+  return {
+    type: 'StringStart',
+    value,
+    mergeable: false,
+    build() {
+      return { type: 'StringStart', value };
+    },
+    *takeChrs() {
+      return yield* take(this.value);
+    },
+  };
+};
+
+export const StringEnd = (value = "'") => {
+  return {
+    type: 'StringEnd',
+    value,
+    mergeable: false,
+    build() {
+      return { type: 'StringEnd', value };
+    },
+    *takeChrs() {
+      return yield* take(this.value);
+    },
+  };
+};
+
+export const String = (value) => {
   const defaultValue = value;
   return {
-    type: 'Text',
+    type: 'String',
     value,
     mergeable: true,
     build(value) {
-      return { type: 'Text', value: value || defaultValue };
+      return { type: 'String', value: value || defaultValue };
     },
-    *matchChrs() {
+    *takeChrs() {
       const { value } = this;
       let result = '';
 
-      // prettier-ignore
       for (const chr of value) {
         let code = chr.charCodeAt(0);
         let chrs = null;
-        if (
-          (chrs = yield* exec(chr))
-        ) {
-        } else if (
-          escapables.has(chr) && (chrs = yield* exec(escapables.get(chr)))
-        ) {
+        if ((chrs = yield* take(chr))) {
+          // continue
+        } else if (escapables.has(chr) && (chrs = yield* take(escapables.get(chr)))) {
+          // continue
         } else if (
           code < 0xff &&
-          (chrs = yield* exec(new RegExp(`\\\\x${code.toString(16).padStart(2, '0')}`)))
+          (chrs = yield* take(new RegExp(`\\\\x${code.toString(16).padStart(2, '0')}`)))
         ) {
-        } else if (
-          (chrs = yield* exec(new RegExp(`\\\\u${code.toString(16).padStart(4, '0')}`)))
-        ) {
+          // continue
+        } else if ((chrs = yield* take(new RegExp(`\\\\u${code.toString(16).padStart(4, '0')}`)))) {
+          // continue
+        } else if ((chrs = yield* take(new RegExp(`\\\\u\\{\d{1,6}\\}`)))) {
+          // continue
         }
-        // \u{00000f}
 
         if (chrs) {
           result += chrs;
@@ -56,9 +82,6 @@ export const Text = (value) => {
 
       return result;
     },
-    toString() {
-      return `Text\`${value}\``;
-    },
   };
 };
 
@@ -68,15 +91,11 @@ export const Whitespace = (value = ' ') => {
     type: 'Whitespace',
     value,
     mergeable: true,
-    hoistable: true,
     build(value) {
       return { type: 'Whitespace', value: value || defaultValue };
     },
-    *matchChrs() {
-      return yield* exec(/\s+/);
-    },
-    toString() {
-      return `Whitespace\`${value}\``;
+    *takeChrs() {
+      return yield* take(/\s+/);
     },
   };
 };
@@ -89,11 +108,8 @@ export const Punctuator = (value) => {
     build() {
       return { type: 'Punctuator', value };
     },
-    *matchChrs() {
-      return yield* exec(this.value);
-    },
-    toString() {
-      return `Punctuator\`${value}\``;
+    *takeChrs() {
+      return yield* take(this.value);
     },
   };
 };
@@ -106,11 +122,8 @@ export const LeftPunctuator = (value) => {
     build() {
       return { type: 'LeftPunctuator', value };
     },
-    *matchChrs() {
-      return yield* exec(this.value);
-    },
-    toString() {
-      return `LeftPunctuator\`${value}\``;
+    *takeChrs() {
+      return yield* take(this.value);
     },
   };
 };
@@ -123,11 +136,8 @@ export const RightPunctuator = (value) => {
     build() {
       return { type: 'RightPunctuator', value };
     },
-    *matchChrs() {
-      return yield* exec(this.value);
-    },
-    toString() {
-      return `RightPunctuator\`${value}\``;
+    *takeChrs() {
+      return yield* take(this.value);
     },
   };
 };
@@ -140,11 +150,8 @@ export const Keyword = (value) => {
     build() {
       return { type: 'Keyword', value };
     },
-    *matchChrs() {
-      return yield* exec(this.value);
-    },
-    toString() {
-      return `Keyword\`${value}\``;
+    *takeChrs() {
+      return yield* take(this.value);
     },
   };
 };
@@ -158,11 +165,29 @@ export const Identifier = (value) => {
     build(value) {
       return { type: 'Identifier', value: value || expected.value };
     },
-    *matchChrs() {
-      return yield* exec(this.value);
-    },
-    toString() {
-      return `Identifier\`${value}\``;
+    *takeChrs() {
+      const { value } = this;
+      let result = '';
+
+      for (const chr of value) {
+        let code = chr.charCodeAt(0);
+        let chrs = null;
+        if ((chrs = yield* take(chr))) {
+          // continue
+        } else if ((chrs = yield* take(new RegExp(`\\\\u${code.toString(16).padStart(4, '0')}`)))) {
+          // continue
+        } else if ((chrs = yield* take(new RegExp(`\\\\u\\{\d{1,6}\\}`)))) {
+          // continue
+        }
+
+        if (chrs) {
+          result += chrs;
+        } else {
+          return null;
+        }
+      }
+
+      return result;
     },
   };
 };
@@ -173,10 +198,8 @@ const stripArray = (value) => (isArray(value) ? value[0] : value);
 
 // Shorthand names for more concise grammar definitions
 // stripArray ensures that both ID`value` and ID(value) are valid
-export const WS = (value = '') => Whitespace(stripArray(value));
 export const PN = (value) => Punctuator(stripArray(value));
 export const LPN = (value) => LeftPunctuator(stripArray(value));
 export const RPN = (value) => RightPunctuator(stripArray(value));
 export const KW = (value) => Keyword(stripArray(value));
-export const ID = (value) => Identifier(stripArray(value));
 export const _ = ws;

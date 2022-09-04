@@ -95,9 +95,9 @@ Here's what the CST from the above example looks like:
         "type": "Literal",
         "value": "bar",
         "cstTokens": [
-          { "type": "LeftPunctuator", "value": "'" },
-          { "type": "Text", "value": "bar" },
-          { "type": "RightPunctuator", "value": "'" }
+          { "type": "StringStart", "value": "'" },
+          { "type": "String", "value": "bar" },
+          { "type": "StringEnd", "value": "'" }
         ]
       },
       "cstTokens": [

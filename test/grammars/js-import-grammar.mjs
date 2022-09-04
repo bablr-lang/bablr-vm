@@ -1,6 +1,16 @@
 import t from '@babel/types';
-import { match, take, takeMatch, emit, ref } from 'cst-tokens/commands';
-import { ID, PN, LPN, RPN, KW, _, Text } from './js-descriptors.mjs';
+import { match, eat, eatMatch, emit, ref } from 'cst-tokens/commands';
+import {
+  PN,
+  LPN,
+  RPN,
+  KW,
+  _,
+  Identifier,
+  String,
+  StringStart,
+  StringEnd,
+} from './js-descriptors.mjs';
 
 const spaceDelimitedTypes = ['Identifier', 'Keyword'];
 
@@ -24,21 +34,21 @@ export const handleWhitespace = (visitor) =>
     let current = grammar.next();
     let state = initialState;
 
-    lastDescriptors.set(state, lastDescriptors.get(state.path.parentState));
-
     while (!current.done) {
       const command = current.value;
       let returnValue;
 
+      command.error = new Error(undefined, { cause: command.error });
+
       switch (command.type) {
         case 'branch': {
           returnValue = state = yield command;
-          lastDescriptors.set(state, lastDescriptors.get(state.parent || state));
+          lastDescriptors.set(state, lastDescriptors.get(state.parent || state.path.parentState));
           break;
         }
 
         case 'accept': {
-          lastDescriptors.set(state.parent, lastDescriptors.get(state));
+          lastDescriptors.set(state.parent || state.path.parentState, lastDescriptors.get(state));
           returnValue = state = yield command;
           break;
         }
@@ -49,7 +59,7 @@ export const handleWhitespace = (visitor) =>
           break;
         }
 
-        case 'match': {
+        case 'take': {
           const descriptor = command.value;
           const { type } = descriptor;
           const lastType = lastDescriptors.get(state)?.type;
@@ -64,7 +74,7 @@ export const handleWhitespace = (visitor) =>
               spaceDelimitedTypes.includes(lastType) &&
               spaceDelimitedTypes.includes(type);
 
-            const spaceTokens = yield { type: 'match', value: _ };
+            const spaceTokens = yield { type: 'take', value: _ };
 
             if (spaceIsNecessary && !spaceTokens) {
               returnValue = null;
@@ -91,10 +101,6 @@ export const handleWhitespace = (visitor) =>
 
       current = grammar.next(returnValue);
     }
-
-    if (state.path.parentState) {
-      lastDescriptors.set(state.path.parentState, lastDescriptors.get(state));
-    }
   };
 
 const mapVisitors = (transform, visitors) => {
@@ -116,14 +122,14 @@ export default {
       const { body } = path.node;
 
       for (const _n of body) {
-        yield* take(ref`body`);
+        yield* eat(ref`body`);
       }
-      yield* takeMatch(_);
+      yield* eatMatch(_);
     },
 
     *ImportDeclaration(path) {
       const { specifiers } = path.node;
-      yield* take(KW`import`);
+      yield* eat(KW`import`);
       if (specifiers?.length) {
         const specialIdx = specifiers.findIndex((spec) => !t.isImportSpecifier(spec));
         if (specialIdx >= 1) {
@@ -135,43 +141,42 @@ export default {
         }
         const special = t.isImportSpecifier(specifiers[0]) ? null : specifiers[0];
         if (special && t.isImportNamespaceSpecifier(special)) {
-          yield* take(ref`specifiers`);
+          yield* eat(ref`specifiers`);
         } else {
           if (special && t.isImportDefaultSpecifier(special)) {
-            yield* take(ref`specifiers`);
+            yield* eat(ref`specifiers`);
           }
           if (special && specifiers.length > 1) {
-            yield* take(PN`,`);
+            yield* eat(PN`,`);
           }
           if (specifiers.length > 1) {
-            yield* take(LPN`{`);
+            yield* eat(LPN`{`);
             for (let i = 1; i < specifiers.length; i++) {
-              yield* take(ref`specifiers`);
+              yield* eat(ref`specifiers`);
               const trailing = i === specifiers.length - 1;
 
-              yield* trailing ? takeMatch(PN`,`) : take(PN`,`);
+              yield* trailing ? eatMatch(PN`,`) : eat(PN`,`);
             }
-            yield* take(RPN`}`);
+            yield* eat(RPN`}`);
           }
         }
 
-        yield* take(KW`from`);
+        yield* eat(KW`from`);
       }
-      yield* take(ref`source`);
-      yield* takeMatch(PN`;`);
+      yield* eat(ref`source`);
+      yield* eatMatch(PN`;`);
     },
 
     *ImportSpecifier(path, context) {
       const { matchNodes } = context;
       const { local, imported } = path.node;
 
-      const importedMatch = yield* take(ref`imported`);
+      const importedMatch = yield* eat(ref`imported`);
 
       if (local.name !== imported.name) {
-        yield* take(ID`as`, ref`local`);
+        yield* eat(KW`as`, ref`local`);
       } else {
-        // whitespace plugin sends
-        const asMatch = yield* match(ID`as`, ref`local`);
+        const asMatch = yield* match(KW`as`, ref`local`);
 
         // Ensure that `foo as bar` becoming `foo as foo` only emits `foo`
         const valid =
@@ -186,23 +191,23 @@ export default {
     },
 
     *ImportDefaultSpecifier() {
-      yield* take(ref`local`);
+      yield* eat(ref`local`);
     },
 
     *ImportNamespaceSpecifier() {
-      yield* take(PN`*`, ID`as`, ref`local`);
+      yield* eat(PN`*`, KW`as`, ref`local`);
     },
 
     *Literal(path) {
       const { value } = path.node;
       if (typeof value === 'string') {
-        yield* take(LPN`'`, Text(value), RPN`'`);
+        yield* eat(StringStart("'"), String(value), StringEnd("'"));
       }
     },
 
     *Identifier(path) {
       const { name } = path.node;
-      yield* take(ID(name));
+      yield* eat(Identifier(name));
     },
   }),
 };

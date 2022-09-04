@@ -1,6 +1,5 @@
-import { join } from 'path';
+import { join, dirname } from 'path';
 import { readFile } from 'fs/promises';
-import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { parseModule } from 'meriyah';
 import { updateTokens, print } from 'cst-tokens';
