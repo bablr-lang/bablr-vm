@@ -16,6 +16,7 @@ const sourceText = await readFixture('imports.js');
 
 const ast = parseModule(sourceText);
 
+debugger;
 updateTokens(ast, jsImportGrammar, { sourceText });
 
 console.log(JSON.stringify(ast, undefined, 2));

@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@babel/types': '*'
+  '@iter-tools/imm-stack': 1.1.0
   '@iter-tools/regex': 0.3.0
   debug: 4.3.4
   escape-string-regexp: 4.0.0
@@ -11,6 +12,7 @@ specifiers:
   prettier: ^2.6.2
 
 dependencies:
+  '@iter-tools/imm-stack': 1.1.0
   '@iter-tools/regex': 0.3.0
   debug: 4.3.4
   escape-string-regexp: 4.0.0
@@ -86,6 +88,7 @@ packages:
 
   /@iter-tools/imm-stack/1.1.0:
     resolution: {integrity: sha512-5wCL8xt4sZ3v0buB3HrzqL2FTkaYB+ZVwkACo1G80zXWWG/8tSGgRiz7EQSkgDRrPQtpoGXRdOKW+GAVmG/Uyg==}
+    dev: false
 
   /@iter-tools/regex/0.3.0:
     resolution: {integrity: sha512-sSFwoYgsEWMOIxqWZt9ugYlblD8W/AXj/aiaDLcrARg6Nlct7STnvlugaxpSZxtueyJr89HfGCaDsC++BKkWPw==}

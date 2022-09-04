@@ -168,7 +168,7 @@ export default {
     },
 
     *ImportSpecifier(path, context) {
-      const { matchNodes } = context;
+      const { matchNodesByRef } = context;
       const { local, imported } = path.node;
 
       const importedMatch = yield* eat(ref`imported`);
@@ -181,8 +181,8 @@ export default {
         // Ensure that `foo as bar` becoming `foo as foo` only emits `foo`
         const valid =
           asMatch &&
-          matchNodes.get(getRef(importedMatch)).sourceType !== 'NoSource' &&
-          matchNodes.get(getRef(asMatch)).sourceType !== 'NoSource';
+          matchNodesByRef.get(getRef(importedMatch)).source.type !== 'NoSource' &&
+          matchNodesByRef.get(getRef(asMatch)).source.type !== 'NoSource';
 
         if (valid) {
           yield* emit(asMatch);
