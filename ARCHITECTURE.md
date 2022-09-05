@@ -57,7 +57,7 @@ export default {
       // The String descriptor handles escapes for us given the value and quote type
       yield* eat(String(value, quotToken.value));
       // The closing quotation mark must match the opening one
-      yield eat(StringEnd(quotToken.value));
+      yield* eat(StringEnd(quotToken.value));
     },
   },
 };
