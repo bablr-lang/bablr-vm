@@ -1,7 +1,7 @@
 {
   "name": "cst-tokens",
   "description": "A library for traversing and manipulating CSTs",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "Conrad Buck<conartist6@gmail.com>",
   "files": [
     "lib"
