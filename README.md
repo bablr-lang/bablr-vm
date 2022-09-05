@@ -4,7 +4,20 @@
 
 This library provides tools for working with Concrete Syntax Trees, or CSTs. For our purposes a CST is a particular subtype of AST in which all text is represented in the tree, **including non-semantic text like whitespace and comments**. The primary goal of a CST is to ensure that `print(parse(text)) === text`, in other words to preserve formatting when the intent is to modify and reprint a program rather than just executing it.
 
-This project is inspired by the [cst](https://github.com/cst/cst) library, and is intended as a direct successor to [recast](https://github.com/benjamn/recast). Its long term goal is [integration](https://github.com/prettier/prettier/issues/12806) with [prettier](https://github.com/prettier/prettier) to achieve perfect printing of arbitrarily modified code.
+`cst-tokens` is language and parser agnostic. It does not rely on any concrete syntax information embedded in ASTs you give it, instead it rebuilds concrete syntax from scratch by using the AST as a pattern to be matched against source text. This approach allows `cst-tokens` to guarantee consistency between abstract and concrete syntax, primarily by treating abstract syntax as the source of truth. This ensures that the results are completely consistent across parsers, and can even provide considerable consistency between languages.
+
+`cst-tokens` is implemented in plain Javascript to ensure that the full community that benefits from the code can participate in its ongoing maintenance.
+
+## Purpose
+
+`cst-tokens` has two main purposes:
+
+- It contains core functionality that can be leveraged by tools written in javascript which need to query or update concrete syntax. Such tools include linters like [eslint](https://github.com/eslint/eslint) and formatters like [prettier](https://github.com/prettier/prettier).
+- It makes it easy for any user to write arbitrary code transforms that can be applied by any tool which groks the `node.cstTokens` structure, and in this way supports the development of an organic ecosystem of such transforms, also known as codemods.
+
+## Architecture
+
+See [ARCHITECTURE.md](https://github.com/conartist6/cst-tokens/blob/trunk/ARCHITECTURE.md).
 
 ## Contributing
 

@@ -1,4 +1,4 @@
-import { takeChrs as take } from 'cst-tokens/commands';
+import { takeChrs as take } from '@cst-tokens/helpers';
 
 const { isArray } = Array;
 

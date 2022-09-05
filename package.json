@@ -3,9 +3,7 @@
   "version": "0.1.0",
   "author": "Conrad Buck<conartist6@gmail.com>",
   "exports": {
-    ".": "./lib/index.js",
-    "./commands": "./lib/commands.js",
-    "./descriptors": "./lib/descriptors.js"
+    ".": "./lib/index.js"
   },
   "sideEffects": false,
   "dependencies": {
