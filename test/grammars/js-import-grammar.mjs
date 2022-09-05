@@ -36,9 +36,10 @@ export const handleWhitespace = (visitor) =>
 
     while (!current.done) {
       const command = current.value;
+      const cause = command.error;
       let returnValue;
 
-      command.error = new Error(undefined, { cause: command.error });
+      command.error = cause && new Error(undefined, { cause });
 
       switch (command.type) {
         case 'branch': {
@@ -117,7 +118,7 @@ export default {
       token.type === 'Whitespace' || (token.type === 'Punctuator' && '()'.includes(token.value))
     );
   },
-  visitors: mapVisitors(handleWhitespace, {
+  generators: mapVisitors(handleWhitespace, {
     *Program(path) {
       const { body } = path.node;
 

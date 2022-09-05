@@ -28,35 +28,37 @@ import { eat } from '@cst-tokens/helpers';
 
 // The grammar:
 export default {
-  *NullLiteral() {
-    // A NullLiteral matches a single Null descriptor
-    // The Null descriptor matches the text "null"
-    // The take command consumes the matched text from the source
-    const tokens = yield { type: 'take', value: Null() };
+  generators: {
+    *NullLiteral() {
+      // A NullLiteral matches a single Null descriptor
+      // The Null descriptor matches the text "null"
+      // The take command consumes the matched text from the source
+      const tokens = yield { type: 'take', value: Null() };
 
-    // Tokens won't be part of the final `cstTokens` array unless they are emitted
-    yield { type: 'emit', value: tokens };
-  },
+      // Tokens won't be part of the final `cstTokens` array unless they are emitted
+      yield { type: 'emit', value: tokens };
+    },
 
-  *BooleanLiteral(path) {
-    const { value } = path.node;
+    *BooleanLiteral(path) {
+      const { value } = path.node;
 
-    // eat is a helper that issues take and emit commands for us.
-    // The Boolean descriptor matches 'true' if value is truthy and 'false' otherwise
-    yield* eat(Boolean(value));
-  },
+      // eat is a helper that issues take and emit commands for us.
+      // The Boolean descriptor matches 'true' if value is truthy and 'false' otherwise
+      yield* eat(Boolean(value));
+    },
 
-  *StringLiteral(path) {
-    const value = path.node;
+    *StringLiteral(path) {
+      const value = path.node;
 
-    // The grammar is responsible for ensuring that opening and closing string quotes match
-    // A default quotation mark `"` will be used in case no source text is present
-    const [quotToken] = yield* eat(StringStart('"'));
-    // The string `"` must be represented as `"\""` or `'"'`.
-    // The String descriptor handles escapes for us given the value and quote type
-    yield* eat(String(value, quotToken.value));
-    // The closing quotation mark must match the opening one
-    yield eat(StringEnd(quotToken.value));
+      // The grammar is responsible for ensuring that opening and closing string quotes match
+      // A default quotation mark `"` will be used in case no source text is present
+      const [quotToken] = yield* eat(StringStart('"'));
+      // The string `"` must be represented as `"\""` or `'"'`.
+      // The String descriptor handles escapes for us given the value and quote type
+      yield* eat(String(value, quotToken.value));
+      // The closing quotation mark must match the opening one
+      yield eat(StringEnd(quotToken.value));
+    },
   },
 };
 ```
