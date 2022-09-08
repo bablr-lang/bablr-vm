@@ -1,6 +1,6 @@
 ## Architecture
 
-I like to think of `cst-tokens` as an "un-parser". A parser takes source text and emits an AST for the program it represents. `cst-tokens` takes an AST and matches programs which generate that AST. This is not the same as printing, because there are often many different source texts which compile to the same AST. For example in javascript a string containing the beer emoji could be written either as `"🍺"` or as `'\u{1f37a}'`. Notice the quotes and unicode representation are different, but both snippets result in the same AST. Matching the text that generated a given AST allows us to create a CST -- an AST which also contains a representation of the concrete syntax that generated the abstract representation.
+I like to think of `cst-tokens` as an "un-parser". A parser takes source text and emits an AST for the program it represents. `cst-tokens` takes an AST and matches programs which generate that AST. This is not the same as printing, because there are often many different source texts which compile to the same AST. For example in javascript a string containing the beer emoji could be written either as `"🍺"` or as `'\u{1f37a}'`. Notice the quotes and unicode representation are different, but both snippets result in the same AST. Matching the text that generated a given AST is what allows us to create a CST.
 
 To un-parse an AST, cst-tokens requires a [grammar](#grammars) that describes how to match source text for a the types of nodes present in the AST. Most users will be able to use off-the-shelf grammar definitions, but significant care has been taken to ensure that it is easy to create new grammars.
 
@@ -12,7 +12,7 @@ The `cst-tokens` engine is designed to fail fast, and uses aggressive validation
 
 ### Grammars
 
-A complete grammar is an object of the form `{ [nodeType]: function*(node, context, state) { /* */ } }`. Each grammar describes how to match source text for the given node.
+A grammar is primarily composed of `generators`. Each generator describes how to match source text for a nodes of a particular type.
 
 Here's a partial grammar which describes non-standard babel-style literals. We can write this without hesitation because the grammar doesn't demand that such a non-standard AST is used, it just understands what these nodes mean if it encounters them in an AST.
 
