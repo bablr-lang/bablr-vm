@@ -2,11 +2,13 @@
 
 [![Gitter](https://badges.gitter.im/cst-tokens/community.svg)](https://gitter.im/cst-tokens/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-This library provides tools for working with Concrete Syntax Trees, or CSTs. For our purposes a CST is a particular subtype of AST in which all text is represented in the tree, **including non-semantic text like whitespace and comments**. The primary goal of a CST is to ensure that `print(parse(text)) === text`, in other words to preserve formatting when the intent is to modify and reprint a program rather than just executing it.
+`cst-tokens` provides tools for working with Concrete Syntax Trees, or CSTs. For our purposes a CST is a particular subtype of AST in which all text is represented in the tree, **including non-semantic text like whitespace and comments**. The primary goal of a CST is to ensure that `print(parse(text)) === text`, in other words to preserve formatting when the intent is to modify and reprint a program rather than just executing it.
 
 `cst-tokens` is language and parser agnostic. It does not rely on any concrete syntax information embedded in ASTs you give it, instead it rebuilds concrete syntax from scratch by using the AST as a pattern to be matched against source text. This approach allows `cst-tokens` to guarantee consistency between abstract and concrete syntax, primarily by treating abstract syntax as the source of truth. This ensures that the results are completely consistent across parsers, and can even provide considerable consistency between languages.
 
 `cst-tokens` is implemented in plain Javascript to ensure that the full community that benefits from the code can participate in its ongoing maintenance.
+
+`cst-tokens` is compliant with [semver](https://semver.org/). It is currently in the `0.x` (initial development) phase, and so may introduce breaking changes in any release. A stable, documented `1.0.0` is the project's top priority.
 
 ## Purpose
 
