@@ -1,5 +1,5 @@
 import t from '@babel/types';
-import { match, eat, eatMatch, emit, ref } from '@cst-tokens/helpers';
+import { reject, match, eat, eatMatch, emit, ref } from '@cst-tokens/helpers';
 import {
   PN,
   LPN,
@@ -79,6 +79,7 @@ export const handleWhitespace = (visitor) =>
 
             if (spaceIsNecessary && !spaceTokens) {
               returnValue = null;
+              yield* reject();
             } else {
               const commandTokens = yield command;
 
@@ -86,9 +87,7 @@ export const handleWhitespace = (visitor) =>
               // They just end up interspersed with the tokens they did ask for
               // The whitespace tokens are always prefixes
               // We must return the spaces in the match though or they'd never be emitted
-              const tokens = concatTokens(spaceTokens, commandTokens);
-
-              returnValue = tokens;
+              returnValue = commandTokens ? concatTokens(spaceTokens, commandTokens) : null;
             }
           }
           break;
