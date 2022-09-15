@@ -75,7 +75,7 @@ export const handleWhitespace = (visitor) =>
               spaceDelimitedTypes.includes(lastType) &&
               spaceDelimitedTypes.includes(type);
 
-            const spaceTokens = yield { type: 'take', value: _ };
+            const spaceTokens = yield* match(_);
 
             if (spaceIsNecessary && !spaceTokens) {
               returnValue = null;
@@ -117,6 +117,10 @@ export default {
       token.type === 'Whitespace' || (token.type === 'Punctuator' && '()'.includes(token.value))
     );
   },
+  *Fragment() {
+    yield* eat(ref`fragment`);
+    yield* eatMatch(_);
+  },
   generators: mapVisitors(handleWhitespace, {
     *Program(path) {
       const { body } = path.node;
@@ -124,7 +128,6 @@ export default {
       for (const _n of body) {
         yield* eat(ref`body`);
       }
-      yield* eatMatch(_);
     },
 
     *ImportDeclaration(path) {
