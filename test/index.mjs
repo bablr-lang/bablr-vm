@@ -22,8 +22,8 @@ console.log(JSON.stringify(ast, undefined, 2));
 
 const printed = print(ast, jsImportGrammar);
 
-console.log('`', sourceText.replace(/\n/g, '\\n'), '`');
-console.log('`', printed.replace(/\n/g, '\\n'), '`');
+console.log(`\`${sourceText.replace(/\n/g, '\\n')}\``);
+console.log(`\`${printed.replace(/\n/g, '\\n')}\``);
 
 if (printed !== sourceText) {
   throw new Error('How has it all gone wrong?');

@@ -31,6 +31,14 @@ Thanks for helping keep the project organized!
 
 This project uses the [debug](https://www.npmjs.com/package/debug) package. To debug the code, set `DEBUG=cst-tokens` in your environment. This will provide highly useful stack traces for debugging the grammar which, due to language limiations, are an all-or-nothing affair. The only possible place to generate such stack traces is before we know that there is an error!
 
+## Will cst-tokens support my language?
+
+`cst-tokens` doesn't support languages per se: its grammars provide support for the different AST structures that different parsers output. To use `cst-tokens` with a particular language you'll need a matched parser/grammar combination. Grammars are relatively easy (but not completely trivial) to create, and can be made for any AST structure which satisfies the following conditions:
+
+- The AST is tree structured: it contains no cycles
+- The AST consists of node objects each with a `node.type`
+- Arrays of nodes have elements in their source order.
+
 ## Usage
 
 ```js
