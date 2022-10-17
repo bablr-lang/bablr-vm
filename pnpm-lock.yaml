@@ -4,7 +4,7 @@ specifiers:
   '@babel/types': '*'
   '@cst-tokens/helpers': 0.2.0
   '@iter-tools/imm-stack': 1.1.0
-  '@iter-tools/regex': 0.3.0
+  '@iter-tools/regex': 0.3.2
   debug: 4.3.4
   escape-string-regexp: 4.0.0
   eslint: ^7.32.0
@@ -14,15 +14,15 @@ specifiers:
 
 dependencies:
   '@iter-tools/imm-stack': 1.1.0
-  '@iter-tools/regex': 0.3.0
+  '@iter-tools/regex': 0.3.2
   debug: 4.3.4
   escape-string-regexp: 4.0.0
+  iter-tools-es: 7.3.1
 
 devDependencies:
   '@babel/types': 7.17.10
   '@cst-tokens/helpers': 0.2.0
   eslint: 7.32.0
-  iter-tools-es: 7.3.1
   meriyah: 4.2.1
   prettier: 2.6.2
 
@@ -100,8 +100,8 @@ packages:
     resolution: {integrity: sha512-5wCL8xt4sZ3v0buB3HrzqL2FTkaYB+ZVwkACo1G80zXWWG/8tSGgRiz7EQSkgDRrPQtpoGXRdOKW+GAVmG/Uyg==}
     dev: false
 
-  /@iter-tools/regex/0.3.0:
-    resolution: {integrity: sha512-sSFwoYgsEWMOIxqWZt9ugYlblD8W/AXj/aiaDLcrARg6Nlct7STnvlugaxpSZxtueyJr89HfGCaDsC++BKkWPw==}
+  /@iter-tools/regex/0.3.2:
+    resolution: {integrity: sha512-wTRHZUM8UoZGBthHdvzJFRfJN/OwKuFKc6TKFIHo7dy12rK77dDAjS+rM1CWpIyqr+ktoSEyUR013lIF9ztVjA==}
     engines: {node: '>=12.0.0'}
     dependencies:
       '@iter-tools/imm-stack': 1.1.0
@@ -529,6 +529,7 @@ packages:
 
   /iter-tools-es/7.3.1:
     resolution: {integrity: sha512-U4e1sPxQUFE8a4QAH/+1jIj5rZkHKtXguq1p3oOOuKJIbUYI5h2gSXM6CpYHcN9Od7A6hkoHOzIPrJ9afkRM4Q==}
+    dev: false
 
   /js-tokens/4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
