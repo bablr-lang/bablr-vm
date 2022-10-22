@@ -14,13 +14,13 @@
     "@iter-tools/imm-stack": "1.1.0",
     "@iter-tools/regex": "0.3.2",
     "debug": "4.3.4",
-    "escape-string-regexp": "4.0.0",
-    "iter-tools-es": "^7.3.1"
+    "escape-string-regexp": "4.0.0"
   },
   "devDependencies": {
     "@babel/types": "*",
-    "@cst-tokens/helpers": "github:js-cst-tokens/helpers#6c2a7dab4c105e5b7e7d42a3a87911f3605268e4",
+    "@cst-tokens/helpers": "js-cst-tokens/helpers#14bca07512ba3f413142df03d1bf8949148bb08d",
     "eslint": "^7.32.0",
+    "iter-tools-es": "^7.3.1",
     "meriyah": "^4.2.1",
     "prettier": "^2.6.2"
   },

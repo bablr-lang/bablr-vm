@@ -1,4 +1,12 @@
-import { takeChrs as takeChrs_, eat, eatMatch, ref } from '@cst-tokens/helpers';
+import {
+  takeChrs as takeChrs_,
+  eat,
+  eatMatch,
+  ref,
+  Bag,
+  LineBreak,
+  Fragment,
+} from '@cst-tokens/helpers';
 
 const { isArray } = Array;
 
@@ -68,12 +76,14 @@ const Whitespace = (value = ' ') => {
       return { type: 'Whitespace', value: value || defaultValue };
     },
     *takeChrs() {
-      return yield* takeChrs_(/\s+/);
+      return yield* takeChrs_(/[ \t]+/);
     },
   };
 };
 
-const _ = Whitespace();
+function* _(path, context, state) {
+  return state.source ? yield* Bag([Whitespace(), LineBreak()]) : [Whitespace().build()];
+}
 
 const stripArray = (value) => (isArray(value) ? value[0] : value);
 
@@ -85,13 +95,16 @@ export const RPN = (value) => RightPunctuator(stripArray(value));
 // This simple grammar is useful to test the mechanics of hoisting
 // matches [] and [1, 2, 3,]
 
+const hoistables = ['Whitespace', 'LineBreak'];
+
 export default {
-  isHoistable: (token) => token.type === 'Whitespace',
-  *Fragment() {
-    yield* eat(ref`fragment`);
-    yield* eatMatch(_);
-  },
+  isHoistable: (token) => hoistables.includes(token.type),
+
   generators: {
+    *[Fragment]() {
+      yield* eat(ref`fragment`);
+      yield* eatMatch(_);
+    },
     *Array(path) {
       const { elements } = path.node;
 

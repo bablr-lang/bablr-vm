@@ -95,7 +95,7 @@ export const Whitespace = (value = ' ') => {
       return { type: 'Whitespace', value: value || defaultValue };
     },
     *takeChrs() {
-      return yield* take(/\s+/);
+      return yield* take(/[ \t\v\f]+/);
     },
   };
 };

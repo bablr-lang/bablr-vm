@@ -60,6 +60,7 @@ export const handleWhitespace = (visitor) =>
           break;
         }
 
+        // case 'match':
         case 'take': {
           const descriptor = command.value;
           const { type } = descriptor;

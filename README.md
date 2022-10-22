@@ -36,8 +36,9 @@ This project uses the [debug](https://www.npmjs.com/package/debug) package. To d
 `cst-tokens` doesn't support languages per se: its grammars provide support for the different AST structures that different parsers output. To use `cst-tokens` with a particular language you'll need a matched parser/grammar combination. Grammars are relatively easy (but not completely trivial) to create, and can be made for any AST structure which satisfies the following conditions:
 
 - The AST is tree structured: it contains no cycles
-- The AST consists of node objects each with a `node.type`
-- Arrays of nodes have elements in their source order.
+- The AST is composed of node objects (each with a `node.type`) and arrays
+- Arrays are not nested, and their contents are always nodes
+- Arrays contain nodes in their source order
 
 ## Usage
 
