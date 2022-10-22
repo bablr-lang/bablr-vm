@@ -2,7 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@babel/types': '*'
-  '@cst-tokens/helpers': js-cst-tokens/helpers#14bca07512ba3f413142df03d1bf8949148bb08d
+  '@cst-tokens/helpers': 0.4.0
   '@iter-tools/imm-stack': 1.1.0
   '@iter-tools/regex': 0.3.2
   debug: 4.3.4
@@ -20,7 +20,7 @@ dependencies:
 
 devDependencies:
   '@babel/types': 7.17.10
-  '@cst-tokens/helpers': link:../cst-tokens-helpers
+  '@cst-tokens/helpers': 0.4.0
   eslint: 7.32.0
   iter-tools-es: 7.3.1
   meriyah: 4.2.1
@@ -54,6 +54,14 @@ packages:
     dependencies:
       '@babel/helper-validator-identifier': 7.16.7
       to-fast-properties: 2.0.0
+    dev: true
+
+  /@cst-tokens/helpers/0.4.0:
+    resolution: {integrity: sha512-ZC98+gKqSH9i0UcwH3C5Zcn2VttrNyTCYOJOahHFcvOiSR6i4TbKkPxfGqjEaL+0HjWxdroSv1GnXP2kzTIYMQ==}
+    dependencies:
+      debug: 4.3.4
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /@eslint/eslintrc/0.4.3:
