@@ -114,7 +114,8 @@ export default {
       for (let i = 0; i < elements.length; i++) {
         yield* eat(ref`elements`);
         if (i + 1 === elements.length) {
-          yield* eatMatch(_, PN`,`);
+          yield* eatMatch(_);
+          yield* eatMatch(PN`,`);
         } else {
           yield* eatMatch(_);
           yield* eat(PN`,`);
