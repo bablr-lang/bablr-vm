@@ -81,8 +81,8 @@ const Whitespace = (value = ' ') => {
   };
 };
 
-function* _(path, context, state) {
-  return state.source ? yield* Bag([Whitespace(), LineBreak()]) : [Whitespace().build()];
+function* _(path, context, getState) {
+  return getState().source ? yield* Bag([Whitespace(), LineBreak()]) : [Whitespace().build()];
 }
 
 const stripArray = (value) => (isArray(value) ? value[0] : value);
