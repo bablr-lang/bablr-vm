@@ -1,3 +1,5 @@
+import { parseModule } from 'meriyah';
+
 import {
   takeChrs as takeChrs_,
   eat,
@@ -132,4 +134,10 @@ export default {
       yield* eat(D(String(value)));
     },
   },
+};
+
+export const parse = (text) => {
+  const ast = parseModule(text);
+  const elements = ast.body[0].expression.elements.map(({ value }) => ({ type: 'Digit', value }));
+  return { type: 'Array', elements };
 };

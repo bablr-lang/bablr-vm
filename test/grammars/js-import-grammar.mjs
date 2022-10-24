@@ -11,6 +11,7 @@ import {
   StringStart,
   StringEnd,
 } from './js-descriptors.mjs';
+export { parseModule as parse } from 'meriyah';
 
 const spaceDelimitedTypes = ['Identifier', 'Keyword'];
 
