@@ -97,11 +97,13 @@ export const WithWhitespace = (visitor) => {
   return WithWhitespace__;
 };
 
-const mapVisitors = (transform, visitors) => {
+const withWhitespace = (visitors) => {
+  const fragment = visitors[Fragment];
   const transformed = {};
   for (const [type, visitor] of Object.entries(visitors)) {
-    transformed[type] = transform(visitor);
+    transformed[type] = WithWhitespace(visitor);
   }
+  if (fragment) transformed[Fragment] = fragment;
   return transformed;
 };
 
@@ -111,7 +113,7 @@ export default {
       token.type === 'Whitespace' || (token.type === 'Punctuator' && '()'.includes(token.value))
     );
   },
-  generators: mapVisitors(WithWhitespace, {
+  generators: withWhitespace({
     *[Fragment]() {
       yield* eat(ref`fragment`);
       yield* eatMatch(_);
