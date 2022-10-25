@@ -94,7 +94,6 @@ const hoistables = ['Whitespace', 'LineBreak'];
 
 export default {
   isHoistable: (token) => hoistables.includes(token.type),
-
   generators: {
     *[Fragment]() {
       yield* eat(ref`fragment`);

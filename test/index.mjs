@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import { parseModule } from 'meriyah';
 import { updateTokens, print } from 'cst-tokens';
 
-import jsImportGrammar from './grammars/js-import-grammar.mjs';
+import jsImportGrammar from './grammars/js-imports.mjs';
 
 Error.stackTraceLimit = 20;
 
@@ -20,11 +20,11 @@ updateTokens(ast, jsImportGrammar, { sourceText });
 
 console.log(JSON.stringify(ast, undefined, 2));
 
-// const printed = print(ast, jsImportGrammar);
+const printed = print(ast, jsImportGrammar);
 
-// console.log(`\`${sourceText.replace(/\n/g, '\\n')}\``);
-// console.log(`\`${printed.replace(/\n/g, '\\n')}\``);
+console.log(`\`${sourceText.replace(/\n/g, '\\n')}\``);
+console.log(`\`${printed.replace(/\n/g, '\\n')}\``);
 
-// if (printed !== sourceText) {
-//   throw new Error('How has it all gone wrong?');
-// }
+if (printed !== sourceText) {
+  throw new Error('How has it all gone wrong?');
+}
