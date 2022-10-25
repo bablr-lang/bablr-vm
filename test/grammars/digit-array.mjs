@@ -1,14 +1,7 @@
 import { parseModule } from 'meriyah';
 
-import {
-  eatChrs as eatChrs_,
-  eat,
-  eatMatch,
-  ref,
-  Bag,
-  LineBreak,
-  Fragment,
-} from '@cst-tokens/helpers';
+import { eatChrs as eatChrs_, eat, eatMatch, ref, Bag, LineBreak } from '@cst-tokens/helpers';
+import { Fragment } from '@cst-tokens/helpers/symbols';
 
 const { isArray } = Array;
 
