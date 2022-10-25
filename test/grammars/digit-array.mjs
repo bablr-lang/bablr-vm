@@ -1,7 +1,7 @@
 import { parseModule } from 'meriyah';
 
 import {
-  takeChrs as takeChrs_,
+  eatChrs as eatChrs_,
   eat,
   eatMatch,
   ref,
@@ -20,8 +20,8 @@ const Digit = (value) => {
     build() {
       return { type: 'Digit', value };
     },
-    *takeChrs() {
-      return yield* takeChrs_(this.value);
+    *eatChrs() {
+      return yield* eatChrs_(this.value);
     },
   };
 };
@@ -34,8 +34,8 @@ const Punctuator = (value) => {
     build() {
       return { type: 'Punctuator', value };
     },
-    *takeChrs() {
-      return yield* takeChrs_(this.value);
+    *eatChrs() {
+      return yield* eatChrs_(this.value);
     },
   };
 };
@@ -48,8 +48,8 @@ const LeftPunctuator = (value) => {
     build() {
       return { type: 'LeftPunctuator', value };
     },
-    *takeChrs() {
-      return yield* takeChrs_(this.value);
+    *eatChrs() {
+      return yield* eatChrs_(this.value);
     },
   };
 };
@@ -62,8 +62,8 @@ const RightPunctuator = (value) => {
     build() {
       return { type: 'RightPunctuator', value };
     },
-    *takeChrs() {
-      return yield* takeChrs_(this.value);
+    *eatChrs() {
+      return yield* eatChrs_(this.value);
     },
   };
 };
@@ -77,8 +77,8 @@ const Whitespace = (value = ' ') => {
     build(value) {
       return { type: 'Whitespace', value: value || defaultValue };
     },
-    *takeChrs() {
-      return yield* takeChrs_(/[ \t]+/);
+    *eatChrs() {
+      return yield* eatChrs_(/[ \t]+/);
     },
   };
 };
