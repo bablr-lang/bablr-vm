@@ -76,7 +76,6 @@ export const WithWhitespace = (visitor) => {
           }
 
           returnValue = yield cmd;
-
           break;
         }
 
