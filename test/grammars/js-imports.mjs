@@ -108,11 +108,6 @@ const withWhitespace = (visitors) => {
 };
 
 export default {
-  isHoistable(token) {
-    return (
-      token.type === 'Whitespace' || (token.type === 'Punctuator' && '()'.includes(token.value))
-    );
-  },
   generators: withWhitespace({
     *[Fragment]() {
       yield* eat(ref`fragment`);

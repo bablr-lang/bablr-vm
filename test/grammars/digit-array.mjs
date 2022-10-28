@@ -1,6 +1,15 @@
 import { parseModule } from 'meriyah';
 
-import { eatChrs as eatChrs_, eat, eatMatch, ref, Bag, LineBreak } from '@cst-tokens/helpers';
+import {
+  eatChrs as eatChrs_,
+  eat,
+  eatMatch,
+  startNode,
+  endNode,
+  ref,
+  Bag,
+  LineBreak,
+} from '@cst-tokens/helpers';
 import { Fragment } from '@cst-tokens/helpers/symbols';
 
 const { isArray } = Array;
@@ -90,19 +99,19 @@ export const RPN = (value) => RightPunctuator(stripArray(value));
 // This simple grammar is useful to test the mechanics of hoisting
 // matches [] and [1, 2, 3,]
 
-const hoistables = ['Whitespace', 'LineBreak'];
-
 export default {
-  isHoistable: (token) => hoistables.includes(token.type),
   generators: {
-    *[Fragment]() {
-      yield* eat(ref`fragment`);
-      yield* eatMatch(_);
-    },
+    // *[Fragment]() {
+    //   yield* startNode();
+    //   yield* eat(ref`fragment`);
+    //   yield* eatMatch(_);
+    //   yield* endNode();
+    // },
     *Array(path) {
       const { elements } = path.node;
 
       yield* eatMatch(_);
+      yield* startNode();
       yield* eat(LPN`[`);
 
       for (let i = 0; i < elements.length; i++) {
@@ -118,12 +127,15 @@ export default {
 
       yield* eatMatch(_);
       yield* eat(RPN`]`);
+      yield* endNode();
     },
     *Digit(path) {
       const { value } = path.node;
 
       yield* eatMatch(_);
+      yield* startNode();
       yield* eat(D(String(value)));
+      yield* endNode();
     },
   },
 };
