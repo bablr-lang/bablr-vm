@@ -1,25 +1,10 @@
 import t from '@babel/types';
-import { eat, eatMatch, ref, LineBreak, Bag } from '@cst-tokens/helpers';
-import {
-  Fragment,
-  eatGrammar as eatGrammar_,
-  matchGrammar as matchGrammar_,
-  eatMatchGrammar as eatMatchGrammar_,
-  eat as eat_,
-  match as match_,
-  eatMatch as eatMatch_,
-} from '@cst-tokens/helpers/symbols';
-import {
-  PN,
-  LPN,
-  RPN,
-  KW,
-  Identifier,
-  String,
-  StringStart,
-  StringEnd,
-  Whitespace,
-} from './js-descriptors.mjs';
+import { eat, eatMatch, startNode, endNode } from '@cst-tokens/helpers/commands';
+import { Bag } from '@cst-tokens/helpers/generators';
+import { LineBreak, StringStart, StringEnd } from '@cst-tokens/helpers/descriptors';
+import { ref, PN, LPN, RPN, KW } from '@cst-tokens/helpers/shorthand';
+import * as sym from '@cst-tokens/helpers/symbols';
+import { Identifier, String, Whitespace } from './js-descriptors.mjs';
 export { parseModule as parse } from 'meriyah';
 
 export function* _(path, context, getState) {
@@ -27,12 +12,23 @@ export function* _(path, context, getState) {
 }
 
 const spaceDelimitedTypes = ['Identifier', 'Keyword'];
+const noSpaceTypes = ['String'];
 
 const lastDescriptors = new WeakMap();
+
+const findLastDesc = (state) => {
+  let s = state;
+  let lastDesc = null;
+  while (s && !(lastDesc = lastDescriptors.get(s))) {
+    s = s.parent;
+  }
+  return lastDesc;
+};
 
 export const WithWhitespace = (visitor) => {
   function* WithWhitespace__(path, context, getState) {
     const grammar = visitor(path, context, getState);
+    const rootState = getState();
     let current = grammar.next();
     let state;
 
@@ -46,35 +42,54 @@ export const WithWhitespace = (visitor) => {
       state = getState();
 
       switch (cmd.type) {
-        case eatGrammar_:
-        case matchGrammar_:
-        case eatMatchGrammar_: {
+        case sym.eatFragment:
+        case sym.matchFragment:
+        case sym.eatMatchFragment: {
+          // I'm not able to propagate my custom state through this statement!
+          // I have no access to the child state form outside
+          // I have no access to the parent state from inside
           returnValue = yield { ...cmd, value: WithWhitespace(cmd.value) };
           break;
         }
 
-        case eat_:
-        case match_:
-        case eatMatch_: {
+        case sym.eat:
+        case sym.match:
+        case sym.eatMatch: {
           const desc = cmd.value;
-          const lastDesc =
-            lastDescriptors.get(state) || (state.parent && lastDescriptors.get(state.parent));
+          const lastDesc = findLastDesc(state);
 
-          if (cmd.type !== match_) {
+          if (cmd.type !== sym.match) {
             lastDescriptors.set(state, desc);
           }
 
-          const spaceIsNecessary =
-            !!lastDesc &&
-            spaceDelimitedTypes.includes(lastDesc.type) &&
-            spaceDelimitedTypes.includes(desc.type);
+          const spaceIsAllowed =
+            !lastDesc ||
+            (!noSpaceTypes.includes(desc.type) && !noSpaceTypes.includes(lastDesc.type));
 
-          if (spaceIsNecessary) {
-            yield* eat(_);
-          } else {
-            yield* eatMatch(_);
+          if (spaceIsAllowed) {
+            const spaceIsNecessary =
+              !!lastDesc &&
+              spaceDelimitedTypes.includes(lastDesc.type) &&
+              spaceDelimitedTypes.includes(desc.type);
+
+            if (spaceIsNecessary) {
+              yield* eat(_);
+            } else {
+              yield* eatMatch(_);
+            }
           }
 
+          if (getState().hoisting === sym.leadingHoist) {
+            yield* startNode();
+          }
+          returnValue = yield cmd;
+          break;
+        }
+
+        case sym.reference: {
+          if (getState().hoisting === sym.leadingHoist) {
+            yield* startNode();
+          }
           returnValue = yield cmd;
           break;
         }
@@ -90,6 +105,10 @@ export const WithWhitespace = (visitor) => {
 
       current = grammar.next(returnValue);
     }
+
+    if (rootState.status !== 'rejected' && !rootState.hoisting) {
+      yield* endNode();
+    }
   }
 
   Object.defineProperty(WithWhitespace__, 'name', { value: `WithWhitespace_${visitor.name}` });
@@ -98,20 +117,22 @@ export const WithWhitespace = (visitor) => {
 };
 
 const withWhitespace = (visitors) => {
-  const fragment = visitors[Fragment];
+  const fragment = visitors[sym.Fragment];
   const transformed = {};
   for (const [type, visitor] of Object.entries(visitors)) {
     transformed[type] = WithWhitespace(visitor);
   }
-  if (fragment) transformed[Fragment] = fragment;
+  if (fragment) transformed[sym.Fragment] = fragment;
   return transformed;
 };
 
 export default {
   generators: withWhitespace({
-    *[Fragment]() {
+    *[sym.Fragment]() {
+      yield* startNode();
       yield* eat(ref`fragment`);
       yield* eatMatch(_);
+      yield* endNode();
     },
 
     *Program(path) {

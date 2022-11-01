@@ -20,7 +20,7 @@ dependencies:
 
 devDependencies:
   '@babel/types': 7.17.10
-  '@cst-tokens/helpers': 0.5.3
+  '@cst-tokens/helpers': link:../cst-tokens-helpers
   eslint: 7.32.0
   iter-tools-es: 7.3.1
   meriyah: 4.2.1
@@ -54,14 +54,6 @@ packages:
     dependencies:
       '@babel/helper-validator-identifier': 7.16.7
       to-fast-properties: 2.0.0
-    dev: true
-
-  /@cst-tokens/helpers/0.5.3:
-    resolution: {integrity: sha512-kOZ7FNhNrPGd33IvBWWhwcUm2lv1oUg5KhurzrZQFXLVrvVU7Y/UJaD8iF2E4LVPODNF9CohWvWE7mH/ijGzPQ==}
-    dependencies:
-      debug: 4.3.4
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /@eslint/eslintrc/0.4.3:
