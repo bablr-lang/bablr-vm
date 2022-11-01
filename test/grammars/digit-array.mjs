@@ -1,74 +1,13 @@
 import { parseModule } from 'meriyah';
 
-import {
-  eatChrs as eatChrs_,
-  eat,
-  eatMatch,
-  startNode,
-  endNode,
-  ref,
-  Bag,
-  LineBreak,
-} from '@cst-tokens/helpers';
+import { eatChrs, eat, eatMatch, startNode, endNode } from '@cst-tokens/helpers/commands';
+import { Literal, LineBreak } from '@cst-tokens/helpers/descriptors';
+import { ref } from '@cst-tokens/helpers/shorthand';
+import { Bag } from '@cst-tokens/helpers/generators';
 import { Fragment } from '@cst-tokens/helpers/symbols';
 
 const { isArray } = Array;
-
-const Digit = (value) => {
-  return {
-    type: 'Digit',
-    value,
-    mergeable: false,
-    build() {
-      return { type: 'Digit', value };
-    },
-    *eatChrs() {
-      return yield* eatChrs_(this.value);
-    },
-  };
-};
-
-const Punctuator = (value) => {
-  return {
-    type: 'Punctuator',
-    value,
-    mergeable: false,
-    build() {
-      return { type: 'Punctuator', value };
-    },
-    *eatChrs() {
-      return yield* eatChrs_(this.value);
-    },
-  };
-};
-
-const LeftPunctuator = (value) => {
-  return {
-    type: 'LeftPunctuator',
-    value,
-    mergeable: false,
-    build() {
-      return { type: 'LeftPunctuator', value };
-    },
-    *eatChrs() {
-      return yield* eatChrs_(this.value);
-    },
-  };
-};
-
-const RightPunctuator = (value) => {
-  return {
-    type: 'RightPunctuator',
-    value,
-    mergeable: false,
-    build() {
-      return { type: 'RightPunctuator', value };
-    },
-    *eatChrs() {
-      return yield* eatChrs_(this.value);
-    },
-  };
-};
+const eatChrs_ = eatChrs;
 
 const Whitespace = (value = ' ') => {
   const defaultValue = value;
@@ -91,22 +30,22 @@ function* _(path, context, getState) {
 
 const stripArray = (value) => (isArray(value) ? value[0] : value);
 
-export const D = (value) => Digit(stripArray(value));
-export const PN = (value) => Punctuator(stripArray(value));
-export const LPN = (value) => LeftPunctuator(stripArray(value));
-export const RPN = (value) => RightPunctuator(stripArray(value));
+export const D = (value) => Literal('Digit', stripArray(value));
+export const PN = (value) => Literal('Punctuator', stripArray(value));
+export const LPN = (value) => Literal('LeftPunctuator', stripArray(value));
+export const RPN = (value) => Literal('RightPunctuator', stripArray(value));
 
 // This simple grammar is useful to test the mechanics of hoisting
 // matches [] and [1, 2, 3,]
 
 export default {
   generators: {
-    // *[Fragment]() {
-    //   yield* startNode();
-    //   yield* eat(ref`fragment`);
-    //   yield* eatMatch(_);
-    //   yield* endNode();
-    // },
+    *[Fragment]() {
+      yield* startNode();
+      yield* eat(ref`fragment`);
+      yield* eatMatch(_);
+      yield* endNode();
+    },
     *Array(path) {
       const { elements } = path.node;
 

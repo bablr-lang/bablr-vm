@@ -1,6 +1,4 @@
-import { eatChrs as eat } from '@cst-tokens/helpers';
-
-const { isArray } = Array;
+import { eatMatchChrs as eatMatch } from '@cst-tokens/helpers/commands';
 
 const escapables = new Map(
   Object.entries({
@@ -13,34 +11,6 @@ const escapables = new Map(
     '\0': '\\0',
   }),
 );
-
-export const StringStart = (value = "'") => {
-  return {
-    type: 'StringStart',
-    value,
-    mergeable: false,
-    build() {
-      return { type: 'StringStart', value };
-    },
-    *eatChrs() {
-      return yield* eat(this.value);
-    },
-  };
-};
-
-export const StringEnd = (value = "'") => {
-  return {
-    type: 'StringEnd',
-    value,
-    mergeable: false,
-    build() {
-      return { type: 'StringEnd', value };
-    },
-    *eatChrs() {
-      return yield* eat(this.value);
-    },
-  };
-};
 
 export const String = (value) => {
   const defaultValue = value;
@@ -58,18 +28,17 @@ export const String = (value) => {
       for (const chr of value) {
         let code = chr.charCodeAt(0);
         let chrs = null;
-        if ((chrs = yield* eat(chr))) {
+
+        // prettier-ignore
+        if ((chrs = yield* eatMatch(chr))) {
           // continue
-        } else if (escapables.has(chr) && (chrs = yield* eat(escapables.get(chr)))) {
+        } else if (escapables.has(chr) && (chrs = yield* eatMatch(escapables.get(chr)))) {
           // continue
-        } else if (
-          code < 0xff &&
-          (chrs = yield* eat(new RegExp(`\\\\x${code.toString(16).padStart(2, '0')}`)))
-        ) {
+        } else if (code < 0xff && (chrs = yield* eatMatch(new RegExp(`\\\\x${code.toString(16).padStart(2, '0')}`)))) {
           // continue
-        } else if ((chrs = yield* eat(new RegExp(`\\\\u${code.toString(16).padStart(4, '0')}`)))) {
+        } else if (chrs = yield* eatMatch(new RegExp(`\\\\u${code.toString(16).padStart(4, '0')}`))) {
           // continue
-        } else if ((chrs = yield* eat(new RegExp(`\\\\u\\{\d{1,6}\\}`)))) {
+        } else if (chrs = yield* eatMatch(new RegExp(`\\\\u\\{\d{1,6}\\}`))) {
           // continue
         }
 
@@ -81,62 +50,6 @@ export const String = (value) => {
       }
 
       return result;
-    },
-  };
-};
-
-export const Punctuator = (value) => {
-  return {
-    type: 'Punctuator',
-    value,
-    mergeable: false,
-    build() {
-      return { type: 'Punctuator', value };
-    },
-    *eatChrs() {
-      return yield* eat(this.value);
-    },
-  };
-};
-
-export const LeftPunctuator = (value) => {
-  return {
-    type: 'LeftPunctuator',
-    value,
-    mergeable: false,
-    build() {
-      return { type: 'LeftPunctuator', value };
-    },
-    *eatChrs() {
-      return yield* eat(this.value);
-    },
-  };
-};
-
-export const RightPunctuator = (value) => {
-  return {
-    type: 'RightPunctuator',
-    value,
-    mergeable: false,
-    build() {
-      return { type: 'RightPunctuator', value };
-    },
-    *eatChrs() {
-      return yield* eat(this.value);
-    },
-  };
-};
-
-export const Keyword = (value) => {
-  return {
-    type: 'Keyword',
-    value,
-    mergeable: false,
-    build() {
-      return { type: 'Keyword', value };
-    },
-    *eatChrs() {
-      return yield* eat(this.value);
     },
   };
 };
@@ -157,11 +70,13 @@ export const Identifier = (value) => {
       for (const chr of value) {
         let code = chr.charCodeAt(0);
         let chrs = null;
-        if ((chrs = yield* eat(chr))) {
+        if ((chrs = yield* eatMatch(chr))) {
           // continue
-        } else if ((chrs = yield* eat(new RegExp(`\\\\u${code.toString(16).padStart(4, '0')}`)))) {
+        } else if (
+          (chrs = yield* eatMatch(new RegExp(`\\\\u${code.toString(16).padStart(4, '0')}`)))
+        ) {
           // continue
-        } else if ((chrs = yield* eat(new RegExp(`\\\\u\\{\d{1,6}\\}`)))) {
+        } else if ((chrs = yield* eatMatch(new RegExp(`\\\\u\\{\d{1,6}\\}`)))) {
           // continue
         }
 
@@ -187,16 +102,7 @@ export const Whitespace = (value = ' ') => {
       return { type: 'Whitespace', value: value || defaultValue };
     },
     *eatChrs() {
-      return yield* eat(/[ \t]+/);
+      return yield* eatMatch(/[ \t]+/);
     },
   };
 };
-
-const stripArray = (value) => (isArray(value) ? value[0] : value);
-
-// Shorthand names for more concise grammar definitions
-// stripArray ensures that both ID`value` and ID(value) are valid
-export const PN = (value) => Punctuator(stripArray(value));
-export const LPN = (value) => LeftPunctuator(stripArray(value));
-export const RPN = (value) => RightPunctuator(stripArray(value));
-export const KW = (value) => Keyword(stripArray(value));
