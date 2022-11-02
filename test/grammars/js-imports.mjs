@@ -128,12 +128,10 @@ const withWhitespace = (visitors) => {
 
 export default {
   generators: withWhitespace({
-    *[sym.Fragment]() {
-      yield* startNode();
-      yield* eat(ref`fragment`);
-      yield* eatMatch(_);
-      yield* endNode();
-    },
+    // *[sym.Fragment]() {
+    //   yield* eat(ref`fragment`);
+    //   yield* eatMatch(_);
+    // },
 
     *Program(path) {
       const { body } = path.node;

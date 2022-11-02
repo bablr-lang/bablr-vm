@@ -41,10 +41,8 @@ export const RPN = (value) => Literal('RightPunctuator', stripArray(value));
 export default {
   generators: {
     *[Fragment]() {
-      yield* startNode();
       yield* eat(ref`fragment`);
       yield* eatMatch(_);
-      yield* endNode();
     },
     *Array(path) {
       const { elements } = path.node;
