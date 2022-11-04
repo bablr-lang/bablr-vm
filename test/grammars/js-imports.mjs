@@ -1,10 +1,10 @@
 import t from '@babel/types';
 import { eat, eatMatch, startNode, endNode } from '@cst-tokens/helpers/commands';
 import { Bag } from '@cst-tokens/helpers/generators';
-import { LineBreak, StringStart, StringEnd } from '@cst-tokens/helpers/descriptors';
+import { LineBreak } from '@cst-tokens/helpers/descriptors';
 import { ref, PN, LPN, RPN, KW } from '@cst-tokens/helpers/shorthand';
 import * as sym from '@cst-tokens/helpers/symbols';
-import { Identifier, String, Whitespace } from './js-descriptors.mjs';
+import { Identifier, StringStart, StringEnd, String, Whitespace } from './js-descriptors.mjs';
 export { parseModule as parse } from 'meriyah';
 
 export function* _(path, context, getState) {

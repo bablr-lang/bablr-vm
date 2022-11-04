@@ -1,4 +1,5 @@
 import { eatMatchChrs as eatMatch } from '@cst-tokens/helpers/commands';
+import { Literal } from '@cst-tokens/helpers/descriptors';
 
 const escapables = new Map(
   Object.entries({
@@ -11,6 +12,9 @@ const escapables = new Map(
     '\0': '\\0',
   }),
 );
+
+export const StringStart = () => Literal(StringStart, "'");
+export const StringEnd = () => Literal(StringEnd, "'");
 
 export const String = (value) => {
   const defaultValue = value;

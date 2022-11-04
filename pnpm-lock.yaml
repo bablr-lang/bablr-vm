@@ -2,7 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@babel/types': '*'
-  '@cst-tokens/helpers': 0.6.0
+  '@cst-tokens/helpers': 0.7.0
   '@iter-tools/imm-stack': 1.1.0
   '@iter-tools/regex': 0.3.2
   debug: 4.3.4
@@ -20,7 +20,7 @@ dependencies:
 
 devDependencies:
   '@babel/types': 7.17.10
-  '@cst-tokens/helpers': 0.6.0
+  '@cst-tokens/helpers': 0.7.0
   eslint: 7.32.0
   iter-tools-es: 7.3.1
   meriyah: 4.2.1
@@ -56,8 +56,8 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@cst-tokens/helpers/0.6.0:
-    resolution: {integrity: sha512-zG7jPvv86BMejtu4QAD092WQXno80OVHS1JpI7RKZlNa5mO1GBV31o7HyEPvLxDqOBdwkzzmMOx/sD36mgc6QQ==}
+  /@cst-tokens/helpers/0.7.0:
+    resolution: {integrity: sha512-76k9QBtcPvKwTMtLiXV1oEbrp1IbbgTqUxVd8w9DFt3b69uYtqP09zEro2BgviwOlIdhrKaAMVn66MiRjeYP+w==}
     dependencies:
       debug: 4.3.4
     transitivePeerDependencies:
