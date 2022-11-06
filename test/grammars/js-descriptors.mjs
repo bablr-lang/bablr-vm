@@ -13,8 +13,8 @@ const escapables = new Map(
   }),
 );
 
-export const StringStart = () => Literal(StringStart, "'");
-export const StringEnd = () => Literal(StringEnd, "'");
+export const StringStart = () => Literal('StringStart', "'");
+export const StringEnd = () => Literal('StringEnd', "'");
 
 export const String = (value) => {
   const defaultValue = value;
