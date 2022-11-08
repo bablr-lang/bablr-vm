@@ -42,9 +42,9 @@ export const WithWhitespace = (visitor) => {
       state = getState();
 
       switch (cmd.type) {
-        case sym.eatFragment:
-        case sym.matchFragment:
-        case sym.eatMatchFragment: {
+        case sym.eatGrammar:
+        case sym.matchGrammar:
+        case sym.eatMatchGrammar: {
           // I'm not able to propagate my custom state through this statement!
           // I have no access to the child state form outside
           // I have no access to the parent state from inside
@@ -79,16 +79,10 @@ export const WithWhitespace = (visitor) => {
             }
           }
 
-          if (getState().hoisting === sym.leadingHoist) {
+          let s = getState();
+          while (s.isHoisting) {
             yield* startNode();
-          }
-          returnValue = yield cmd;
-          break;
-        }
-
-        case sym.reference: {
-          if (getState().hoisting === sym.leadingHoist) {
-            yield* startNode();
+            s = getState();
           }
           returnValue = yield cmd;
           break;
@@ -106,7 +100,7 @@ export const WithWhitespace = (visitor) => {
       current = grammar.next(returnValue);
     }
 
-    if (rootState.status !== 'rejected' && !rootState.hoisting) {
+    if (rootState.status !== 'rejected' && !rootState.isHoisting) {
       yield* endNode();
     }
   }
@@ -128,10 +122,10 @@ const withWhitespace = (visitors) => {
 
 export default {
   generators: withWhitespace({
-    // *[sym.Fragment]() {
-    //   yield* eat(ref`fragment`);
-    //   yield* eatMatch(_);
-    // },
+    *[sym.Fragment]() {
+      yield* eat(ref`fragment`);
+      yield* eatMatch(_);
+    },
 
     *Program(path) {
       const { body } = path.node;
