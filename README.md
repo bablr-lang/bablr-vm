@@ -26,13 +26,13 @@ Let's imagine some scenarios where new tools could help with the problems:
 
 Imagine I, the author of the `baz` package, having made the `bar`/`snoz` change, share with you a script that automatically edits your code from the old `bar(x)` into the new `bar(snoz(x))`. I call this script a codemod. You apply the codemod to your repo and my code is now automatically upgraded to the newer more powerful `bar(snoz())` syntax.
 
-Now imagine that instead of applying the codemod in a local environment, you send it straight to CI. CI computes (and stores) specific changes that executing the codemod would cause. It allows the reviewer to meaningfully review both the program generating the changes, and the changes themselves. What is merged is always the changes that have been reviewed, never purely the result of running the transform again, however running the transform again may be used to automatically resolve conflicts by presenting only changes to approved changes as being necessary for re-review!
+Now imagine that instead of applying the codemod in a local environment, you send it straight to CI. CI computes (and stores) specific changes that executing the codemod would cause. It allows the reviewer to meaningfully review both the program generating the changes, and the changes themselves. What is merged is always the changes that have been reviewed, never purely the result of running the transform again, however running the transform again may be used to automatically resolve conflicts by presenting only new changes as being necessary for re-review!
 
 Imagine that creating such a codemod was so trivial that anyone could do it, because your code editor always thought of your changes as codemods. The kinds of codemods that could be recorded and shared among the users of such a system would be as varied as people are imaginative.
 
 ## Architecture
 
-How does `cst-tokens` achieve its goals? Take a look at the [architecture docs](https://github.com/conartist6/cst-tokens/blob/trunk/ARCHITECTURE.md)!
+Architecture docs are out of date. New ones coming soon.
 
 ## Contributing
 
