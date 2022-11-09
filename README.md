@@ -2,20 +2,20 @@
 
 [![Gitter](https://badges.gitter.im/cst-tokens/community.svg)](https://gitter.im/cst-tokens/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-`cst-tokens` provides tools for working with Concrete Syntax Trees, or CSTs. For our purposes a CST is a particular subtype of AST in which all text is represented in the tree, **including non-semantic text like whitespace and comments**. The primary goal of a CST is to ensure that `print(parse(text)) === text`, in other words to preserve formatting when the intent is to modify and reprint a program rather than just executing it.
+A CST, or Concrete Syntax Tree, is a way of representing a computer program that captures its source text and semantic structure simultaneously. This ability is crucial in creating smarter and more powerful tools for understanding and editing code. The goal of `cst-tokens` is to foster the growth of a new generation of code-editing technology that fully exploits the benefits of such a unified structure.
 
-`cst-tokens` is language and parser agnostic. It does not rely on any concrete syntax information embedded in ASTs you give it, instead it rebuilds concrete syntax from scratch by using the AST as a pattern to be matched against source text. This approach allows `cst-tokens` to guarantee consistency between abstract and concrete syntax, primarily by treating abstract syntax as the source of truth. This ensures that the results are completely consistent across parsers, and can even provide considerable consistency between languages.
+`cst-tokens` is named for the way it defines CSTs. Its CSTs are ASTs where each node has a `node.cstTokens` array of `{type, value}` tokens. The special `type` `'Reference'` means that `node[value]` is a nested CST. The sturcture is easily represented as JSON.
 
-`cst-tokens` is implemented in plain Javascript to ensure that the full community that benefits from the code can participate in its ongoing maintenance.
+`cst-tokens` functions primarily as a validator of CSTs. Its goal is to help other tools agree on what valid CSTs are. `cst-tokens` is written in JavaScript and is intended to support tools written in JavaScript. It is, however, language agnostic. To do anything other than print a CST you'll need a grammar. A grammar defines (for every possible AST node) what concrete syntax elements are allowed or required.
 
-`cst-tokens` is compliant with [semver](https://semver.org/). It is currently in the `0.x` (initial development) phase, and so may introduce breaking changes in any release. A stable, documented `1.0.0` is the project's top priority.
+## Why this library?
 
-## Purpose
+`cst-tokens` has a novel approach to the problem space. Some highlights:
 
-`cst-tokens` has two main purposes:
-
-- It contains core functionality that can be leveraged by tools written in javascript which need to query or update concrete syntax. Such tools include linters like [eslint](https://github.com/eslint/eslint) and formatters like [prettier](https://github.com/prettier/prettier).
-- It makes it easy for any user to write arbitrary code transforms that can be applied by any tool which groks the `node.cstTokens` structure, and in this way supports the development of an organic ecosystem of such transforms, also known as codemods.
+- Its grammars are written as generator functions, allowing them to be expressive, powerful, portable, and composable, all without the hassle of compilation.
+- It is growth-oriented. It uses symbols and WeakMaps to create a clear and effective boundary between public and non-public state. It is compliant with the [semver](https://semver.org/) spec.
+- It provides novel ways of dealing with whitespace and comments, hoisting them upwards in trees to make them maximally ambiguous. Exposing ambiguities plainly is the first step on the road to handling them sanely.
+- It token types are designed to ensure that client code can make use of the basic structure of a language without even knowning what language it is. For example the `LeftPunctuator` and `RightPunctuator` token types allow code folding and structural code search to be built in a language-agnostic way.
 
 ## Architecture
 
