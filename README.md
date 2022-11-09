@@ -57,23 +57,23 @@ This project uses the [debug](https://www.npmjs.com/package/debug) package. To d
 
 ```js
 import { parseModule } from 'meriyah';
-import { updateTokens, print } from 'cst-tokens';
+import { updateTokens, print, reprint } from 'cst-tokens';
 import jsGrammar from '@cst-tokens/js-grammar-estree';
 
 const sourceText = `import     def,{   foo  as/**/foo} from  'bar';`;
 
-const ast = parseModule(sourceText);
+const cst = parseModule(sourceText);
 
 // Use source text and locations to recursively tokenize
-updateTokens(ast, jsGrammar, { sourceText });
+updateTokens(cst, jsGrammar, { sourceText });
 
-assert(print(ast, jsGrammar) === sourceText); // It is! Yay!
+assert(print(cst, jsGrammar) === sourceText); // It is! Yay!
 
-// Modify the AST however you like here.
-transform(ast);
+// Transform, being careful to maintain the validity of the structure
+// cst-tokens will help you make valid edits
+transform(cst);
 
-// print the AST saving as much of the original formatting as possible.
-console.log(print(ast, jsGrammar));
+console.log(reprint(cst, jsGrammar));
 ```
 
 ## The CST
