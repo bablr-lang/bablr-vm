@@ -80,7 +80,7 @@ export const WithWhitespace = (visitor) => {
           }
 
           let s = getState();
-          while (s.isHoisting) {
+          while (s.hoist) {
             yield* startNode();
             s = getState();
           }
@@ -100,7 +100,7 @@ export const WithWhitespace = (visitor) => {
       current = grammar.next(returnValue);
     }
 
-    if (rootState.status !== 'rejected' && !rootState.isHoisting) {
+    if (rootState.status !== 'rejected' && !rootState.hoist) {
       yield* endNode();
     }
   }
