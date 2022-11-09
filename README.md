@@ -8,18 +8,31 @@ A CST, or Concrete Syntax Tree, is a way of representing a computer program that
 
 `cst-tokens` functions primarily as a validator of CSTs. Its goal is to help other tools agree on what valid CSTs are. `cst-tokens` is written in JavaScript and is intended to support tools written in JavaScript. It is, however, language agnostic. To do anything other than print a CST you'll need a grammar. A grammar defines (for every possible AST node) what concrete syntax elements are allowed or required.
 
-## Why this library?
+`cst-tokens` is compliant with the [semver specification](https://semver.org/).
 
-`cst-tokens` has a novel approach to the problem space. Some highlights:
+## Why is this important?
 
-- Its grammars are written as generator functions, allowing them to be expressive, powerful, portable, and composable, all without the hassle of compilation.
-- It is growth-oriented. It uses symbols and WeakMaps to create a clear and effective boundary between public and non-public state. It is compliant with the [semver](https://semver.org/) spec.
-- It provides novel ways of dealing with whitespace and comments, hoisting them upwards in trees to make them maximally ambiguous. Exposing ambiguities plainly is the first step on the road to handling them sanely.
-- It token types are designed to ensure that client code can make use of the basic structure of a language without even knowning what language it is. For example the `LeftPunctuator` and `RightPunctuator` token types allow code folding and structural code search to be built in a language-agnostic way.
+If you had 1 second to look at some text, could you tell me if the text you saw was code or not? Probably. What if you only had 0.1 seconds? You'd probably look for evidence of common code features like nested indentation, highly variable line lengths, and the presence of braces and special characters. Code need have none of these things. We use them because they can help us understand the code more easily at a glance. Indentation helps us see nesting. Braces surround lists. We make keywords bright colors to cue us into their role in the grammar.
+
+This is only how a person sees the program though. The first step towards running any code is to parse it. That's because while humans deal well with ambiguity -- we rapidly learn the reasons a single symbol may mean different things in different places -- computers choke on it. So for every kind of operation the language can perform, the syntax we see, say `fn()`, is parsed into an unambiguous name like `CallExpression`. Named nodes are then composed into a tree -- the **Abstract Syntax Tree** or **AST**. This representation of a program is ideal for analyzing and executing the logic contained in it, but it contains none of the structure that you could recognize at a glance. The AST allows us to do novel things like write programs that create programs, or even write programs that alter other programs. The desire to be able to do these things has led to the need for standardized names, since the alternative would be rebuilding all tools for every new parser.
+
+The standardization of ASTs has created huge value for the digital world, but the one place it hasn't changed much at all is the way we edit code. It can't. To make the AST we threw away all the textual symbols that humans use to read programs: the blank space, the braces, the comments. To experience fantastic innovation and growth as code-transforming tools have, code editing tools need a useful, standard way of incorporating spaces, braces, and comments into an Abstract Syntax Tree, thus turning it into a **Conrete Syntax Tree** or **CST**. While there are many existing programs that work with concrete syntax, none have yet proved useful or standard enough to seed a new generation of code editors.
+
+## A vision of the future
+
+It is hard to overstate the potential inherent in next-gen editors! There is an immense amount of code in the world, and an immense amount of technical debt. We've created so many code messes that the major obstacle to cleaning them all up is that we simply can't code efficiently or fast enough. Let's say I write a library that exports a function `baz`, and 100 different projects call `baz()`. I then discover that `baz` would be easier to use if it were two functions called `bar` and `snoz` such that `bar(snoz(x)) == baz(x)`. I make this change, and my library is better now -- it's potentially more useful to more people, but also I've alienated everyone who was used to the old way of doing things. They use 1000 libraries and there's just too many changes like this for it to be practical to keep pace with the development of all of them!
+
+Let's imagine some scenarios where new tools could help with the problems:
+
+Imagine I, the author of the `baz` package, having made the `bar`/`snoz` change, share with you a script that automatically edits your code from the old `bar(x)` into the new `bar(snoz(x))`. I call this script a codemod. You apply the codemod to your repo and my code is now automatically upgraded to the newer more powerful `bar(snoz())` syntax.
+
+Now imagine that instead of applying the codemod in a local environment, you send it straight to CI. CI computes (and stores) specific changes that executing the codemod would cause. It allows the reviewer to meaningfully review both the program generating the changes, and the changes themselves. What is merged is always the changes that have been reviewed, never purely the result of running the transform again, however running the transform again may be used to automatically resolve conflicts by presenting only changes to approved changes as being necessary for re-review!
+
+Imagine that creating such a codemod was so trivial that anyone could do it, because your code editor always thought of your changes as codemods. The kinds of codemods that could be recorded and shared among the users of such a system would be as varied as people are imaginative.
 
 ## Architecture
 
-See [ARCHITECTURE.md](https://github.com/conartist6/cst-tokens/blob/trunk/ARCHITECTURE.md).
+How does `cst-tokens` achieve its goals? Take a look at the [architecture docs](https://github.com/conartist6/cst-tokens/blob/trunk/ARCHITECTURE.md)!
 
 ## Contributing
 
