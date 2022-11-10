@@ -4,7 +4,14 @@ import { Bag } from '@cst-tokens/helpers/generators';
 import { LineBreak } from '@cst-tokens/helpers/descriptors';
 import { ref, PN, LPN, RPN, KW } from '@cst-tokens/helpers/shorthand';
 import * as sym from '@cst-tokens/helpers/symbols';
-import { Identifier, StringStart, StringEnd, String, Whitespace } from './js-descriptors.mjs';
+import {
+  SymbolReference,
+  SymbolDefinition,
+  StringStart,
+  StringEnd,
+  String,
+  Whitespace,
+} from './js-descriptors.mjs';
 export { parseModule as parse } from 'meriyah';
 
 export function* _(path, context, getState) {
@@ -206,8 +213,11 @@ export default {
     },
 
     *Identifier(path) {
-      const { name } = path.node;
-      yield* eat(Identifier(name));
+      const { node, parent } = path;
+      const { name } = node;
+      const Symbol = parent.node.local === node ? SymbolReference : SymbolDefinition;
+
+      yield* eat(Symbol(name));
     },
   }),
 };
