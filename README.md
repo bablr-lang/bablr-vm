@@ -95,7 +95,7 @@ Here's what the CST from the above example looks like:
             "type": "Identifier",
             "name": "def",
             "cstTokens": [
-              { "type": "Identifier", "value": "def" }
+              { "type": "SymbolDefinition", "value": "def" }
             ]
           },
           "cstTokens": [
@@ -108,14 +108,14 @@ Here's what the CST from the above example looks like:
             "type": "Identifier",
             "name": "foo",
             "cstTokens": [
-              { "type": "Identifier", "value": "foo" }
+              { "type": "SymbolDefinition", "value": "foo" }
             ]
           },
           "imported": {
             "type": "Identifier",
             "name": "foo",
             "cstTokens": [
-              { "type": "Identifier", "value": "foo" }
+              { "type": "Literal", "value": "foo" }
             ]
           },
           "cstTokens": [
