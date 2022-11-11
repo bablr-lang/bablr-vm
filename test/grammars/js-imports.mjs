@@ -55,7 +55,10 @@ export const WithWhitespace = (visitor) => {
           // I'm not able to propagate my custom state through this statement!
           // I have no access to the child state form outside
           // I have no access to the parent state from inside
-          returnValue = yield { ...cmd, value: WithWhitespace(cmd.value) };
+          returnValue = yield {
+            ...cmd,
+            value: path.node.type === 'CSTFragment' ? cmd.value : WithWhitespace(cmd.value),
+          };
           break;
         }
 
@@ -118,18 +121,18 @@ export const WithWhitespace = (visitor) => {
 };
 
 const withWhitespace = (visitors) => {
-  const fragment = visitors[sym.Fragment];
+  const { CSTFragment } = visitors;
   const transformed = {};
+  if (CSTFragment) transformed.CSTFragment = CSTFragment;
   for (const [type, visitor] of Object.entries(visitors)) {
     transformed[type] = WithWhitespace(visitor);
   }
-  if (fragment) transformed[sym.Fragment] = fragment;
   return transformed;
 };
 
 export default {
   generators: withWhitespace({
-    *[sym.Fragment]() {
+    *CSTFragment() {
       yield* eat(ref`fragment`);
       yield* eatMatch(_);
     },

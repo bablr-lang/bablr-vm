@@ -1,30 +1,30 @@
 import { join, dirname } from 'path';
-import { readFile } from 'fs/promises';
+import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
-import { parseModule } from 'meriyah';
-import { updateTokens, print } from 'cst-tokens';
+import { fromAst, print } from 'cst-tokens';
 
-import jsImportGrammar from './grammars/js-imports.mjs';
+import jsImportGrammar, { parse } from './grammars/js-imports.mjs';
 
 Error.stackTraceLimit = 20;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const readFixture = (path) => readFile(join(__dirname, 'fixtures', path), 'utf-8');
+const readFixture = (path) => readFileSync(join(__dirname, 'fixtures', path), 'utf-8');
 
-const sourceText = await readFixture('imports.js');
+const sourceText = readFixture('imports.js');
 
-const ast = parseModule(sourceText);
+// console.log(JSON.stringify(parse(sourceText), undefined, 2));
 
-updateTokens(ast, jsImportGrammar, { sourceText });
+const cst = fromAst(parse(sourceText), jsImportGrammar, { sourceText });
 
-console.log(JSON.stringify(ast, undefined, 2));
+// console.log(JSON.stringify(cst, undefined, 2));
 
-const printed = print(ast, jsImportGrammar);
-
-console.log(`\`${sourceText.replace(/\n/g, '\\n')}\``);
-console.log(`\`${printed.replace(/\n/g, '\\n')}\``);
+const printed = print(cst);
 
 if (printed !== sourceText) {
-  throw new Error('How has it all gone wrong?');
+  let m;
+  m = `source text could not be reconstructed from CST
+  Source: \`${`${sourceText.replace(/\n/g, '\\n')}`}\`
+  Printed: \`${`${printed.replace(/\n/g, '\\n')}`}\``;
+  throw new Error(m);
 }

@@ -4,7 +4,6 @@ import { eatChrs, eat, eatMatch, startNode, endNode } from '@cst-tokens/helpers/
 import { Literal, LineBreak } from '@cst-tokens/helpers/descriptors';
 import { ref } from '@cst-tokens/helpers/shorthand';
 import { Bag } from '@cst-tokens/helpers/generators';
-import { Fragment } from '@cst-tokens/helpers/symbols';
 
 const { isArray } = Array;
 const eatChrs_ = eatChrs;
@@ -40,7 +39,7 @@ export const RPN = (value) => Literal('RightPunctuator', stripArray(value));
 
 export default {
   generators: {
-    *[Fragment]() {
+    *CSTFragment() {
       yield* eat(ref`fragment`);
       yield* eatMatch(_);
     },
