@@ -42,7 +42,7 @@ export const String = (value) => {
           // continue
         } else if (chrs = yield* eatMatch(new RegExp(`\\\\u${code.toString(16).padStart(4, '0')}`))) {
           // continue
-        } else if (chrs = yield* eatMatch(new RegExp(`\\\\u\\{\d{1,6}\\}`))) {
+        } else if (chrs = yield* eatMatch(new RegExp(`\\\\u\\{\\d{1,6}\\}`))) {
           // continue
         }
 
