@@ -38,7 +38,7 @@ export const RPN = (value) => Literal('RightPunctuator', stripArray(value));
 // matches [] and [1, 2, 3,]
 
 export default {
-  generators: {
+  productions: {
     *CSTFragment() {
       yield* eat(ref`fragment`);
       yield* eatMatch(_);

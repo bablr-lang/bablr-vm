@@ -34,9 +34,9 @@ const findLastDesc = (state) => {
 
 export const WithWhitespace = (visitor) => {
   function* WithWhitespace__(path, context, getState) {
-    const grammar = visitor(path, context, getState);
+    const production = visitor(path, context, getState);
     const rootState = getState();
-    let current = grammar.next();
+    let current = production.next();
     let state;
 
     while (!current.done) {
@@ -49,9 +49,9 @@ export const WithWhitespace = (visitor) => {
       state = getState();
 
       switch (cmd.type) {
-        case sym.eatGrammar:
-        case sym.matchGrammar:
-        case sym.eatMatchGrammar: {
+        case sym.eatProduction:
+        case sym.matchProduction:
+        case sym.eatMatchProduction: {
           // I'm not able to propagate my custom state through this statement!
           // I have no access to the child state form outside
           // I have no access to the parent state from inside
@@ -107,7 +107,7 @@ export const WithWhitespace = (visitor) => {
         lastDescriptors.set(state.parent, lastDescriptors.get(state));
       }
 
-      current = grammar.next(returnValue);
+      current = production.next(returnValue);
     }
 
     if (rootState.status !== 'rejected' && !rootState.hoist) {
@@ -131,7 +131,7 @@ const withWhitespace = (visitors) => {
 };
 
 export default {
-  generators: withWhitespace({
+  productions: withWhitespace({
     *CSTFragment() {
       yield* eat(ref`fragment`);
       yield* eatMatch(_);
