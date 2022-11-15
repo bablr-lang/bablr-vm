@@ -1,6 +1,6 @@
 import t from '@babel/types';
 import { eat, eatMatch, startNode, endNode } from '@cst-tokens/helpers/commands';
-import { Bag } from '@cst-tokens/helpers/generators';
+import { Bag } from '@cst-tokens/helpers/meta-productions';
 import { LineBreak } from '@cst-tokens/helpers/descriptors';
 import { ref, PN, LPN, RPN, KW } from '@cst-tokens/helpers/shorthand';
 import * as sym from '@cst-tokens/helpers/symbols';
@@ -15,7 +15,7 @@ import {
 export { parseModule as parse } from 'meriyah';
 
 export function* _(path, context, getState) {
-  return getState().source ? yield* Bag([Whitespace(), LineBreak()]) : [Whitespace().build()];
+  return getState().source ? yield* eat(Bag([Whitespace(), LineBreak()])) : [Whitespace().build()];
 }
 
 const spaceDelimitedTypes = ['Identifier', 'Keyword'];

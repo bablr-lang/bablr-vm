@@ -3,7 +3,7 @@ import { parseModule } from 'meriyah';
 import { eatChrs, eat, eatMatch, startNode, endNode } from '@cst-tokens/helpers/commands';
 import { Literal, LineBreak } from '@cst-tokens/helpers/descriptors';
 import { ref } from '@cst-tokens/helpers/shorthand';
-import { Bag } from '@cst-tokens/helpers/generators';
+import { Bag } from '@cst-tokens/helpers/meta-productions';
 
 const { isArray } = Array;
 const eatChrs_ = eatChrs;
@@ -24,7 +24,7 @@ const Whitespace = (value = ' ') => {
 };
 
 function* _(path, context, getState) {
-  return getState().source ? yield* Bag([Whitespace(), LineBreak()]) : [Whitespace().build()];
+  return getState().source ? yield* eat(Bag([Whitespace(), LineBreak()])) : [Whitespace().build()];
 }
 
 const stripArray = (value) => (isArray(value) ? value[0] : value);
