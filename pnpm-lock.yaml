@@ -2,7 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@babel/types': '*'
-  '@cst-tokens/helpers': github:js-cst-tokens/helpers#a1d98f9ed28b38401bd684cf79a8cde883ac647b
+  '@cst-tokens/helpers': 0.10.0
   '@iter-tools/imm-stack': 1.1.0
   '@iter-tools/regex': 0.3.2
   debug: 4.3.4
@@ -20,7 +20,7 @@ dependencies:
 
 devDependencies:
   '@babel/types': 7.17.10
-  '@cst-tokens/helpers': github.com/js-cst-tokens/helpers/a1d98f9ed28b38401bd684cf79a8cde883ac647b
+  '@cst-tokens/helpers': 0.10.0
   eslint: 7.32.0
   iter-tools-es: 7.3.1
   meriyah: 4.2.1
@@ -54,6 +54,14 @@ packages:
     dependencies:
       '@babel/helper-validator-identifier': 7.16.7
       to-fast-properties: 2.0.0
+    dev: true
+
+  /@cst-tokens/helpers/0.10.0:
+    resolution: {integrity: sha512-CG63y8pmPqWFtC1qCIFajJFmSgmYbE+eFWc6qrKtFYcQyWJEAtTe3Xc3fu+FFYLNT12oSK3K0tYXgn+vVGcruQ==}
+    dependencies:
+      debug: 4.3.4
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /@eslint/eslintrc/0.4.3:
@@ -793,14 +801,4 @@ packages:
 
   /yallist/4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
-    dev: true
-
-  github.com/js-cst-tokens/helpers/a1d98f9ed28b38401bd684cf79a8cde883ac647b:
-    resolution: {tarball: https://codeload.github.com/js-cst-tokens/helpers/tar.gz/a1d98f9ed28b38401bd684cf79a8cde883ac647b}
-    name: '@cst-tokens/helpers'
-    version: 0.9.1
-    dependencies:
-      debug: 4.3.4
-    transitivePeerDependencies:
-      - supports-color
     dev: true

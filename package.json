@@ -1,7 +1,7 @@
 {
   "name": "cst-tokens",
   "description": "A library for traversing and manipulating CSTs",
-  "version": "0.9.2",
+  "version": "0.10.0",
   "author": "Conrad Buck<conartist6@gmail.com>",
   "files": [
     "lib"
@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@babel/types": "*",
-    "@cst-tokens/helpers": "github:js-cst-tokens/helpers#a1d98f9ed28b38401bd684cf79a8cde883ac647b",
+    "@cst-tokens/helpers": "0.10.0",
     "eslint": "^7.32.0",
     "iter-tools-es": "^7.3.1",
     "meriyah": "^4.2.1",
