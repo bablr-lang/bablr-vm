@@ -14,7 +14,7 @@ import {
 } from './js-descriptors.mjs';
 export { parseModule as parse } from 'meriyah';
 
-export function* _(path, context, getState) {
+export function* _(path, grammar, getState) {
   return getState().source ? yield* eat(Bag([Whitespace(), LineBreak()])) : [Whitespace().build()];
 }
 
@@ -32,11 +32,11 @@ const findLastDesc = (state) => {
   return lastDesc;
 };
 
-export const WithWhitespace = (visitor) => {
-  function* WithWhitespace__(path, context, getState) {
-    const production = visitor(path, context, getState);
+export const WithWhitespace = (production) => {
+  function* WithWhitespace__(path, grammar, getState) {
+    const generator = production(path, grammar, getState);
     const rootState = getState();
-    let current = production.next();
+    let current = generator.next();
     let state;
 
     while (!current.done) {
@@ -107,7 +107,7 @@ export const WithWhitespace = (visitor) => {
         lastDescriptors.set(state.parent, lastDescriptors.get(state));
       }
 
-      current = production.next(returnValue);
+      current = generator.next(returnValue);
     }
 
     if (rootState.status !== 'rejected' && !rootState.hoist) {
@@ -115,7 +115,7 @@ export const WithWhitespace = (visitor) => {
     }
   }
 
-  Object.defineProperty(WithWhitespace__, 'name', { value: `WithWhitespace_${visitor.name}` });
+  Object.defineProperty(WithWhitespace__, 'name', { value: `WithWhitespace_${production.name}` });
 
   return WithWhitespace__;
 };

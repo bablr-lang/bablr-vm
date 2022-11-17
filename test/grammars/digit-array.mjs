@@ -23,7 +23,7 @@ const Whitespace = (value = ' ') => {
   };
 };
 
-function* _(path, context, getState) {
+function* _(path, grammar, getState) {
   return getState().source ? yield* eat(Bag([Whitespace(), LineBreak()])) : [Whitespace().build()];
 }
 
