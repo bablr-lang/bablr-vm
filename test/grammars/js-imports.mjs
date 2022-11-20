@@ -10,7 +10,7 @@ export { parseModule as parse } from 'meriyah';
 
 import { Identifier, StringStart, StringEnd, String, Whitespace } from './js-descriptors.mjs';
 
-export function* _(path, grammar, getState) {
+export function* _({ getState }) {
   return getState().source ? yield* eat(Bag([Whitespace(), LineBreak()])) : [Whitespace().build()];
 }
 
@@ -29,9 +29,11 @@ const findLastDesc = (state) => {
 };
 
 export const WithWhitespace = (production) => {
-  function* WithWhitespace__(path, grammar, getState) {
-    const generator = production(path, grammar, getState);
+  function* WithWhitespace__(props, next) {
+    const { path, getState } = props;
     const rootState = getState();
+
+    const generator = production(props, next);
     let current = generator.next();
     let state;
 
@@ -130,7 +132,7 @@ export default {
         yield* eatMatch(_);
       },
 
-      *Program(path) {
+      *Program({ path }) {
         const { body } = path.node;
 
         for (const _n of body) {
@@ -138,7 +140,7 @@ export default {
         }
       },
 
-      *ImportDeclaration(path) {
+      *ImportDeclaration({ path }) {
         const { specifiers } = path.node;
         yield* eat(KW`import`);
         if (specifiers?.length) {
@@ -181,7 +183,7 @@ export default {
         yield* eatMatch(PN`;`);
       },
 
-      *ImportSpecifier(path) {
+      *ImportSpecifier({ path }) {
         const { local, imported } = path.node;
 
         yield* eat(ref`imported`);
@@ -201,14 +203,14 @@ export default {
         yield* eat(PN`*`, KW`as`, ref`local`);
       },
 
-      *Literal(path) {
+      *Literal({ path }) {
         const { value } = path.node;
         if (typeof value === 'string') {
           yield* eat(StringStart("'"), String(value), StringEnd("'"));
         }
       },
 
-      *Identifier(path) {
+      *Identifier({ path }) {
         const { node } = path;
         const { name } = node;
 

@@ -1,30 +1,16 @@
 import { parseModule } from 'meriyah';
 
-import { eatChrs, eat, eatMatch, startNode, endNode } from '@cst-tokens/helpers/commands';
+import { eat, eatMatch, startNode, endNode } from '@cst-tokens/helpers/commands';
 import { Literal, LineBreak } from '@cst-tokens/helpers/descriptors';
 import { ref } from '@cst-tokens/helpers/shorthand';
 import { Bag } from '@cst-tokens/helpers/meta-productions';
 import { objectEntries } from '@cst-tokens/helpers/iterable';
 
 const { isArray } = Array;
-const eatChrs_ = eatChrs;
 
-const Whitespace = (value = ' ') => {
-  const defaultValue = value;
-  return {
-    type: 'Whitespace',
-    value,
-    mergeable: true,
-    build(value) {
-      return { type: 'Whitespace', value: value || defaultValue };
-    },
-    *eatChrs() {
-      return yield* eatChrs_(/[ \t]+/);
-    },
-  };
-};
+const Whitespace = () => Literal('Whitespace', /[ \t]+/);
 
-function* _(path, grammar, getState) {
+function* _({ path, grammar, getState }) {
   return getState().source ? yield* eat(Bag([Whitespace(), LineBreak()])) : [Whitespace().build()];
 }
 
@@ -44,7 +30,7 @@ export default {
       yield* eat(ref`fragment`);
       yield* eatMatch(_);
     },
-    *Array(path) {
+    *Array({ path }) {
       const { elements } = path.node;
 
       yield* eatMatch(_);
@@ -66,7 +52,7 @@ export default {
       yield* eat(RPN`]`);
       yield* endNode();
     },
-    *Digit(path) {
+    *Digit({ path }) {
       const { value } = path.node;
 
       yield* eatMatch(_);

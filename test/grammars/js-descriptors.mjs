@@ -13,6 +13,8 @@ const escapables = new Map(
   }),
 );
 
+export const Whitespace = () => Literal('Whitespace', /[ \t]+/);
+
 export const StringStart = () => Literal('StringStart', "'");
 export const StringEnd = () => Literal('StringEnd', "'");
 
@@ -92,21 +94,6 @@ export const Identifier = (value) => {
       }
 
       return result;
-    },
-  };
-};
-
-export const Whitespace = (value = ' ') => {
-  const defaultValue = value;
-  return {
-    type: 'Whitespace',
-    value,
-    mergeable: true,
-    build(value) {
-      return { type: 'Whitespace', value: value || defaultValue };
-    },
-    *eatChrs() {
-      return yield* eatMatch(/[ \t]+/);
     },
   };
 };
