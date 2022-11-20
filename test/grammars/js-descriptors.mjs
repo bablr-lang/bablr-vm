@@ -58,14 +58,14 @@ export const String = (value) => {
   };
 };
 
-const Identifier = (type, value) => {
-  const expected = { type, value };
+export const Identifier = (value) => {
+  const expected = { type: 'Identifier', value };
   return {
-    type,
+    type: 'Identifier',
     value,
     mergeable: false,
     build(value) {
-      return { type, value: value || expected.value };
+      return { type: 'Identifier', value: value || expected.value };
     },
     *eatChrs() {
       const { value } = this;
@@ -95,9 +95,6 @@ const Identifier = (type, value) => {
     },
   };
 };
-
-export const SymbolReference = (value) => Identifier('SymbolReference', value);
-export const SymbolDefinition = (value) => Identifier('SymbolDefinition', value);
 
 export const Whitespace = (value = ' ') => {
   const defaultValue = value;

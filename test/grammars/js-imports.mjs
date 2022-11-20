@@ -1,18 +1,14 @@
 import t from '@babel/types';
 import { eat, eatMatch, startNode, endNode } from '@cst-tokens/helpers/commands';
+import { map } from '@cst-tokens/helpers/iterable';
 import { Bag } from '@cst-tokens/helpers/meta-productions';
 import { LineBreak } from '@cst-tokens/helpers/descriptors';
 import { ref, PN, LPN, RPN, KW } from '@cst-tokens/helpers/shorthand';
+import { objectEntries } from '@cst-tokens/helpers/iterable';
 import * as sym from '@cst-tokens/helpers/symbols';
-import {
-  SymbolReference,
-  SymbolDefinition,
-  StringStart,
-  StringEnd,
-  String,
-  Whitespace,
-} from './js-descriptors.mjs';
 export { parseModule as parse } from 'meriyah';
+
+import { Identifier, StringStart, StringEnd, String, Whitespace } from './js-descriptors.mjs';
 
 export function* _(path, grammar, getState) {
   return getState().source ? yield* eat(Bag([Whitespace(), LineBreak()])) : [Whitespace().build()];
@@ -120,107 +116,104 @@ export const WithWhitespace = (production) => {
   return WithWhitespace__;
 };
 
-const withWhitespace = (visitors) => {
-  const { CSTFragment } = visitors;
-  const transformed = {};
-  if (CSTFragment) transformed.CSTFragment = CSTFragment;
-  for (const [type, visitor] of Object.entries(visitors)) {
-    transformed[type] = WithWhitespace(visitor);
-  }
-  return transformed;
+const withWhitespace = (productions) => {
+  return map(productions, ([type, production]) => {
+    return [type, type === 'CSTFragment' ? production : WithWhitespace(production)];
+  });
 };
 
 export default {
-  productions: withWhitespace({
-    *CSTFragment() {
-      yield* eat(ref`fragment`);
-      yield* eatMatch(_);
-    },
+  productions: withWhitespace(
+    objectEntries({
+      *CSTFragment() {
+        yield* eat(ref`fragment`);
+        yield* eatMatch(_);
+      },
 
-    *Program(path) {
-      const { body } = path.node;
+      *Program(path) {
+        const { body } = path.node;
 
-      for (const _n of body) {
-        yield* eat(ref`body`);
-      }
-    },
-
-    *ImportDeclaration(path) {
-      const { specifiers } = path.node;
-      yield* eat(KW`import`);
-      if (specifiers?.length) {
-        const specialIdx = specifiers.findIndex((spec) => !t.isImportSpecifier(spec));
-        if (specialIdx >= 1) {
-          const special = specifiers[specialIdx];
-          // This is a limitation of Resolver.
-          throw new Error(
-            `${special.type} was at specifiers[${specialIdx}] but must be specifiers[0]`,
-          );
+        for (const _n of body) {
+          yield* eat(ref`body`);
         }
-        const special = t.isImportSpecifier(specifiers[0]) ? null : specifiers[0];
-        if (special && t.isImportNamespaceSpecifier(special)) {
-          yield* eat(ref`specifiers`);
-        } else {
-          if (special && t.isImportDefaultSpecifier(special)) {
+      },
+
+      *ImportDeclaration(path) {
+        const { specifiers } = path.node;
+        yield* eat(KW`import`);
+        if (specifiers?.length) {
+          const specialIdx = specifiers.findIndex((spec) => !t.isImportSpecifier(spec));
+          if (specialIdx >= 1) {
+            const special = specifiers[specialIdx];
+            // This is a limitation of Resolver.
+            throw new Error(
+              `${special.type} was at specifiers[${specialIdx}] but must be specifiers[0]`,
+            );
+          }
+          const special = t.isImportSpecifier(specifiers[0]) ? null : specifiers[0];
+          if (special && t.isImportNamespaceSpecifier(special)) {
             yield* eat(ref`specifiers`);
-          }
-          if (special && specifiers.length > 1) {
-            yield* eat(PN`,`);
-          }
-
-          const restStart = special ? 1 : 0;
-
-          if (specifiers.length > restStart) {
-            yield* eat(LPN`{`);
-            for (let i = restStart; i < specifiers.length; i++) {
+          } else {
+            if (special && t.isImportDefaultSpecifier(special)) {
               yield* eat(ref`specifiers`);
-              const trailing = i === specifiers.length - 1;
-
-              yield* trailing ? eatMatch(PN`,`) : eat(PN`,`);
             }
-            yield* eat(RPN`}`);
+            if (special && specifiers.length > 1) {
+              yield* eat(PN`,`);
+            }
+
+            const restStart = special ? 1 : 0;
+
+            if (specifiers.length > restStart) {
+              yield* eat(LPN`{`);
+              for (let i = restStart; i < specifiers.length; i++) {
+                yield* eat(ref`specifiers`);
+                const trailing = i === specifiers.length - 1;
+
+                yield* trailing ? eatMatch(PN`,`) : eat(PN`,`);
+              }
+              yield* eat(RPN`}`);
+            }
           }
+
+          yield* eat(KW`from`);
         }
+        yield* eat(ref`source`);
+        yield* eatMatch(PN`;`);
+      },
 
-        yield* eat(KW`from`);
-      }
-      yield* eat(ref`source`);
-      yield* eatMatch(PN`;`);
-    },
+      *ImportSpecifier(path) {
+        const { local, imported } = path.node;
 
-    *ImportSpecifier(path) {
-      const { local, imported } = path.node;
+        yield* eat(ref`imported`);
 
-      yield* eat(ref`imported`);
+        if (local.name !== imported.name) {
+          yield* eat(KW`as`, ref`local`);
+        } else {
+          yield* eatMatch(KW`as`, ref`local`);
+        }
+      },
 
-      if (local.name !== imported.name) {
-        yield* eat(KW`as`, ref`local`);
-      } else {
-        yield* eatMatch(KW`as`, ref`local`);
-      }
-    },
+      *ImportDefaultSpecifier() {
+        yield* eat(ref`local`);
+      },
 
-    *ImportDefaultSpecifier() {
-      yield* eat(ref`local`);
-    },
+      *ImportNamespaceSpecifier() {
+        yield* eat(PN`*`, KW`as`, ref`local`);
+      },
 
-    *ImportNamespaceSpecifier() {
-      yield* eat(PN`*`, KW`as`, ref`local`);
-    },
+      *Literal(path) {
+        const { value } = path.node;
+        if (typeof value === 'string') {
+          yield* eat(StringStart("'"), String(value), StringEnd("'"));
+        }
+      },
 
-    *Literal(path) {
-      const { value } = path.node;
-      if (typeof value === 'string') {
-        yield* eat(StringStart("'"), String(value), StringEnd("'"));
-      }
-    },
+      *Identifier(path) {
+        const { node } = path;
+        const { name } = node;
 
-    *Identifier(path) {
-      const { node, parent } = path;
-      const { name } = node;
-      const Symbol = parent.node.local === node ? SymbolReference : SymbolDefinition;
-
-      yield* eat(Symbol(name));
-    },
-  }),
+        yield* eat(Identifier(name));
+      },
+    }),
+  ),
 };

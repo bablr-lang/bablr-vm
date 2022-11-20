@@ -4,6 +4,7 @@ import { eatChrs, eat, eatMatch, startNode, endNode } from '@cst-tokens/helpers/
 import { Literal, LineBreak } from '@cst-tokens/helpers/descriptors';
 import { ref } from '@cst-tokens/helpers/shorthand';
 import { Bag } from '@cst-tokens/helpers/meta-productions';
+import { objectEntries } from '@cst-tokens/helpers/iterable';
 
 const { isArray } = Array;
 const eatChrs_ = eatChrs;
@@ -38,7 +39,7 @@ export const RPN = (value) => Literal('RightPunctuator', stripArray(value));
 // matches [] and [1, 2, 3,]
 
 export default {
-  productions: {
+  productions: objectEntries({
     *CSTFragment() {
       yield* eat(ref`fragment`);
       yield* eatMatch(_);
@@ -73,7 +74,7 @@ export default {
       yield* eat(D(String(value)));
       yield* endNode();
     },
-  },
+  }),
 };
 
 export const parse = (text) => {
