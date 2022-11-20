@@ -19,14 +19,10 @@ export const StringStart = () => Literal('StringStart', "'");
 export const StringEnd = () => Literal('StringEnd', "'");
 
 export const String = (value) => {
-  const defaultValue = value;
   return {
     type: 'String',
     value,
     mergeable: true,
-    build(value) {
-      return { type: 'String', value: value || defaultValue };
-    },
     *eatChrs() {
       const { value } = this;
       let result = '';
@@ -61,14 +57,10 @@ export const String = (value) => {
 };
 
 export const Identifier = (value) => {
-  const expected = { type: 'Identifier', value };
   return {
     type: 'Identifier',
     value,
     mergeable: false,
-    build(value) {
-      return { type: 'Identifier', value: value || expected.value };
-    },
     *eatChrs() {
       const { value } = this;
       let result = '';

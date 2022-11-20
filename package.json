@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@babel/types": "*",
-    "@cst-tokens/helpers": "github:js-cst-tokens/helpers#326a08f4139d5f6119de581222e25cdc1aea44c4",
+    "@cst-tokens/helpers": "github:js-cst-tokens/helpers#154848a621f19b02a5cf5e7cc562c87b73673c1e",
     "eslint": "^7.32.0",
     "iter-tools-es": "^7.3.1",
     "meriyah": "^4.2.1",
