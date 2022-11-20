@@ -29,11 +29,11 @@ const findLastDesc = (state) => {
 };
 
 export const WithWhitespace = (production) => {
-  function* WithWhitespace__(props, next) {
+  function* WithWhitespace__(props) {
     const { path, getState } = props;
     const rootState = getState();
 
-    const generator = production(props, next);
+    const generator = production(props);
     let current = generator.next();
     let state;
 
