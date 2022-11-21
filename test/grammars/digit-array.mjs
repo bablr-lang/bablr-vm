@@ -1,5 +1,5 @@
 import { parseModule } from 'meriyah';
-
+import { Grammar } from '@cst-tokens/helpers/grammar';
 import { eat, eatMatch, startNode, endNode } from '@cst-tokens/helpers/commands';
 import { Literal, LineBreak } from '@cst-tokens/helpers/descriptors';
 import { ref } from '@cst-tokens/helpers/shorthand';
@@ -24,7 +24,7 @@ export const RPN = (value) => Literal('RightPunctuator', stripArray(value));
 // This simple grammar is useful to test the mechanics of hoisting
 // matches [] and [1, 2, 3,]
 
-export default {
+export default new Grammar({
   productions: objectEntries({
     *CSTFragment() {
       yield* eat(ref`fragment`);
@@ -61,7 +61,7 @@ export default {
       yield* endNode();
     },
   }),
-};
+});
 
 export const parse = (text) => {
   const ast = parseModule(text);

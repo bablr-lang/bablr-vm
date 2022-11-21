@@ -1,4 +1,5 @@
 import t from '@babel/types';
+import { Grammar } from '@cst-tokens/helpers/grammar';
 import { eat, eatMatch, startNode, endNode } from '@cst-tokens/helpers/commands';
 import { map } from '@cst-tokens/helpers/iterable';
 import { Bag } from '@cst-tokens/helpers/meta-productions';
@@ -124,7 +125,7 @@ const withWhitespace = (productions) => {
   });
 };
 
-export default {
+export default new Grammar({
   productions: withWhitespace(
     objectEntries({
       *CSTFragment() {
@@ -218,4 +219,4 @@ export default {
       },
     }),
   ),
-};
+});

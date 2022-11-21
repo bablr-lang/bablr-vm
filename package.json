@@ -3,6 +3,7 @@
   "description": "A library for traversing and manipulating CSTs",
   "version": "0.10.0",
   "author": "Conrad Buck<conartist6@gmail.com>",
+  "type": "module",
   "files": [
     "lib"
   ],
@@ -18,7 +19,7 @@
   },
   "devDependencies": {
     "@babel/types": "*",
-    "@cst-tokens/helpers": "github:js-cst-tokens/helpers#154848a621f19b02a5cf5e7cc562c87b73673c1e",
+    "@cst-tokens/helpers": "github:js-cst-tokens/helpers#7d56586347229427a7da7dc9fa1e1e7aa43aa123",
     "eslint": "^7.32.0",
     "iter-tools-es": "^7.3.1",
     "meriyah": "^4.2.1",
