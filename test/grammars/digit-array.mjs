@@ -10,7 +10,7 @@ const { isArray } = Array;
 
 const Whitespace = () => Literal('Whitespace', /[ \t]+/);
 
-function* _({ path, grammar, getState }) {
+function* _({ getState }) {
   return getState().source ? yield* eat(Bag([Whitespace(), LineBreak()])) : [Whitespace().build()];
 }
 
