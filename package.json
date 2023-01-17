@@ -15,14 +15,12 @@
     "@iter-tools/imm-stack": "1.1.0",
     "@iter-tools/regex": "0.3.2",
     "debug": "4.3.4",
-    "escape-string-regexp": "4.0.0"
+    "escape-string-regexp": "4.0.0",
+    "iter-tools-es": "^7.3.1"
   },
   "devDependencies": {
-    "@babel/types": "*",
     "@cst-tokens/helpers": "github:js-cst-tokens/helpers#7d56586347229427a7da7dc9fa1e1e7aa43aa123",
     "eslint": "^7.32.0",
-    "iter-tools-es": "^7.3.1",
-    "meriyah": "^4.2.1",
     "prettier": "^2.6.2"
   },
   "repository": "github:js-cst-tokens/cst-tokens",

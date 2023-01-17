@@ -1,9 +1,9 @@
 import { join, dirname } from 'path';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
-import { fromAst, print } from 'cst-tokens';
+import { build, print } from 'cst-tokens';
 
-import jsImportGrammar, { parse } from './grammars/js-imports.mjs';
+import jsImportGrammar, { parse } from './grammars/js-imports.js';
 
 Error.stackTraceLimit = 20;
 
@@ -15,7 +15,7 @@ const sourceText = readFixture('imports.js');
 
 // console.log(JSON.stringify(parse(sourceText), undefined, 2));
 
-const cst = fromAst(parse(sourceText), jsImportGrammar, { sourceText });
+const cst = build(parse(sourceText), jsImportGrammar, { sourceText });
 
 // console.log(JSON.stringify(cst, undefined, 2));
 

@@ -1,7 +1,6 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@babel/types': '*'
   '@cst-tokens/helpers': github:js-cst-tokens/helpers#7d56586347229427a7da7dc9fa1e1e7aa43aa123
   '@iter-tools/imm-stack': 1.1.0
   '@iter-tools/regex': 0.3.2
@@ -9,7 +8,6 @@ specifiers:
   escape-string-regexp: 4.0.0
   eslint: ^7.32.0
   iter-tools-es: ^7.3.1
-  meriyah: ^4.2.1
   prettier: ^2.6.2
 
 dependencies:
@@ -17,13 +15,11 @@ dependencies:
   '@iter-tools/regex': 0.3.2
   debug: 4.3.4
   escape-string-regexp: 4.0.0
+  iter-tools-es: 7.3.1
 
 devDependencies:
-  '@babel/types': 7.17.10
   '@cst-tokens/helpers': github.com/js-cst-tokens/helpers/7d56586347229427a7da7dc9fa1e1e7aa43aa123
   eslint: 7.32.0
-  iter-tools-es: 7.3.1
-  meriyah: 4.2.1
   prettier: 2.6.2
 
 packages:
@@ -46,14 +42,6 @@ packages:
       '@babel/helper-validator-identifier': 7.16.7
       chalk: 2.4.2
       js-tokens: 4.0.0
-    dev: true
-
-  /@babel/types/7.17.10:
-    resolution: {integrity: sha512-9O26jG0mBYfGkUYCYZRnBwbVLd1UZOICEr2Em6InB6jVfsAv1GKgwXHmrSg+WFWDmeKTA6vyTZiN8tCSM5Oo3A==}
-    engines: {node: '>=6.9.0'}
-    dependencies:
-      '@babel/helper-validator-identifier': 7.16.7
-      to-fast-properties: 2.0.0
     dev: true
 
   /@cst-tokens/grammar/0.1.0:
@@ -525,6 +513,7 @@ packages:
 
   /iter-tools-es/7.3.1:
     resolution: {integrity: sha512-U4e1sPxQUFE8a4QAH/+1jIj5rZkHKtXguq1p3oOOuKJIbUYI5h2gSXM6CpYHcN9Od7A6hkoHOzIPrJ9afkRM4Q==}
+    dev: false
 
   /js-tokens/4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -571,11 +560,6 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       yallist: 4.0.0
-    dev: true
-
-  /meriyah/4.2.1:
-    resolution: {integrity: sha512-Uv5sWsmjFNC6IszEmHo5bzJLL+kqjQ/VrEj9Agqsqtx7B6dcxHnHLew1ioJD19HNXrxrRZltPi+NVh12I8RLXA==}
-    engines: {node: '>=10.4.0'}
     dev: true
 
   /minimatch/3.1.2:
@@ -749,11 +733,6 @@ packages:
 
   /text-table/0.2.0:
     resolution: {integrity: sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=}
-    dev: true
-
-  /to-fast-properties/2.0.0:
-    resolution: {integrity: sha1-3F5pjL0HkmW8c+A3doGk5Og/YW4=}
-    engines: {node: '>=4'}
     dev: true
 
   /type-check/0.4.0:
