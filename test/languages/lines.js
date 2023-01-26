@@ -1,4 +1,4 @@
-import { Grammar, Fragment } from '@cst-tokens/grammar';
+import { Grammar } from '@cst-tokens/grammar';
 import {
   eat,
   match,
@@ -33,14 +33,6 @@ export const tokenProductions = objectEntries({
 });
 
 export const productions = objectEntries({
-  *[Fragment]() {
-    let p;
-    p = yield startPathOuterRange();
-    yield eat(ref`fragment:Node`);
-    yield eatMatch('Separator');
-    yield endPathOuterRange(p);
-  },
-
   *Program() {
     let p, lp;
     let first = true;

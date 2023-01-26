@@ -1,9 +1,10 @@
 import { join, dirname } from 'path';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
+// eslint-disable-next-line import/no-unresolved
 import { build, print } from 'cst-tokens';
 
-import jsImportGrammar, { parse } from './grammars/js-imports.js';
+import jsImportGrammar from './languages/js-lite.js';
 
 Error.stackTraceLimit = 20;
 

@@ -1,22 +1,20 @@
-import { map, objectEntries, str } from 'iter-tools-es';
-import { Grammar, Fragment } from '@cst-tokens/grammar';
+import { str, concat } from 'iter-tools-es';
+import { Grammar } from '@cst-tokens/grammar';
 import {
   eat,
   match,
   eatMatch,
-  eatChrs,
-  eatMatchChrs,
   pushLexicalContext,
   popLexicalContext,
-  startNodeInnerRange,
-  endNodeInnerRange,
-  startNodeOuterRange,
-  endNodeOuterRange,
+  startNode,
+  endNode,
+  startToken,
+  endToken,
 } from '@cst-tokens/helpers/commands';
-import * as sym from '@cst-tokens/helpers/symbols';
-import { Bag } from '@cst-tokens/helpers/meta-productions';
-import { ref, PN, LPN, RPN, KW } from '@cst-tokens/helpers/shorthand';
+import { objectEntries } from '@cst-tokens/helpers/object';
+import { ref, tok, chrs, any, PN, LPN, RPN, KW } from '@cst-tokens/helpers/shorthand';
 import { LineBreak } from '@cst-tokens/helpers/descriptors';
+import { Any, All } from '@cst-tokens/helpers/symbols';
 
 const escapables = new Map(
   objectEntries({
@@ -30,170 +28,139 @@ const escapables = new Map(
   }),
 );
 
-export const tokenGrammar = new Grammar({
-  *matchTrivium() {
-    yield eatChrs(/[ \t]+/y);
+const anyAndAllProductions = objectEntries({
+  *[Any]({ takeables }) {
+    for (const takeable of takeables) {
+      if (yield eatMatch(takeable)) break;
+    }
+  },
+
+  *[All]({ takeables }) {
+    for (const takeable of takeables) {
+      yield eat(takeable);
+    }
+  },
+});
+
+class GoodGrammar extends Grammar {
+  constructor(grammar) {
+    const { productions } = grammar;
+    super({ ...grammar, productions: concat(productions, anyAndAllProductions) });
+  }
+}
+
+export const tokenGrammar = new GoodGrammar({
+  context: {
+    allowsTrivia: (lexicalContext) => lexicalContext === 'Bare',
   },
 
   productions: objectEntries({
     LineBreak,
 
-    *Keyword({ lexicalContext, value }) {
-      if (lexicalContext === 'Bare') {
-        yield eatChrs(value);
-      } else {
-        throw new Error(`{lexicalContext: ${lexicalContext}} does not allow keywords`);
-      }
+    *Separator() {
+      yield pushLexicalContext('Separator');
+      while (yield eatMatch(any(tok('Literal'), 'Comment', tok('StartNode'), tok('EndNode'))));
+      yield popLexicalContext('Separator');
     },
 
-    *Literal({ lexicalContext }) {
+    *Keyword({ value, getState }) {
+      const { lexicalContext } = getState();
+      yield startToken('Keyword');
+      if (lexicalContext !== 'Bare') {
+        throw new Error(`{lexicalContext: ${lexicalContext}} does not allow keywords`);
+      }
+      yield eat(chrs(value));
+      yield endToken('Keyword');
+    },
+
+    *Literal({ getState }) {
+      const { lexicalContext } = getState();
+      yield startToken('Literal');
       if (lexicalContext === 'String:Single') {
-        yield eatChrs(/[^\\']+/y);
+        yield eat(/[^\\']+/y);
       } else if (lexicalContext === 'String:Double') {
-        yield eatChrs(/[^\\"]+/y);
+        yield eat(/[^\\"]+/y);
       } else if (lexicalContext === 'Bare') {
-        yield eatChrs(/[$_\w][$_\w\d]*/y);
+        yield eat(/[$_\w][$_\w\d]*/y);
       } else {
         throw new Error(`{lexicalContext: ${lexicalContext}} does not allow literals`);
       }
+      yield endToken('Literal');
+    },
+
+    *String() {
+      let q; // quotation mark
+      q = yield eat('StringStart');
+
+      const lexicalContext = q === `'` ? 'String:Single' : 'String:Double';
+
+      yield pushLexicalContext(lexicalContext);
+
+      // parse here
+      while ((yield eatMatch('Escape', 'EscapeCode')) || (yield eatMatch('Literal')));
+
+      yield popLexicalContext(lexicalContext);
+
+      yield eat([null, 'StringEnd', q]);
     },
 
     *StringStart() {
-      yield pushLexicalContext('Separator');
-      yield eatChrs(/['"]/y);
+      yield startToken('StringStart');
+      yield eat(/['"]/y);
+      yield endToken('StringStart');
+      yield pushLexicalContext('String');
     },
 
     *StringEnd({ value }) {
       if (/['"]$/y.test(value)) throw new Error('stringEndToken.value must be a quote');
 
-      yield eatChrs(value);
-      yield popLexicalContext('Separator');
+      yield popLexicalContext('String');
+      yield startToken('StringEnd');
+      yield eat(chrs(value));
+      yield endToken('StringEnd');
     },
 
-    *Escape({ lexicalContext }) {
+    *Escape({ getState }) {
+      const { lexicalContext } = getState();
+      yield startToken('Escape');
       if (lexicalContext.startsWith('String')) {
-        yield eatChrs('\\');
+        yield eat(chrs('\\'));
       } else {
         throw new Error(`{lexicalContext: ${lexicalContext}} does not define any escapes`);
       }
+      yield endToken('Escape');
     },
 
-    *EscapeCode({ lexicalContext }) {
+    *EscapeCode({ getState }) {
+      const { lexicalContext } = getState();
+      yield startToken('EscapeCode');
       if (lexicalContext.startsWith('String')) {
-        if (yield eatMatchChrs(/u{\d{1,6}}/y)) {
+        if (yield eatMatch(/u{\d{1,6}}/y)) {
           // break
-        } else if (yield eatMatchChrs(/u\d\d\d\d/y)) {
+        } else if (yield eatMatch(/u\d\d\d\d/y)) {
           // break
-        } else if (yield eatMatchChrs(/x\d\d/y)) {
+        } else if (yield eatMatch(/x\d\d/y)) {
           // break
-        } else if (yield eatMatchChrs(str(escapables.keys()))) {
+        } else if (yield eatMatch(chrs(str(escapables.keys())))) {
           // break
         }
       } else {
         throw new Error(`{lexicalContext: ${lexicalContext}} does not define any escapes`);
       }
+      yield endToken('EscapeCode');
     },
   }),
 });
 
-export function* Separator({ getState }) {
-  const result = getState().source
-    ? yield eat(Bag(['Whitespace', 'LineBreak']))
-    : yield eat('Whitespace');
-
-  return result;
-}
-
-export const WithSeparator = (production) => {
-  const name = `WithSeparator_${production.name}`;
-  return {
-    *[name](props) {
-      const { getState } = props;
-      const rootState = getState();
-      let s = rootState;
-
-      const generator = production(props);
-      let current = generator.next();
-
-      let p;
-
-      while (!current.done) {
-        const cmd = current.value;
-        const cause = cmd.error;
-        let returnValue;
-
-        cmd.error = cause && new Error(undefined, { cause });
-
-        switch (cmd.type) {
-          case sym.startLexicalContext: {
-            const name = cmd.value;
-            if (name === 'Identifier') {
-              const spaceIsAllowed = s.source.lexicalContext === 'Base';
-            }
-
-            returnValue = yield cmd;
-            break;
-          }
-
-          case sym.eatProduction:
-          case sym.matchProduction:
-          case sym.eatMatchProduction: {
-            returnValue = yield cmd;
-            break;
-          }
-
-          case sym.eat:
-          case sym.match:
-          case sym.eatMatch: {
-            const name = cmd.value;
-
-            // const spaceIsAllowed = s.source.lexicalContext === 'Base';
-
-            // const spaceIsNecessary = ;
-
-            if (spaceIsAllowed) {
-              if (spaceIsNecessary) {
-                yield eat('Separator');
-              } else {
-                yield eatMatch('Separator');
-              }
-            }
-
-            let s = getState();
-
-            if (s.path !== s.source.path) {
-              yield startNodeInnerRange();
-            }
-
-            returnValue = yield cmd;
-            break;
-          }
-
-          default:
-            returnValue = yield cmd;
-            break;
-        }
-
-        s = getState();
-        current = generator.next(returnValue);
-      }
-
-      yield endNodeInnerRange();
-    },
-  }[name];
-};
-
 export const productions = objectEntries({
-  *[Fragment]() {
-    yield eat(ref`fragment:Node`);
-    yield eatMatch(Separator);
-  },
-
   *Program() {
+    yield startNode('Program');
     while (yield eatMatch(ref`body:ImportDeclaration`));
+    yield endNode();
   },
 
   *ImportDeclaration() {
+    yield startNode('ImportDeclaration');
     yield eat(KW`import`);
 
     const special =
@@ -206,7 +173,6 @@ export const productions = objectEntries({
         for (;;) {
           yield eat(ref`specifier:ImportSpecifier`);
 
-          yield eatMatch(Separator);
           if (yield match(RPN`}`)) break;
           if (yield match(PN`,`, RPN`}`)) break;
           yield eat(PN`,`);
@@ -220,57 +186,62 @@ export const productions = objectEntries({
 
     yield eat(ref`source:StringLiteral`);
     yield eatMatch(PN`;`);
+    yield endNode();
   },
 
   *ImportSpecifier() {
+    yield startNode('ImportSpecifier');
     // Ref captured inside match is used only in the shorthand case
     yield match(ref`local:Identifier`);
     yield eat(ref`imported:Identifier`);
     yield eatMatch(KW`as`, ref`local:Identifier`);
+    yield endNode();
   },
 
   *ImportDefaultSpecifier() {
+    yield startNode('ImportDefaultSpecifier');
     yield eat(ref`local:Identifier`);
+    yield endNode();
   },
 
   *ImportNamespaceSpecifier() {
+    yield startNode('ImportNamespaceSpecifier');
     yield eat(PN`*`, KW`as`, ref`local:Identifier`);
+    yield endNode();
   },
 
   *String() {
-    let q; // quotation mark
-    q = yield eat('StringStart');
-
-    const lexicalContext = q === `'` ? 'String:Single' : 'String:Double';
-
-    yield pushLexicalContext(lexicalContext);
-
-    // parse here
-    while ((yield eatMatch('Escape', 'EscapeCode')) || (yield eatMatch('Literal')));
-
-    yield popLexicalContext(lexicalContext);
-
-    yield eat([null, 'StringEnd', q]);
+    yield startNode('String');
+    yield eat(tok('String'));
+    yield endNode();
   },
 
   *Identifier() {
+    yield startNode('Identifier');
     yield pushLexicalContext('Identifier');
 
     while ((yield eatMatch('Escape', 'EscapeCode')) || (yield eatMatch('Literal')));
 
     yield popLexicalContext('Identifier');
+    yield endNode();
   },
-
-  Separator,
 });
 
 export default {
   grammars: {
     token: tokenGrammar,
-    syntax: new Grammar({
+    syntax: new GoodGrammar({
       aliases: objectEntries({
         Literal: ['StringLiteral'],
-        Node: map((kv) => kv[0], productions),
+        Node: [
+          'Program',
+          'ImportDeclaration',
+          'ImportSpecifier',
+          'ImportDefaultSpecifier',
+          'ImportNamespaceSpecifier',
+          'String',
+          'Identifier',
+        ],
       }),
 
       productions,
