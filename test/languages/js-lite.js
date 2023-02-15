@@ -1,20 +1,26 @@
-import { str, map, concat, compose } from 'iter-tools-es';
-import { Grammar } from '@cst-tokens/grammar';
+import { str, map, compose } from 'iter-tools-es';
+
 import {
   eat,
   match,
   eatMatch,
-  pushLexicalContext,
-  popLexicalContext,
   startNode,
   endNode,
   startToken,
   endToken,
 } from '@cst-tokens/helpers/commands';
 import { objectEntries } from '@cst-tokens/helpers/object';
-import { ref, tok, chrs, any, PN, LPN, RPN, KW } from '@cst-tokens/helpers/shorthand';
-import { Any, All } from '@cst-tokens/helpers/symbols';
+import { ref, tok, chrs } from '@cst-tokens/helpers/shorthand';
+import { LexicalBoundary, EOF } from '@cst-tokens/helpers/symbols';
 import * as sym from '@cst-tokens/helpers/symbols';
+
+import { GoodGrammar } from '../good-grammar.js';
+
+export const _ = 'Separator';
+export const PN = (value) => ({ mode: sym.token, value: { type: 'Punctuator', value } });
+export const LPN = (value) => ({ mode: sym.token, value: { type: 'LeftPunctuator', value } });
+export const RPN = (value) => ({ mode: sym.token, value: { type: 'RightPunctuator', value } });
+export const KW = (value) => ({ mode: sym.token, value: { type: 'Keyword', value } });
 
 const escapables = new Map(
   objectEntries({
@@ -28,27 +34,6 @@ const escapables = new Map(
   }),
 );
 
-const anyAndAllProductions = objectEntries({
-  *[Any]({ takeables }) {
-    for (const takeable of takeables) {
-      if (yield eatMatch(takeable)) break;
-    }
-  },
-
-  *[All]({ takeables }) {
-    for (const takeable of takeables) {
-      yield eat(takeable);
-    }
-  },
-});
-
-class GoodGrammar extends Grammar {
-  constructor(grammar) {
-    const { productions } = grammar;
-    super({ ...grammar, productions: concat(productions, anyAndAllProductions) });
-  }
-}
-
 export const WithToken = ([key, production]) => {
   const name = `WithToken_${production.name}`;
   return [
@@ -56,7 +41,7 @@ export const WithToken = ([key, production]) => {
     {
       *[name](props, grammar) {
         if (grammar.is('Token', key)) {
-          yield startToken();
+          yield startToken(name);
           yield* production(props);
           yield endToken();
         } else {
@@ -67,103 +52,151 @@ export const WithToken = ([key, production]) => {
   ];
 };
 
-export const tokenGrammar = new GoodGrammar({
-  productions: objectEntries({
-    *Separator() {
-      yield pushLexicalContext('Separator');
-      while (yield eatMatch(any('Literal', 'Comment', 'StartNode', 'EndNode')));
-      yield popLexicalContext('Separator');
-    },
-
-    *Keyword({ value, lexicalContext }) {
-      yield startToken('Keyword', value);
-      if (lexicalContext !== 'Bare') {
-        throw new Error(`{lexicalContext: ${lexicalContext}} does not allow keywords`);
-      }
-      yield eat(chrs(value));
-      yield endToken();
-    },
-
-    *LeftPunctuator({ value }) {
-      yield startToken('LeftPunctuator', value);
-      yield { type: 'debug' };
-      yield eat(chrs(value));
-      yield endToken();
-    },
-
-    *Literal({ lexicalContext }) {
-      yield startToken('Literal');
-      if (lexicalContext === 'String:Single') {
-        yield eat(/[^\\']+/y);
-      } else if (lexicalContext === 'String:Double') {
-        yield eat(/[^\\"]+/y);
-      } else if (lexicalContext === 'Bare') {
-        yield eat(/[$_\w][$_\w\d]*/y);
-      } else {
-        throw new Error(`{lexicalContext: ${lexicalContext}} does not allow literals`);
-      }
-      yield endToken();
-    },
-
-    *String() {
-      let q; // quotation mark
-      q = yield eat('StringStart');
-
-      const lexicalContext = q === `'` ? 'String:Single' : 'String:Double';
-
-      yield pushLexicalContext(lexicalContext);
-
-      // parse here
-      while ((yield eatMatch('Escape', 'EscapeCode')) || (yield eatMatch('Literal')));
-
-      yield popLexicalContext(lexicalContext);
-
-      yield eat([null, 'StringEnd', q]);
-    },
-
-    *StringStart() {
-      let q; // quotation mark
-      yield startToken('StringStart');
-      q = yield eat(/['"]/y);
-      yield endToken();
-    },
-
-    *StringEnd({ value }) {
-      if (/['"]$/y.test(value)) throw new Error('stringEndToken.value must be a quote');
-
-      yield startToken('StringEnd');
-      yield eat(chrs(value));
-      yield endToken();
-    },
-
-    *Escape({ lexicalContext }) {
-      yield startToken('Escape');
-      if (lexicalContext.startsWith('String')) {
-        yield eat(chrs('\\'));
-      } else {
-        throw new Error(`{lexicalContext: ${lexicalContext}} does not define any escapes`);
-      }
-      yield endToken();
-    },
-
-    *EscapeCode({ lexicalContext }) {
-      yield startToken('EscapeCode');
-      if (lexicalContext.startsWith('String')) {
-        if (yield eatMatch(/u{\d{1,6}}/y)) {
-          // break
-        } else if (yield eatMatch(/u\d\d\d\d/y)) {
-          // break
-        } else if (yield eatMatch(/x\d\d/y)) {
-          // break
-        } else if (yield eatMatch(chrs(str(escapables.keys())))) {
-          // break
-        }
-      } else {
-        throw new Error(`{lexicalContext: ${lexicalContext}} does not define any escapes`);
-      }
-      yield endToken();
-    },
+const bareTransitions = new Map(
+  objectEntries({
+    "'": ["'", 'String:Single', "'"],
+    '"': ['"', 'String:Double', '"'],
+    '/*': ['/*', 'Comment:Block', '*/'],
+    '//': ['//', 'Comment:Line', '\n'],
+    '/': ['/', 'Regex', '/'],
   }),
+);
+
+export const tokenGrammar = new GoodGrammar({
+  aliases: objectEntries({
+    Token: [
+      'Whitespace',
+      'Keyword',
+      'Punctuator',
+      'LeftPunctuator',
+      'RightPunctuator',
+      'Literal',
+      'StringStart',
+      'StringEnd',
+      'Escape',
+      'EscapeCode',
+    ],
+    Comment: ['BlockComment', 'LineComment'],
+    Trivia: ['Comment', 'Whitespace'],
+    [LexicalBoundary]: ['CommentStart', 'CommentEnd', 'StringStart', 'StringEnd'],
+  }),
+  context: {
+    *transition(lexicalContext, boundaryToken) {
+      if (lexicalContext === 'Bare') {
+        yield* bareTransitions.get(boundaryToken);
+      } else {
+        throw new Error();
+      }
+    },
+  },
+  productions: map(
+    WithToken,
+    objectEntries({
+      *Separator() {
+        // StartNode and EndNode?
+        yield eat('Trivia');
+        while (yield eatMatch('Trivia'));
+      },
+
+      *BlockComment() {
+        yield eatMatch(ref({ type: 'CommentStart', value: '/*' }));
+
+        yield eatMatch('Literal');
+
+        yield eatMatch(ref({ type: 'CommentEnd', value: '*/' }));
+      },
+
+      *LineComment() {
+        yield eatMatch(ref({ type: 'CommentStart', value: '//' }));
+
+        yield eatMatch('Literal');
+
+        if (yield match({ mode: sym.character, value: EOF })) return;
+
+        yield eatMatch(ref({ type: 'CommentEnd', value: '\n' }));
+      },
+
+      *Whitespace() {
+        yield eat(/\w+/y);
+      },
+
+      *Keyword({ value, lexicalContext }) {
+        if (lexicalContext !== 'Bare') {
+          throw new Error(`{lexicalContext: ${lexicalContext}} does not allow keywords`);
+        }
+        yield eat(chrs(value));
+      },
+
+      *Identifier() {
+        (yield eatMatch('Escape', 'EscapeCode')) || (yield eatMatch('Literal' /* isFirst: true */));
+
+        while ((yield eatMatch('Escape', 'EscapeCode')) || (yield eatMatch('Literal')));
+      },
+
+      *Punctuator({ value }) {
+        yield eat(chrs(value));
+      },
+
+      *LeftPunctuator({ value }) {
+        yield eat(chrs(value));
+      },
+
+      *RightPunctuator({ value }) {
+        yield eat(chrs(value));
+      },
+
+      *Literal({ lexicalContext, isFirst = false }) {
+        if (lexicalContext === 'String:Single') {
+          yield eat(/[^\\']+/y);
+        } else if (lexicalContext === 'String:Double') {
+          yield eat(/[^\\"]+/y);
+        } else if (lexicalContext === 'Bare') {
+          // it may be appropriate for the literal to contain only a digit, e.g. foo\u{42}9
+          if (isFirst) {
+            yield eat(/[$_\w][$_\w\d]*/y);
+          } else {
+            yield eat(/[$_\w\d]+/y);
+          }
+        } else {
+          throw new Error(`{lexicalContext: ${lexicalContext}} does not allow literals`);
+        }
+      },
+
+      *String() {
+        let q; // quotation mark
+        q = yield eatMatch(ref({ type: 'StringStart', value: `'` }));
+        q = q || (yield eat(ref({ type: 'StringStart', value: `"` })));
+
+        while ((yield eatMatch('Escape', 'EscapeCode')) || (yield eatMatch('Literal')));
+
+        yield eat(ref({ type: 'StringEnd', value: q }));
+      },
+
+      *Escape({ lexicalContext }) {
+        if (lexicalContext.startsWith('String')) {
+          yield eat(chrs('\\'));
+        } else {
+          throw new Error(`{lexicalContext: ${lexicalContext}} does not define any escapes`);
+        }
+      },
+
+      *EscapeCode({ lexicalContext }) {
+        if (lexicalContext.startsWith('String')) {
+          if (yield eatMatch(/u{\d{1,6}}/y)) {
+            // break
+          } else if (yield eatMatch(/u\d\d\d\d/y)) {
+            // break
+          } else if (yield eatMatch(/x\d\d/y)) {
+            // break
+          } else if (yield eatMatch(chrs(str(escapables.keys())))) {
+            // break
+          }
+        } else {
+          throw new Error(`{lexicalContext: ${lexicalContext}} does not define any escape codes`);
+        }
+      },
+    }),
+  ),
 });
 
 const spaceDelimitedTypes = ['Identifier', 'Keyword'];
@@ -245,6 +278,31 @@ export const WithNode = ([type, production]) => {
   ];
 };
 
+const formatType = (type) => {
+  return typeof type === 'symbol' ? `[${type.description.replace(/^cst-tokens\//, '')}]` : type;
+};
+
+export const WithLogging = ([type, production]) => {
+  const name = `WithLogging_${production.name}`;
+  return [
+    type,
+    {
+      *[name](props) {
+        console.log(`--> ${formatType(type)}`);
+
+        for (const instr of production(props)) {
+          const formattedMode = instr.mode ? ` ${formatType(instr.mode)}` : '';
+          const formattedValue = instr.value ? ` ${formatType(instr.value.type)}` : '';
+          console.log(`instr ${formatType(instr.type)}${formattedMode}${formattedValue}`);
+          yield instr;
+        }
+
+        console.log(`<-- ${formatType(type)}`);
+      },
+    }[name],
+  ];
+};
+
 export const syntaxGrammar = new GoodGrammar({
   aliases: objectEntries({
     Literal: ['StringLiteral'],
@@ -261,7 +319,7 @@ export const syntaxGrammar = new GoodGrammar({
   }),
 
   productions: map(
-    compose(WithNode /*WithWhitespace*/),
+    compose(WithNode, /*WithWhitespace*/ WithLogging),
     objectEntries({
       *Program() {
         while (yield eatMatch(ref`body:ImportDeclaration`));
@@ -270,9 +328,8 @@ export const syntaxGrammar = new GoodGrammar({
       *ImportDeclaration() {
         yield eat(KW`import`);
 
-        const special = yield eatMatch(ref`specifiers:ImportSpecialSpecifier`);
-
         yield { type: 'debug' };
+        const special = yield eatMatch(ref`specifiers:ImportSpecialSpecifier`);
 
         const brace = special ? yield eatMatch(PN`,`, LPN`{`) : yield eatMatch(LPN`{`);
         if (brace) {
@@ -308,15 +365,11 @@ export const syntaxGrammar = new GoodGrammar({
       },
 
       *String() {
-        yield eat(tok('String'));
+        yield eat(tok`String`);
       },
 
       *Identifier() {
-        yield pushLexicalContext('Identifier');
-
-        while ((yield eatMatch('Escape', 'EscapeCode')) || (yield eatMatch('Literal')));
-
-        yield popLexicalContext('Identifier');
+        yield eat(tok`Identifier`);
       },
     }),
   ),

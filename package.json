@@ -14,9 +14,7 @@
   "dependencies": {
     "@iter-tools/imm-stack": "1.1.0",
     "@iter-tools/regex": "0.3.2",
-    "debug": "4.3.4",
-    "escape-string-regexp": "4.0.0",
-    "iter-tools-es": "^7.3.1"
+    "escape-string-regexp": "4.0.0"
   },
   "devDependencies": {
     "@cst-tokens/grammar": "*",
@@ -25,6 +23,7 @@
     "eslint": "^8.32.0",
     "eslint-import-resolver-enhanced-resolve": "^1.0.5",
     "eslint-plugin-import": "^2.27.5",
+    "iter-tools-es": "^7.3.1",
     "meriyah": "^4.3.3",
     "prettier": "^2.6.2"
   },

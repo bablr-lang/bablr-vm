@@ -5,7 +5,6 @@ specifiers:
   '@cst-tokens/helpers': '*'
   '@iter-tools/imm-stack': 1.1.0
   '@iter-tools/regex': 0.3.2
-  debug: 4.3.4
   enhanced-resolve: ^5.12.0
   escape-string-regexp: 4.0.0
   eslint: ^8.32.0
@@ -18,9 +17,7 @@ specifiers:
 dependencies:
   '@iter-tools/imm-stack': 1.1.0
   '@iter-tools/regex': 0.3.2
-  debug: 4.3.4
   escape-string-regexp: 4.0.0
-  iter-tools-es: 7.3.1
 
 devDependencies:
   '@cst-tokens/grammar': link:../grammar
@@ -29,6 +26,7 @@ devDependencies:
   eslint: 8.32.0
   eslint-import-resolver-enhanced-resolve: 1.0.5
   eslint-plugin-import: 2.27.5_eslint@8.32.0
+  iter-tools-es: 7.3.1
   meriyah: 4.3.3
   prettier: 2.6.2
 
@@ -261,6 +259,7 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
+    dev: true
 
   /deep-is/0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
@@ -885,7 +884,6 @@ packages:
 
   /iter-tools-es/7.3.1:
     resolution: {integrity: sha512-U4e1sPxQUFE8a4QAH/+1jIj5rZkHKtXguq1p3oOOuKJIbUYI5h2gSXM6CpYHcN9Od7A6hkoHOzIPrJ9afkRM4Q==}
-    dev: false
 
   /js-sdsl/4.2.0:
     resolution: {integrity: sha512-dyBIzQBDkCqCu+0upx25Y2jGdbTGxE9fshMsCdK0ViOongpV+n5tXRcZY9v7CaVQ79AGS9KA1KHtojxiM7aXSQ==}
@@ -949,6 +947,7 @@ packages:
 
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
+    dev: true
 
   /natural-compare/1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}

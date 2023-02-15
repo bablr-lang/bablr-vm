@@ -10,7 +10,7 @@ module.exports = {
   extends: ['plugin:import/recommended'],
   overrides: [],
   parserOptions: {
-    ecmaVersion: 'latest',
+    ecmaVersion: '2020',
     sourceType: 'module',
   },
   rules: {
