@@ -330,7 +330,6 @@ export const syntaxGrammar = new Grammar({
       *ImportDeclaration() {
         yield eat(KW`import`);
 
-        yield { type: 'debug' };
         const special = yield eatMatch(ref`specifiers:ImportSpecialSpecifier`);
 
         const brace = special ? yield eatMatch(PN`,`, LPN`{`) : yield eatMatch(LPN`{`);
