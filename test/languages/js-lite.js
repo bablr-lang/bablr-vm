@@ -1,6 +1,7 @@
 import { str, map, compose } from 'iter-tools-es';
 
 import {
+  Grammar,
   eat,
   match,
   eatMatch,
@@ -8,19 +9,17 @@ import {
   endNode,
   startToken,
   endToken,
-} from '@cst-tokens/helpers/commands';
+} from '@cst-tokens/helpers/grammar';
 import { objectEntries } from '@cst-tokens/helpers/object';
 import { ref, tok, chrs } from '@cst-tokens/helpers/shorthand';
 import { LexicalBoundary, EOF } from '@cst-tokens/helpers/symbols';
 import * as sym from '@cst-tokens/helpers/symbols';
 
-import { GoodGrammar } from '../good-grammar.js';
-
 export const _ = 'Separator';
-export const PN = (value) => ({ mode: sym.token, value: { type: 'Punctuator', value } });
-export const LPN = (value) => ({ mode: sym.token, value: { type: 'LeftPunctuator', value } });
-export const RPN = (value) => ({ mode: sym.token, value: { type: 'RightPunctuator', value } });
-export const KW = (value) => ({ mode: sym.token, value: { type: 'Keyword', value } });
+export const PN = (value) => ({ type: sym.terminal, value: { type: 'Punctuator', value } });
+export const LPN = (value) => ({ type: sym.terminal, value: { type: 'LeftPunctuator', value } });
+export const RPN = (value) => ({ type: sym.terminal, value: { type: 'RightPunctuator', value } });
+export const KW = (value) => ({ type: sym.terminal, value: { type: 'Keyword', value } });
 
 const escapables = new Map(
   objectEntries({
@@ -41,7 +40,7 @@ export const WithToken = ([key, production]) => {
     {
       *[name](props, grammar) {
         if (grammar.is('Token', key)) {
-          yield startToken(name);
+          yield startToken(key);
           yield* production(props);
           yield endToken();
         } else {
@@ -62,7 +61,7 @@ const bareTransitions = new Map(
   }),
 );
 
-export const tokenGrammar = new GoodGrammar({
+export const tokenGrammar = new Grammar({
   aliases: objectEntries({
     Token: [
       'Whitespace',
@@ -111,7 +110,7 @@ export const tokenGrammar = new GoodGrammar({
 
         yield eatMatch('Literal');
 
-        if (yield match({ mode: sym.character, value: EOF })) return;
+        if (yield match(ref({ type: EOF }))) return;
 
         yield eatMatch(ref({ type: 'CommentEnd', value: '\n' }));
       },
@@ -291,9 +290,12 @@ export const WithLogging = ([type, production]) => {
         console.log(`--> ${formatType(type)}`);
 
         for (const instr of production(props)) {
-          const formattedMode = instr.mode ? ` ${formatType(instr.mode)}` : '';
-          const formattedValue = instr.value ? ` ${formatType(instr.value.type)}` : '';
-          console.log(`instr ${formatType(instr.type)}${formattedMode}${formattedValue}`);
+          const formattedVerb = instr.type ? ` ${formatType(instr.type)}` : '<unknown>';
+          const edible = instr.value;
+          const formattedMode = edible ? ` ${formatType(edible.type)}` : '';
+          const descriptor = edible?.value;
+          const formattedDescriptor = descriptor ? ` ${formatType(descriptor.type)}` : '';
+          console.log(`instr ${formatType(formattedVerb)}${formattedMode}${formattedDescriptor}`);
           yield instr;
         }
 
@@ -303,7 +305,7 @@ export const WithLogging = ([type, production]) => {
   ];
 };
 
-export const syntaxGrammar = new GoodGrammar({
+export const syntaxGrammar = new Grammar({
   aliases: objectEntries({
     Literal: ['StringLiteral'],
     ImportSpecialSpecifier: ['ImportDefaultSpecifier', 'ImportNamespaceSpecifier'],
