@@ -1,18 +1,9 @@
 import { str, map, compose } from 'iter-tools-es';
 
-import {
-  Grammar,
-  eat,
-  match,
-  eatMatch,
-  startNode,
-  endNode,
-  startToken,
-  endToken,
-} from '@cst-tokens/helpers/grammar';
+import { Grammar, eat, match, eatMatch, startToken, endToken } from '@cst-tokens/helpers/grammar';
 import { objectEntries } from '@cst-tokens/helpers/object';
-import { ref, tok, chrs } from '@cst-tokens/helpers/shorthand';
-import { LexicalBoundary, EOF } from '@cst-tokens/helpers/symbols';
+import { tok, chrs, prod } from '@cst-tokens/helpers/shorthand';
+import { LexicalBoundary, EOF, StartNode, EndNode } from '@cst-tokens/helpers/symbols';
 import * as sym from '@cst-tokens/helpers/symbols';
 
 export const _ = 'Separator';
@@ -98,21 +89,21 @@ export const tokenGrammar = new Grammar({
       },
 
       *BlockComment() {
-        yield eatMatch(ref({ type: 'CommentStart', value: '/*' }));
+        yield eatMatch(prod`CommentStart:/*`);
 
         yield eatMatch('Literal');
 
-        yield eatMatch(ref({ type: 'CommentEnd', value: '*/' }));
+        yield eatMatch(prod`CommentEnd:*/`);
       },
 
       *LineComment() {
-        yield eatMatch(ref({ type: 'CommentStart', value: '//' }));
+        yield eatMatch(prod`CommentStart://`);
 
         yield eatMatch('Literal');
 
-        if (yield match(ref({ type: EOF }))) return;
+        if (yield match(prod(EOF))) return;
 
-        yield eatMatch(ref({ type: 'CommentEnd', value: '\n' }));
+        yield eatMatch(prod`CommentEnd:\n`);
       },
 
       *Whitespace() {
@@ -126,12 +117,6 @@ export const tokenGrammar = new Grammar({
         yield eat(chrs(value));
       },
 
-      *Identifier() {
-        (yield eatMatch('Escape', 'EscapeCode')) || (yield eatMatch('Literal' /* isFirst: true */));
-
-        while ((yield eatMatch('Escape', 'EscapeCode')) || (yield eatMatch('Literal')));
-      },
-
       *Punctuator({ value }) {
         yield eat(chrs(value));
       },
@@ -142,6 +127,16 @@ export const tokenGrammar = new Grammar({
 
       *RightPunctuator({ value }) {
         yield eat(chrs(value));
+      },
+
+      *String() {
+        let q; // quotation mark
+        q = yield eatMatch(prod`StringStart:'`);
+        q = q || (yield eat(prod`StringStart:"`));
+
+        while ((yield eatMatch('Escape', 'EscapeCode')) || (yield eatMatch('Literal')));
+
+        yield eat(prod`StringEnd:${q}`);
       },
 
       *Literal({ lexicalContext, isFirst = false }) {
@@ -161,14 +156,10 @@ export const tokenGrammar = new Grammar({
         }
       },
 
-      *String() {
-        let q; // quotation mark
-        q = yield eatMatch(ref({ type: 'StringStart', value: `'` }));
-        q = q || (yield eat(ref({ type: 'StringStart', value: `"` })));
+      *Identifier() {
+        (yield eatMatch('Escape', 'EscapeCode')) || (yield eatMatch('Literal' /* isFirst: true */));
 
         while ((yield eatMatch('Escape', 'EscapeCode')) || (yield eatMatch('Literal')));
-
-        yield eat(ref({ type: 'StringEnd', value: q }));
       },
 
       *Escape({ lexicalContext }) {
@@ -266,9 +257,14 @@ export const WithNode = ([type, production]) => {
     {
       *[name](props, grammar) {
         if (grammar.is('Node', type)) {
-          yield startNode();
+          const { getState } = props;
+          yield eat(tok(StartNode));
+
           yield* production(props);
-          yield endNode();
+
+          if (getState().status !== sym.rejected) {
+            yield eat(tok(EndNode));
+          }
         } else {
           yield* production(props);
         }
@@ -295,11 +291,17 @@ export const WithLogging = ([type, production]) => {
           const formattedMode = edible ? ` ${formatType(edible.type)}` : '';
           const descriptor = edible?.value;
           const formattedDescriptor = descriptor ? ` ${formatType(descriptor.type)}` : '';
+
           console.log(`instr ${formatType(formattedVerb)}${formattedMode}${formattedDescriptor}`);
+
           yield instr;
         }
 
+        // if (range) {
+        // console.log(`x-- ${formatType(type)}`);
+        // } else {
         console.log(`<-- ${formatType(type)}`);
+        // }
       },
     }[name],
   ];
@@ -324,18 +326,18 @@ export const syntaxGrammar = new Grammar({
     compose(WithNode, /*WithWhitespace*/ WithLogging),
     objectEntries({
       *Program() {
-        while (yield eatMatch(ref`body:ImportDeclaration`));
+        while (yield eatMatch(prod`body:ImportDeclaration`));
       },
 
       *ImportDeclaration() {
         yield eat(KW`import`);
 
-        const special = yield eatMatch(ref`specifiers:ImportSpecialSpecifier`);
+        const special = yield eatMatch(prod`specifiers:ImportSpecialSpecifier`);
 
         const brace = special ? yield eatMatch(PN`,`, LPN`{`) : yield eatMatch(LPN`{`);
         if (brace) {
           for (;;) {
-            yield eat(ref`specifier:ImportSpecifier`);
+            yield eat(prod`specifier:ImportSpecifier`);
 
             if (yield match(RPN`}`)) break;
             if (yield match(PN`,`, RPN`}`)) break;
@@ -346,23 +348,21 @@ export const syntaxGrammar = new Grammar({
           yield eat(KW`from`);
         }
 
-        yield eat(ref`source:StringLiteral`);
+        yield eat(prod`source:StringLiteral`);
         yield eatMatch(PN`;`);
       },
 
       *ImportSpecifier() {
-        // Ref captured inside match is used only in the shorthand case
-        yield match(ref`local:Identifier`);
-        yield eat(ref`imported:Identifier`);
-        yield eatMatch(KW`as`, ref`local:Identifier`);
+        yield eat(prod`imported:Identifier`);
+        yield eatMatch(KW`as`, prod`local:Identifier`);
       },
 
       *ImportDefaultSpecifier() {
-        yield eat(ref`local:Identifier`);
+        yield eat(prod`local:Identifier`);
       },
 
       *ImportNamespaceSpecifier() {
-        yield eat(PN`*`, KW`as`, ref`local:Identifier`);
+        yield eat(PN`*`, KW`as`, prod`local:Identifier`);
       },
 
       *String() {

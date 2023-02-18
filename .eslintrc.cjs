@@ -15,6 +15,7 @@ module.exports = {
   },
   rules: {
     'no-undef': 'error',
+    'no-fallthrough': 'error',
   },
   settings: {
     'import/resolver': {
