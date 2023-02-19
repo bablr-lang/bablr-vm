@@ -17,8 +17,8 @@
     "escape-string-regexp": "4.0.0"
   },
   "devDependencies": {
-    "@cst-tokens/grammar": "*",
-    "@cst-tokens/helpers": "*",
+    "@cst-tokens/grammar": "github:js-cst-tokens/grammar#7e9148b787d5e21703bb4f65f5c7de4fdcc50342",
+    "@cst-tokens/helpers": "github:js-cst-tokens/helpers#fbeef623541776e8d936e7d80d12f99fc7e3dfc1",
     "enhanced-resolve": "^5.12.0",
     "eslint": "^8.32.0",
     "eslint-import-resolver-enhanced-resolve": "^1.0.5",

@@ -1,8 +1,8 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@cst-tokens/grammar': '*'
-  '@cst-tokens/helpers': '*'
+  '@cst-tokens/grammar': github:js-cst-tokens/grammar#7e9148b787d5e21703bb4f65f5c7de4fdcc50342
+  '@cst-tokens/helpers': github:js-cst-tokens/helpers#fbeef623541776e8d936e7d80d12f99fc7e3dfc1
   '@iter-tools/imm-stack': 1.1.0
   '@iter-tools/regex': 0.3.2
   enhanced-resolve: ^5.12.0
@@ -20,8 +20,8 @@ dependencies:
   escape-string-regexp: 4.0.0
 
 devDependencies:
-  '@cst-tokens/grammar': link:../grammar
-  '@cst-tokens/helpers': link:../cst-tokens-helpers
+  '@cst-tokens/grammar': github.com/js-cst-tokens/grammar/7e9148b787d5e21703bb4f65f5c7de4fdcc50342
+  '@cst-tokens/helpers': github.com/js-cst-tokens/helpers/fbeef623541776e8d936e7d80d12f99fc7e3dfc1
   enhanced-resolve: 5.12.0
   eslint: 8.32.0
   eslint-import-resolver-enhanced-resolve: 1.0.5
@@ -31,6 +31,10 @@ devDependencies:
   prettier: 2.6.2
 
 packages:
+
+  /@cst-tokens/grammar/0.2.0:
+    resolution: {integrity: sha512-XXKMRxjz/J+DhqK9yJjVgOtg6RDIXk9khcgrypQvEzxRSLHLfWnUDFBbIPbAxGdlTY6fqcWK/KGjBqWmiDzr8w==}
+    dev: true
 
   /@eslint/eslintrc/1.4.1:
     resolution: {integrity: sha512-XXrH9Uarn0stsyldqDYq8r++mROmWRI1xKMXa640Bb//SY1+ECYX6VzT6Lcx5frD0V30XieqJ0oX9I2Xj5aoMA==}
@@ -1277,4 +1281,21 @@ packages:
   /yocto-queue/0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+    dev: true
+
+  github.com/js-cst-tokens/grammar/7e9148b787d5e21703bb4f65f5c7de4fdcc50342:
+    resolution: {tarball: https://codeload.github.com/js-cst-tokens/grammar/tar.gz/7e9148b787d5e21703bb4f65f5c7de4fdcc50342}
+    name: '@cst-tokens/grammar'
+    version: 0.2.0
+    dev: true
+
+  github.com/js-cst-tokens/helpers/fbeef623541776e8d936e7d80d12f99fc7e3dfc1:
+    resolution: {tarball: https://codeload.github.com/js-cst-tokens/helpers/tar.gz/fbeef623541776e8d936e7d80d12f99fc7e3dfc1}
+    name: '@cst-tokens/helpers'
+    version: 0.10.0
+    dependencies:
+      '@cst-tokens/grammar': 0.2.0
+      debug: 4.3.4
+    transitivePeerDependencies:
+      - supports-color
     dev: true
