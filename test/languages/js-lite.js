@@ -285,23 +285,27 @@ export const WithLogging = ([type, production]) => {
       *[name](props) {
         console.log(`--> ${formatType(type)}`);
 
-        for (const instr of production(props)) {
-          const formattedVerb = instr.type ? ` ${formatType(instr.type)}` : '<unknown>';
-          const edible = instr.value;
-          const formattedMode = edible ? ` ${formatType(edible.type)}` : '';
-          const descriptor = edible?.value;
-          const formattedDescriptor = descriptor ? ` ${formatType(descriptor.type)}` : '';
+        let normalCompletion = false;
+        try {
+          for (const instr of production(props)) {
+            const formattedVerb = instr.type ? ` ${formatType(instr.type)}` : '<unknown>';
+            const edible = instr.value;
+            const formattedMode = edible ? ` ${formatType(edible.type)}` : '';
+            const descriptor = edible?.value;
+            const formattedDescriptor = descriptor ? ` ${formatType(descriptor.type)}` : '';
 
-          console.log(`instr ${formatType(formattedVerb)}${formattedMode}${formattedDescriptor}`);
+            console.log(`instr ${formatType(formattedVerb)}${formattedMode}${formattedDescriptor}`);
 
-          yield instr;
+            yield instr;
+          }
+          normalCompletion = true;
+        } finally {
+          if (normalCompletion) {
+            console.log(`<-- ${formatType(type)}`);
+          } else {
+            console.log(`x-- ${formatType(type)}`);
+          }
         }
-
-        // if (range) {
-        // console.log(`x-- ${formatType(type)}`);
-        // } else {
-        console.log(`<-- ${formatType(type)}`);
-        // }
       },
     }[name],
   ];
