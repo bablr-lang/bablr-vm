@@ -12,6 +12,8 @@ The role of the `cst-tokens` package is to provide APIs that create abstractions
 
 `cst-tokens` is independent. It does not have any "primary" supported language, nor any opinion whether one tree representation is correct and other is not.
 
+`cst-tokens` follows the semver spec but it is currently `0.x`, so any version may introduce breaking changes to any API! `1.0.0` is expected to be the first production-ready version.
+
 ## The CST
 
 The most commonly discussed data structure for storing programs is the Abstract Syntax Tree or AST. The simple program `2 + 1` might be expressed with the following AST:
