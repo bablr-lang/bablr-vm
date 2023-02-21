@@ -10,13 +10,13 @@ In particular it hopes that the community of tool maintainers will agree that it
 
 The role of the `cst-tokens` package is to provide APIs that create abstractions between languages and tools that allow language-agnostic tools to be built. In this way the project intends to compete with [LSP](https://matklad.github.io/2022/04/25/why-lsp.html). It does however require (for now) that those tools be built in javascript. Tools powered by cst-tokens will be able to execute in any sufficiently modern javascript environment.
 
-`cst-tokens` is independent. It does not have any "primary" supported language, nor any opinion whether one tree representation is correct and other is not.
+`cst-tokens` is independent. It does not have any "primary" supported language, nor any opinion whether one tree representation is more correct than another.
 
 `cst-tokens` follows the semver spec but it is currently `0.x`, so any version may introduce breaking changes to any API! `1.0.0` is expected to be the first production-ready version.
 
 ## The CST
 
-The most commonly discussed data structure for storing programs is the Abstract Syntax Tree or AST. The simple program `2 + 1` might be expressed with the following AST:
+The most commonly discussed data structure for storing programs is the Abstract Syntax Tree or AST. The simple program `2 + 1.14` might be expressed with the following AST:
 
 ```jsonc
 {
@@ -28,16 +28,16 @@ The most commonly discussed data structure for storing programs is the Abstract 
   },
   "right": {
     "type": "NumericLiteral",
-    "value": 1
+    "value": 1.14
   }
 }
 ```
 
-The AST successfully captures the structure of a program, and that structure is used in a wide variety of tools. The difficulty with it is that you'll notice the spaces that were present in the input code (`2 + 1`) are not present in the AST. If we wanted to change the code to `2 + 3` the actual result would be `2+3`. What was lost is the concrete syntax of the program. A CST will contain all the information necessary to print an arbitrarily formatted program.
+The AST successfully captures the structure of a program, and that structure is used in a wide variety of tools. The difficulty with it is that you'll notice the spaces that were present in the input code (`2 + 1.14`) are not present in the AST. Neither is the precise representation of the float `1.14`! If we wanted to change the code to `2.14 + 1` the actual result would be `2.14+1`. What was lost is the concrete syntax of the program! A CST will contain all the information necessary to print an arbitrarily formatted program.
 
-There are actually many data structures that are effectively CSTs, and many are already used widely. For example existing tools often use nodes with a `range` property containing `[startOffset, endOffset]` which are character offsets into the text the AST was parsed from. This arrangement is suitable for analysis but makes the concrete-syntax of the program effectively read-only since the only way to alter it would be to replace the source string and repeat the entire task of parsing.
+There are actually many data structures that are effectively CSTs, and many are already used widely. For example existing tools often use nodes with a `range` property containing `[startOffset, endOffset]` which are character offsets into the text the AST was parsed from. This arrangement is suitable for analysis but makes the concrete syntax of the program effectively read-only since the only way to alter it would be to replace the source string and repeat the entire task of parsing.
 
-This problem has workarounds at present (e.g. eslint's `TokenStore`), but I intend to offer a solution. My solution is to insert into each node in the tree a property called `cstTokens` which contains the concrete syntactic elements belonging to that node. The `2 + 1` code is now stored in this tree:
+This problem has workarounds at present (e.g. eslint's `TokenStore`), but I intend to offer a solution. My solution is to insert into each node in the tree a property called `cstTokens` which contains the concrete syntactic elements belonging to that node. The `2.14 + 1` code is now stored in this tree:
 
 ```jsonc
 {
@@ -52,8 +52,12 @@ This problem has workarounds at present (e.g. eslint's `TokenStore`), but I inte
   "operator": "+",
   "left": {
     "type": "NumericLiteral",
-    "cstTokens": [{ "type": "WholePart", "value": "2" }],
-    "value": 2
+    "cstTokens": [
+      { "type": "WholePart", "value": "2" },
+      { "type": "Decimal", "value": "." },
+      { "type": "DecimalPart", "value": "14" }
+    ],
+    "value": 2.14
   },
   "right": {
     "type": "NumericLiteral",
