@@ -254,18 +254,18 @@ export const WithNode = ([type, production]) => {
   return [
     type,
     {
-      *[name](props, grammar) {
+      *[name](props, grammar, ...args) {
         if (grammar.is('Node', type)) {
           const { getState } = props;
           yield eat(tok(StartNode));
 
-          yield* production(props);
+          yield* production(props, grammar, ...args);
 
           if (getState().status !== sym.rejected) {
             yield eat(tok(EndNode));
           }
         } else {
-          yield* production(props);
+          yield* production(props, grammar, ...args);
         }
       },
     }[name],
@@ -281,12 +281,12 @@ export const WithLogging = ([type, production]) => {
   return [
     type,
     {
-      *[name](props) {
+      *[name](...args) {
         console.log(`--> ${formatType(type)}`);
 
         let normalCompletion = false;
         try {
-          for (const instr of production(props)) {
+          for (const instr of production(...args)) {
             const formattedVerb = instr.type ? ` ${formatType(instr.type)}` : '<unknown>';
             const edible = instr.value;
             const formattedMode = edible ? ` ${formatType(edible.type)}` : '';
@@ -326,7 +326,7 @@ export const syntaxGrammar = new Grammar({
   }),
 
   productions: map(
-    compose(WithNode, /*WithWhitespace*/ WithLogging),
+    compose(WithLogging, WithNode, WithWhitespace),
     objectEntries({
       *Program() {
         while (yield eatMatch(prod`body:ImportDeclaration`));
