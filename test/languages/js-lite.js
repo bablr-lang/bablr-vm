@@ -1,4 +1,4 @@
-import { str, map, compose } from 'iter-tools-es';
+import { str, map, compose, isString } from 'iter-tools-es';
 
 import { Grammar, eat, match, eatMatch, startToken, endToken } from '@cst-tokens/helpers/grammar';
 import { objectEntries } from '@cst-tokens/helpers/object';
@@ -29,13 +29,13 @@ export const WithToken = ([key, production]) => {
   return [
     key,
     {
-      *[name](props, grammar) {
+      *[name](props, grammar, ...args) {
         if (grammar.is('Token', key)) {
           yield startToken(key);
-          yield* production(props);
+          yield* production(props, grammar, ...args);
           yield endToken();
         } else {
-          yield* production(props);
+          yield* production(props, grammar, ...args);
         }
       },
     }[name],
@@ -84,8 +84,8 @@ export const tokenGrammar = new Grammar({
     objectEntries({
       *Separator() {
         // StartNode and EndNode?
-        yield eat('Trivia');
-        while (yield eatMatch('Trivia'));
+        yield eat(prod`Trivia`);
+        while (yield eatMatch(prod`Trivia`));
       },
 
       *BlockComment() {
@@ -139,12 +139,14 @@ export const tokenGrammar = new Grammar({
         yield eat(prod`StringEnd:${q}`);
       },
 
-      *Literal({ lexicalContext, isFirst = false }) {
+      *Literal({ lexicalContext, getState, context }) {
         if (lexicalContext === 'String:Single') {
           yield eat(/[^\\']+/y);
         } else if (lexicalContext === 'String:Double') {
           yield eat(/[^\\"]+/y);
         } else if (lexicalContext === 'Bare') {
+          const lastType = getPreviousRealToken(getState().result, context)?.type;
+          const isFirst = !lastType || lastType === 'EscapeCode' || lastType === 'Literal';
           // it may be appropriate for the literal to contain only a digit, e.g. foo\u{42}9
           if (isFirst) {
             yield eat(/[$_\w][$_\w\d]*/y);
@@ -157,9 +159,7 @@ export const tokenGrammar = new Grammar({
       },
 
       *Identifier() {
-        (yield eatMatch('Escape', 'EscapeCode')) || (yield eatMatch('Literal' /* isFirst: true */));
-
-        while ((yield eatMatch('Escape', 'EscapeCode')) || (yield eatMatch('Literal')));
+        while ((yield eatMatch(prod`Escape`, prod`EscapeCode`)) || (yield eatMatch(prod`Literal`)));
       },
 
       *Escape({ lexicalContext }) {
@@ -191,16 +191,24 @@ export const tokenGrammar = new Grammar({
 
 const spaceDelimitedTypes = ['Identifier', 'Keyword'];
 
+const getPreviousRealToken = (token, context) => {
+  let real = token;
+  while (real && (real.type === 'StartNode' || real.type === 'EndNode')) {
+    real = context.getPreviousToken(real);
+  }
+  return real || null;
+};
+
 export const WithWhitespace = ([key, production]) => {
   const name = `WithWhitespace_${production.name}`;
 
   return [
     key,
     {
-      *[name](props) {
-        const { getState } = props;
+      *[name](props, ...args) {
+        const { getState, context } = props;
 
-        const generator = production(props);
+        const generator = production(props, ...args);
         let current = generator.next();
         let state;
 
@@ -217,10 +225,12 @@ export const WithWhitespace = ([key, production]) => {
             case sym.eat:
             case sym.match:
             case sym.eatMatch: {
-              const { type } = cmd.value;
-              const lastType = getState().result.type;
+              debugger;
+              const edible = cmd.value;
+              const { type } = edible.value;
+              let lastType = getPreviousRealToken(getState().result, context)?.type;
 
-              const spaceIsAllowed = state.lexicalContext === 'Base';
+              const spaceIsAllowed = state.lexicalContext === 'Bare';
 
               if (spaceIsAllowed) {
                 const spaceIsNecessary =
@@ -229,9 +239,9 @@ export const WithWhitespace = ([key, production]) => {
                   spaceDelimitedTypes.includes(type);
 
                 if (spaceIsNecessary) {
-                  yield eat('Separator');
+                  yield eat(tok`Separator`);
                 } else {
-                  yield eatMatch('Separator');
+                  yield eatMatch(tok`Separator`);
                 }
               }
               // fallthrough
