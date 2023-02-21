@@ -218,6 +218,7 @@ export const WithWhitespace = ([key, production]) => {
             case sym.match:
             case sym.eatMatch: {
               const { type } = cmd.value;
+              const lastType = getState().result.type;
 
               const spaceIsAllowed = state.lexicalContext === 'Base';
 
@@ -233,9 +234,7 @@ export const WithWhitespace = ([key, production]) => {
                   yield eatMatch('Separator');
                 }
               }
-
-              returnValue = yield cmd;
-              break;
+              // fallthrough
             }
 
             default:
