@@ -84,7 +84,7 @@ export const productions = objectEntries({
     yield eat(prod`StringEnd:${q}`);
   },
 
-  *Literal({ lexicalContext, getState, context }) {
+  *Literal({ lexicalContext, getState }) {
     if (lexicalContext === 'String:Single') {
       yield eat(/[^\\']+/y);
     } else if (lexicalContext === 'String:Double') {

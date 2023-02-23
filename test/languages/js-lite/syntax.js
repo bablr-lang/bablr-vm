@@ -6,13 +6,11 @@ import { WithNode, WithLogging } from '@cst-tokens/helpers/metaproductions';
 
 import { WithWhitespace } from './whitespace.js';
 
-import * as sym from '@cst-tokens/helpers/symbols';
-
 export const _ = 'Separator';
-export const PN = (value) => ({ type: sym.terminal, value: { type: 'Punctuator', value } });
-export const LPN = (value) => ({ type: sym.terminal, value: { type: 'LeftPunctuator', value } });
-export const RPN = (value) => ({ type: sym.terminal, value: { type: 'RightPunctuator', value } });
-export const KW = (value) => ({ type: sym.terminal, value: { type: 'Keyword', value } });
+export const PN = (value) => tok`Punctuator:${value}`;
+export const LPN = (value) => tok`LeftPunctuator:${value}`;
+export const RPN = (value) => tok`RightPunctuator:${value}`;
+export const KW = (value) => tok`Keyword:${value}`;
 
 export const productions = objectEntries({
   *Program() {
@@ -79,5 +77,5 @@ export const syntaxGrammar = new Grammar({
     ],
   }),
 
-  productions: map(compose(WithLogging, WithNode), productions),
+  productions: map(compose(WithLogging, WithWhitespace, WithNode), productions),
 });
