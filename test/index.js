@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 // eslint-disable-next-line import/no-unresolved
 import { build, print } from 'cst-tokens';
 
-import jsImportGrammar from './languages/js-lite.js';
+import jsImportGrammar from './languages/js-lite/js-lite.js';
 
 Error.stackTraceLimit = 20;
 

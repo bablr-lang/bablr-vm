@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@cst-tokens/grammar": "github:js-cst-tokens/grammar#7e9148b787d5e21703bb4f65f5c7de4fdcc50342",
-    "@cst-tokens/helpers": "github:js-cst-tokens/helpers#03c8c9eeb17cdeb0531c8231f91eaf58b9929754",
+    "@cst-tokens/helpers": "github:js-cst-tokens/helpers#47384b11b45cc5bf9e1d38687a0e0285685a1136",
     "enhanced-resolve": "^5.12.0",
     "eslint": "^8.32.0",
     "eslint-import-resolver-enhanced-resolve": "^1.0.5",
