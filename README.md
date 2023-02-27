@@ -2,7 +2,7 @@
 
 [![Gitter](https://badges.gitter.im/cst-tokens/community.svg)](https://gitter.im/cst-tokens/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-Welcome to the home of `cst-tokens`!
+Welcome to the home of `cst-tokens`! This repository contains a family of related APIs for just-in-time language intelligence. External-facing APIs are provided for parsing, validating, and printing programs, and internal-facing APIs are provided for defining languages. All tools are capable of operating over input streams.
 
 This repository contains code designed to be the heart of a decentralized ecosystem of tools for language literacy. Its goal is to provide common-sense capabilities and functionalities that can only emerge when a series of unaffiliated individuals are able to agree on the basic defitions for things.
 
@@ -68,3 +68,49 @@ This problem has workarounds at present (e.g. eslint's `TokenStore`), but I inte
 ```
 
 This is a powerful representation with some great benefits, but also some serious drawbacks. Because the structure contains both the parsed and unparsed result, so the work of the parser has been duplicated. We have more than one source of truth! The only way we can work around this is to redo the work of the parser. The code in this repository evolved entirely as a way to mitigate the costs of using this structure while maximizing the benefits.
+
+## APIs
+
+`cst-tokens` has two main APIs, the tooling API and the language API. It sits in the middle isolating tooling from language and visa versa.
+
+### The tooling API
+
+This is the side of the API that you will use if you are building tools. These APIs make no assumptions about language. Instead grammar-driven behavior is defined by a `language` argument.
+
+```js
+parse(language, sourceText);
+*traverse(language, ast, sourceText);
+*traverse(language, cst);
+print(cst);
+printTokens(cst);
+```
+
+### The language API
+
+Formal documentation of the language API is forthcoming. **For the moment this API is unstable. The primary purpose of ongoing development is to stabilize this API.** Until the language API is stable you should look in `test/languages` to see how languages are currently defined, and you should not expect to write or use `cst-tokens` in a production environment.
+
+The informal basics of the language API are this:
+
+A `grammar` is a (duck-typed) instance of the Map-inspired `Grammar` class. It's primary APIs are `new Grammar({ productions: Iterable<[type, generator]> })` and `grammar.get(type)`. Grammars also support the definition of `aliases`: names for families of related productions such as `Expression`.
+
+A `production` is usually written as a generator method. It emits instructions to a state machine. The state machine holds the text being processed, and accepts instructions. The main instructions are:
+
+- **`{ type: eat, value: edible }`**: Requires `edible` to be matched in `source`. State advances past the match.
+- **`{ type: match, value: edible }`**: Does not alter state, but matches `edible` and returns the matched range or `null`.
+- **`{ type: eatMatch, value: edible }`**: Matches `edible` and returns the matched range or `null`. State advances if a match existed.
+
+These instructions take arguments known as `edibles`, which can be terminals or other productions.
+
+Here is an example of yielding an instruction that will cause the state machine to advance through a comment if one is present at the current source position:
+
+```js
+yield { type: eatMatch, value: { type: production, value: { type: 'Comment' } } };
+```
+
+Since this is quite verbose real grammars are written that use helper functions to build up complete instructions, more like this:
+
+```js
+yield eatMatch(prod`Comment`);
+```
+
+**While this looks almost like it might be doing the eating and matching inside the `eatMatch()` call, it is still just yielding an instruction object which asks the state machine to perform the action on its behalf!** The current production will remain suspended as matching of the `Comment` production progresses, and the matched range will be returned through the `yield`.
