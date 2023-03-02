@@ -89,28 +89,66 @@ printTokens(cst);
 
 Formal documentation of the language API is forthcoming. **For the moment this API is unstable. The primary purpose of ongoing development is to stabilize this API.** Until the language API is stable you should look in `test/languages` to see how languages are currently defined, and you should not expect to write or use `cst-tokens` in a production environment.
 
-The informal basics of the language API are this:
+A language is made up of two main grammars: a node grammar and a token grammar. Both kinds of grammar use the same basic mechanism: productions yield instructions to a state machine which tracks and encapsulates the evolving state. Let's look at an example of a node grammar for parsing import specifiers. This is a tiny grammar that parses inputs like `baz` and `foo as bar`:
 
-A `grammar` is a (duck-typed) instance of the Map-inspired `Grammar` class. It's primary APIs are `new Grammar({ productions: Iterable<[type, generator]> })` and `grammar.get(type)`. Grammars also support the definition of `aliases`: names for families of related productions such as `Expression`.
-
-A `production` is usually written as a generator method. It emits instructions to a state machine. The state machine holds the text being processed, and accepts instructions. The main instructions are:
-
-- **`{ type: eat, value: edible }`**: Requires `edible` to be matched in `source`. State advances past the match.
-- **`{ type: match, value: edible }`**: Does not alter state, but matches `edible` and returns the matched range or `null`.
-- **`{ type: eatMatch, value: edible }`**: Matches `edible` and returns the matched range or `null`. State advances if a match existed.
-
-These instructions take arguments known as `edibles`, which can be terminals or other productions.
-
-Here is an example of yielding an instruction that will cause the state machine to advance through a comment if one is present at the current source position:
-
+<!--prettier-ignore-->
 ```js
-yield { type: eatMatch, value: { type: production, value: { type: 'Comment' } } };
+import * as sym from '@cst-tokens/helpers/symbols';
+import { tok, prod } from '@cst-tokens/helpers/shorthand';
+import { eat, eatMatch } from '@cst-tokens/helpers/commands';
+
+new Grammar({
+  productions: {
+    // This version of ImportSpecifier uses helpers to be concise:
+    *ImportSpecifier() {
+      yield eat(prod`Identifier:imported`);
+      yield eatMatch(tok`Keyword:as`, prod`Identifier:local`);
+    },
+
+    // The helpers were being used to build up instructions
+    // Here is what the same production looks like when the actions are written explicitly:
+    *ImportSpecifier() {
+      yield {
+        type: sym.eat,
+        value: {
+          type: sym.node,
+          value: { type: 'Identifier', property: 'imported' },
+        },
+      };
+
+      yield {
+        type: sym.eatMatch,
+        value: {
+          // passing multiple arguments to the eatMatch helper was actually creating an All production
+          type: sym.node,
+          value: {
+            type: sym.All,
+            // this production does not map to a real AST node
+            property: undefined,
+            props: {
+              matchables: [
+                {
+                  type: sym.token,
+                  value: { type: 'Keyword', value: 'as' },
+                },
+                {
+                  type: sym.node,
+                  value: { type: 'Identifier', property: 'local' },
+                },
+              ],
+            },
+          },
+        },
+      };
+    },
+    *Identifier() {
+      yield eat(tok`Identifier`);
+    },
+    *[sym.All]({ matchables }) {
+      for (const matchable of matchables) {
+        yield eat(matchable);
+      }
+    },
+  },
+});
 ```
-
-Since this is quite verbose real grammars are written that use helper functions to build up complete instructions, more like this:
-
-```js
-yield eatMatch(prod`Comment`);
-```
-
-**While this looks almost like it might be doing the eating and matching inside the `eatMatch()` call, it is still just yielding an instruction object which asks the state machine to perform the action on its behalf!** The current production will remain suspended as matching of the `Comment` production progresses, and the matched range will be returned through the `yield`.
