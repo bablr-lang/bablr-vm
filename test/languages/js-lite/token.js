@@ -94,7 +94,6 @@ export const productions = objectEntries({
     } else if (lexicalContext === 'Bare') {
       const lastType = getState().result?.type;
       const isFirst = !lastType || lastType === 'EscapeCode' || lastType === 'Literal';
-      // it may be appropriate for the literal to contain only a digit, e.g. foo\u{42}9
       if (isFirst) {
         yield eat(/[$_\w][$_\w\d]*/y);
       } else {
