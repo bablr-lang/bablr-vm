@@ -1,8 +1,12 @@
-import { str, map } from 'iter-tools-es';
-import { Grammar, eat, match, eatMatch } from '@cst-tokens/helpers/grammar';
+import { str } from 'iter-tools-es';
+import {
+  eatChrs as eat,
+  matchChrs as match,
+  eatMatchChrs as eatMatch,
+} from '@cst-tokens/helpers/grammar';
 import { WithToken } from '@cst-tokens/helpers/metaproductions';
 import { objectEntries } from '@cst-tokens/helpers/object';
-import { chrs, prod } from '@cst-tokens/helpers/shorthand';
+import { chrs, tok } from '@cst-tokens/helpers/shorthand';
 import { LexicalBoundary, EOF } from '@cst-tokens/helpers/symbols';
 
 const escapables = new Map(
@@ -27,28 +31,38 @@ const bareTransitions = new Map(
   }),
 );
 
+function* NamedLiteral({ value }) {
+  yield eat(chrs(value));
+}
+
 export const productions = objectEntries({
+  Punctuator: NamedLiteral,
+  LeftPunctuator: NamedLiteral,
+  RightPunctuator: NamedLiteral,
+  CommentStart: NamedLiteral,
+  CommentEnd: NamedLiteral,
+
   *Separator() {
-    yield eat(prod`Trivia`);
-    while (yield eatMatch(prod`Trivia`));
+    yield eat(tok`Trivia`);
+    while (yield eatMatch(tok`Trivia`));
   },
 
   *BlockComment() {
-    yield eatMatch(prod`CommentStart:/*`);
+    yield eat(tok`CommentStart:/*`);
 
-    yield eatMatch(prod`Literal`);
+    yield eatMatch(tok`Literal`);
 
-    yield eatMatch(prod`CommentEnd:*/`);
+    yield eat(tok`CommentEnd:*/`);
   },
 
   *LineComment() {
-    yield eatMatch(prod`CommentStart://`);
+    yield eat(tok`CommentStart://`);
 
-    yield eatMatch(prod`Literal`);
+    yield eatMatch(tok`Literal`);
 
-    if (yield match(prod(EOF))) return;
+    if (yield match(tok(EOF))) return;
 
-    yield eatMatch(prod`CommentEnd:\n`);
+    yield eatMatch(tok`CommentEnd:\n`);
   },
 
   *Whitespace() {
@@ -62,26 +76,14 @@ export const productions = objectEntries({
     yield eat(chrs(value));
   },
 
-  *Punctuator({ value }) {
-    yield eat(chrs(value));
-  },
-
-  *LeftPunctuator({ value }) {
-    yield eat(chrs(value));
-  },
-
-  *RightPunctuator({ value }) {
-    yield eat(chrs(value));
-  },
-
   *String() {
     let q; // quotation mark
-    q = yield eatMatch(prod`StringStart:'`);
-    q = q || (yield eat(prod`StringStart:"`));
+    q = yield eatMatch(tok`StringStart:'`);
+    q = q || (yield eat(tok`StringStart:"`));
 
     while ((yield eatMatch('Escape', 'EscapeCode')) || (yield eatMatch('Literal')));
 
-    yield eat(prod`StringEnd:${q}`);
+    yield eat(tok`StringEnd:${q}`);
   },
 
   *Literal({ lexicalContext, getState }) {
@@ -104,7 +106,7 @@ export const productions = objectEntries({
   },
 
   *Identifier() {
-    while ((yield eatMatch(prod`Escape`, prod`EscapeCode`)) || (yield eatMatch(prod`Literal`)));
+    while ((yield eatMatch(tok`Escape`, tok`EscapeCode`)) || (yield eatMatch(tok`Literal`)));
   },
 
   *Escape({ lexicalContext }) {
@@ -132,32 +134,32 @@ export const productions = objectEntries({
   },
 });
 
-export const tokenGrammar = new Grammar({
-  aliases: objectEntries({
-    Token: [
-      'Whitespace',
-      'Keyword',
-      'Punctuator',
-      'LeftPunctuator',
-      'RightPunctuator',
-      'Literal',
-      'StringStart',
-      'StringEnd',
-      'Escape',
-      'EscapeCode',
-    ],
-    Comment: ['BlockComment', 'LineComment'],
-    Trivia: ['Comment', 'Whitespace'],
-    [LexicalBoundary]: ['CommentStart', 'CommentEnd', 'StringStart', 'StringEnd'],
-  }),
-  context: {
-    *transition(lexicalContext, boundaryToken) {
-      if (lexicalContext === 'Bare') {
-        yield* bareTransitions.get(boundaryToken);
-      } else {
-        throw new Error();
-      }
-    },
-  },
-  productions: map(WithToken, productions),
+export const aliases = objectEntries({
+  Token: [
+    'Whitespace',
+    'Keyword',
+    'Punctuator',
+    'LeftPunctuator',
+    'RightPunctuator',
+    'Literal',
+    'StringStart',
+    'StringEnd',
+    'Escape',
+    'EscapeCode',
+  ],
+  Comment: ['BlockComment', 'LineComment'],
+  Trivia: ['Comment', 'Whitespace'],
+  [LexicalBoundary]: ['CommentStart', 'CommentEnd', 'StringStart', 'StringEnd'],
 });
+
+export const context = {
+  *transition(lexicalContext, boundaryToken) {
+    if (lexicalContext === 'Bare') {
+      yield* bareTransitions.get(boundaryToken);
+    } else {
+      throw new Error();
+    }
+  },
+};
+
+export const enhancers = [WithToken];

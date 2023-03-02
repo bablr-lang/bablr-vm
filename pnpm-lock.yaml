@@ -1,8 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@cst-tokens/grammar': github:js-cst-tokens/grammar#7e9148b787d5e21703bb4f65f5c7de4fdcc50342
-  '@cst-tokens/helpers': github:js-cst-tokens/helpers#47384b11b45cc5bf9e1d38687a0e0285685a1136
+  '@cst-tokens/helpers': 0.11.0
   '@iter-tools/imm-stack': 1.1.0
   '@iter-tools/regex': 0.3.2
   enhanced-resolve: ^5.12.0
@@ -20,8 +19,7 @@ dependencies:
   escape-string-regexp: 4.0.0
 
 devDependencies:
-  '@cst-tokens/grammar': github.com/js-cst-tokens/grammar/7e9148b787d5e21703bb4f65f5c7de4fdcc50342
-  '@cst-tokens/helpers': github.com/js-cst-tokens/helpers/47384b11b45cc5bf9e1d38687a0e0285685a1136
+  '@cst-tokens/helpers': 0.11.0
   enhanced-resolve: 5.12.0
   eslint: 8.32.0
   eslint-import-resolver-enhanced-resolve: 1.0.5
@@ -31,6 +29,19 @@ devDependencies:
   prettier: 2.6.2
 
 packages:
+
+  /@cst-tokens/grammar/0.3.0:
+    resolution: {integrity: sha512-7bW9JhhNsjqUJgLDh/gvmrKOG9O+aZmHcFLe408+7UR+rdx/KyoQAj8UbE+85M8ab7KP2+BLn/vr9EP9woAjPg==}
+    dev: true
+
+  /@cst-tokens/helpers/0.11.0:
+    resolution: {integrity: sha512-4fGAzJu5cz8u9egYO2CsIW0E5OyfGSC5QFo2lvAl5JEqJVGZ/IWyeLD3VhJsB4h/pvJmooIBhRrgAqfP+l4LmA==}
+    dependencies:
+      '@cst-tokens/grammar': 0.3.0
+      debug: 4.3.4
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
 
   /@eslint/eslintrc/1.4.1:
     resolution: {integrity: sha512-XXrH9Uarn0stsyldqDYq8r++mROmWRI1xKMXa640Bb//SY1+ECYX6VzT6Lcx5frD0V30XieqJ0oX9I2Xj5aoMA==}
@@ -1277,21 +1288,4 @@ packages:
   /yocto-queue/0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
-    dev: true
-
-  github.com/js-cst-tokens/grammar/7e9148b787d5e21703bb4f65f5c7de4fdcc50342:
-    resolution: {tarball: https://codeload.github.com/js-cst-tokens/grammar/tar.gz/7e9148b787d5e21703bb4f65f5c7de4fdcc50342}
-    name: '@cst-tokens/grammar'
-    version: 0.2.0
-    dev: true
-
-  github.com/js-cst-tokens/helpers/47384b11b45cc5bf9e1d38687a0e0285685a1136:
-    resolution: {tarball: https://codeload.github.com/js-cst-tokens/helpers/tar.gz/47384b11b45cc5bf9e1d38687a0e0285685a1136}
-    name: '@cst-tokens/helpers'
-    version: 0.10.0
-    dependencies:
-      '@cst-tokens/grammar': github.com/js-cst-tokens/grammar/7e9148b787d5e21703bb4f65f5c7de4fdcc50342
-      debug: 4.3.4
-    transitivePeerDependencies:
-      - supports-color
     dev: true

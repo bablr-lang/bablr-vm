@@ -1,9 +1,11 @@
-import { syntaxGrammar } from './syntax.js';
-import { tokenGrammar } from './token.js';
+import { Grammar } from '@cst-tokens/helpers/grammar';
+
+import * as nodeGrammar from './node.js';
+import * as tokenGrammar from './token.js';
 
 export default {
   grammars: {
-    token: tokenGrammar,
-    syntax: syntaxGrammar,
+    node: new Grammar(nodeGrammar),
+    token: new Grammar(tokenGrammar),
   },
 };
