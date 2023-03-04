@@ -5,7 +5,6 @@ import { WithNode } from '@cst-tokens/helpers/metaproductions';
 
 import { WithWhitespace } from './whitespace.js';
 
-const _ = 'Separator';
 const PN = (value) => tok`Punctuator:${value}`;
 const LPN = (value) => tok`LeftPunctuator:${value}`;
 const RPN = (value) => tok`RightPunctuator:${value}`;
