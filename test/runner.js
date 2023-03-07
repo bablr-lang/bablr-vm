@@ -109,6 +109,8 @@ const WithLogging = ([type, production]) => {
           if (normalCompletion) {
             console.log(`${indent()}<-- ${formatType(type)}`);
           } else {
+            // TODO: distinguish error/final termination
+            // In an error termination we don't want to make it look like we kept running the grammar
             console.log(`${indent()}x-- ${formatType(type)}`);
           }
         }
