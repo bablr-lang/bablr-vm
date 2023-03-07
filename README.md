@@ -123,9 +123,9 @@ new Grammar({
           type: sym.node,
           value: {
             type: sym.All,
-            // this production does not map to a real AST node
-            property: undefined,
             props: {
+              // this production does not map to a real AST node
+              property: undefined,
               matchables: [
                 {
                   type: sym.token,
