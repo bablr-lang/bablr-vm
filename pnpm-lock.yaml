@@ -19,7 +19,7 @@ dependencies:
   escape-string-regexp: 4.0.0
 
 devDependencies:
-  '@cst-tokens/helpers': 0.11.1
+  '@cst-tokens/helpers': link:../helpers
   enhanced-resolve: 5.12.0
   eslint: 8.32.0
   eslint-import-resolver-enhanced-resolve: 1.0.5
@@ -29,16 +29,6 @@ devDependencies:
   prettier: 2.6.2
 
 packages:
-
-  /@cst-tokens/grammar/0.3.1:
-    resolution: {integrity: sha512-jDvuQIT7CjXAmMv5s9wUJmoQmt4xm8fa51kYBPtHcR1bEgKTUU5Mxd69VmMsYKD4Nh1YCP/8P+E3jq1PBwImpA==}
-    dev: true
-
-  /@cst-tokens/helpers/0.11.1:
-    resolution: {integrity: sha512-tFi0WZHxgqtCvYDpDJgLX7aGxEguRV28jvRz45S1JMetMjjh6f4TVBv4xbv5cnMlekukDKZZg0uazBsYlUE1nQ==}
-    dependencies:
-      '@cst-tokens/grammar': 0.3.1
-    dev: true
 
   /@eslint/eslintrc/1.4.1:
     resolution: {integrity: sha512-XXrH9Uarn0stsyldqDYq8r++mROmWRI1xKMXa640Bb//SY1+ECYX6VzT6Lcx5frD0V30XieqJ0oX9I2Xj5aoMA==}

@@ -66,7 +66,7 @@ export const productions = objectEntries({
   },
 
   *Whitespace() {
-    yield eat(/\w+/y);
+    yield eat(/\s+/y);
   },
 
   *Keyword({ value, lexicalContext }) {

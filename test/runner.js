@@ -27,6 +27,11 @@ function* concat(...iterables) {
 
 const indents = new WeakMap();
 
+const isNodeBoundary = (matchable) => {
+  const { type } = matchable.value;
+  return type === sym.StartNode || type === sym.EndNode;
+};
+
 // Polyglot syntax/node metaproduction
 const WithLogging = ([type, production]) => {
   const name = `WithLogging_${production.name}`;
@@ -54,38 +59,52 @@ const WithLogging = ([type, production]) => {
           const generator = production(props, grammar, next);
           let current = generator.next();
 
+          let anyResult = false;
+
           while (!current.done) {
             const instr = current.value;
 
             const formattedVerb = instr.type ? `${formatType(instr.type)}` : '<unknown>';
             const matchable = instr.value;
-            const formattedMode = matchable ? ` ${formatType(matchable.type)}` : '';
+            const formattedMode = matchable
+              ? ` ${formatType(isString(matchable) ? matchable : matchable.type)}`
+              : '';
             const descriptor = matchable?.value;
             const formattedDescriptor = descriptor
-              ? isString(descriptor)
-                ? ` ${formatType(descriptor)}`
-                : ` ${formatType(descriptor.type)}`
+              ? ` ${
+                  descriptor.source && descriptor.flags
+                    ? descriptor.toString()
+                    : formatType(isString(descriptor) ? descriptor : descriptor?.type)
+                }`
               : '';
 
             console.log(`${indent()}${formattedVerb}${formattedMode}${formattedDescriptor}`);
 
             const branches = instr.type === sym.match || instr.type === sym.eatMatch;
+            const eats = instr.type === sym.eat || instr.type === sym.eatMatch;
 
-            if (productionType === sym.node && matchable.type === sym.token) {
+            const logTransition =
+              productionType === sym.node &&
+              matchable.type === sym.token &&
+              !isNodeBoundary(matchable);
+
+            if (logTransition) {
               indents.set(context, getState().depth + (branches ? 1 : 0));
               console.log(`${indent(branches ? 1 : 0)}>>>`);
             }
 
-            const returnValue = yield instr;
+            const result = yield instr;
 
-            if (productionType === sym.node && matchable.type === sym.token) {
+            anyResult = anyResult || (eats && result);
+
+            if (logTransition) {
               indents.set(context, getState().depth);
-              console.log('<<<');
+              console.log(`${indent(branches ? 1 : 0)}<<<`);
             }
 
-            current = generator.next(returnValue);
+            current = generator.next(result);
           }
-          normalCompletion = true;
+          normalCompletion = anyResult;
         } finally {
           if (normalCompletion) {
             console.log(`${indent()}<-- ${formatType(type)}`);
