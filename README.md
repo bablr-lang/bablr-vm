@@ -67,7 +67,7 @@ This problem has workarounds at present (e.g. eslint's `TokenStore`), but I inte
 }
 ```
 
-This is a powerful representation with some great benefits, but also some serious drawbacks. Because the structure contains both the parsed and unparsed result, so the work of the parser has been duplicated. We have more than one source of truth! The only way we can work around this is to redo the work of the parser. The code in this repository evolved entirely as a way to mitigate the costs of using this structure while maximizing the benefits.
+This is a powerful representation with some great benefits, but also some serious drawbacks. Because the structure contains both the parsed and unparsed result, the work of the parser has been duplicated. We have more than one source of truth! The only way we can work around this is to redo the work of the parser. The code in this repository evolved entirely as a way to mitigate the costs of using this structure while maximizing the benefits.
 
 ## APIs
 
