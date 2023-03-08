@@ -32,11 +32,6 @@ function* concat(...iterables) {
 const indents = new WeakMap();
 const productionTypes = new WeakMap();
 
-const isNodeBoundary = (matchable) => {
-  const { type } = matchable.value;
-  return type === sym.StartNode || type === sym.EndNode;
-};
-
 // Polyglot syntax/node metaproduction
 const WithLogging = ([type, production]) => {
   const name = `WithLogging_${production.name}`;
@@ -61,7 +56,6 @@ const WithLogging = ([type, production]) => {
         const indent = (offset = 0) =>
           ' '.repeat((baseIndentDepth + getState().depth + offset + 1) * 2);
 
-        debugger;
         const tokenizerTransition = productionTypes.get(context) !== productionType;
 
         if (tokenizerTransition) {
