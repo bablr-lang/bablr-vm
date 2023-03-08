@@ -1,7 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@cst-tokens/helpers': 0.11.2
+  '@cst-tokens/helpers': 0.11.3
   '@iter-tools/imm-stack': 1.1.0
   '@iter-tools/regex': 0.3.2
   enhanced-resolve: ^5.12.0
@@ -19,7 +19,7 @@ dependencies:
   escape-string-regexp: 4.0.0
 
 devDependencies:
-  '@cst-tokens/helpers': 0.11.2
+  '@cst-tokens/helpers': 0.11.3
   enhanced-resolve: 5.12.0
   eslint: 8.32.0
   eslint-import-resolver-enhanced-resolve: 1.0.5
@@ -34,8 +34,8 @@ packages:
     resolution: {integrity: sha512-uCon6+u00yzqvc1RH942P+hKi6HmAhxsAGtuwnYx88c8ZErR5yNt9SARbTX6tMSY5wIBWkJO7vSeH53ZAasQUw==}
     dev: true
 
-  /@cst-tokens/helpers/0.11.2:
-    resolution: {integrity: sha512-Un60je+6sc4ccLGkUm/osxt3Kgwdv3T2gCvXNg9KKCdmALFm5qB+7jX16WIA7+5yaCwlwpVVNPddRTh0dOMEZQ==}
+  /@cst-tokens/helpers/0.11.3:
+    resolution: {integrity: sha512-IA31gn2GLCGfTYlj9qeUnZ+tNgV0ounJf5aUwn1Q/RBFo1wWm3LJSBzZGYovisw0HyVZTZ86H2ec+BwC9t8WmQ==}
     dependencies:
       '@cst-tokens/grammar': 0.3.2
     dev: true

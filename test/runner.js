@@ -10,8 +10,12 @@ Error.stackTraceLimit = 20;
 const isString = (val) => typeof val === 'string';
 
 const formatType = (type) => {
-  return type === null
+  return type === undefined
+    ? ''
+    : type === null
     ? 'null'
+    : type === sym.fail
+    ? 'fail 🐳'
     : typeof type === 'symbol'
     ? type.description.replace(/^cst-tokens\//, '')
     : `'${type.replace(/['\\]/g, '\\$0')}'`;
@@ -26,6 +30,7 @@ function* concat(...iterables) {
 }
 
 const indents = new WeakMap();
+const productionTypes = new WeakMap();
 
 const isNodeBoundary = (matchable) => {
   const { type } = matchable.value;
@@ -43,6 +48,10 @@ const WithLogging = ([type, production]) => {
         const { getState, context } = props;
         const { productionType } = getState();
 
+        if (!productionTypes.has(context)) {
+          productionTypes.set(context, sym.node);
+        }
+
         if (!indents.has(context)) {
           indents.set(context, 0);
         }
@@ -52,7 +61,14 @@ const WithLogging = ([type, production]) => {
         const indent = (offset = 0) =>
           ' '.repeat((baseIndentDepth + getState().depth + offset + 1) * 2);
 
-        console.log(`${indent()}--> ${formatType(type)}`);
+        debugger;
+        const tokenizerTransition = productionTypes.get(context) !== productionType;
+
+        if (tokenizerTransition) {
+          productionTypes.set(context, sym.token);
+        }
+
+        console.log(`${indent()}${tokenizerTransition ? '>>>' : '-->'} ${formatType(type)}`);
 
         let normalCompletion = false;
         try {
@@ -80,38 +96,40 @@ const WithLogging = ([type, production]) => {
 
             console.log(`${indent()}${formattedVerb}${formattedMode}${formattedDescriptor}`);
 
-            const branches = instr.type === sym.match || instr.type === sym.eatMatch;
+            const branches =
+              (instr.type === sym.match || instr.type === sym.eatMatch) &&
+              matchable.type !== sym.character;
             const eats = instr.type === sym.eat || instr.type === sym.eatMatch;
 
-            const logTransition =
-              productionType === sym.node &&
-              matchable.type === sym.token &&
-              !isNodeBoundary(matchable);
+            const isTokenizerTransition =
+              productionType === sym.node && matchable.type === sym.token;
 
-            if (logTransition) {
+            if (isTokenizerTransition) {
               indents.set(context, getState().depth + (branches ? 1 : 0));
-              console.log(`${indent(branches ? 1 : 0)}>>>`);
             }
 
             const result = yield instr;
 
             anyResult = anyResult || (eats && result);
 
-            if (logTransition) {
+            if (isTokenizerTransition) {
               indents.set(context, getState().depth);
-              console.log(`${indent(branches ? 1 : 0)}<<<`);
             }
 
             current = generator.next(result);
           }
           normalCompletion = anyResult;
         } finally {
+          if (tokenizerTransition) {
+            productionTypes.set(context, sym.node);
+          }
+
           if (normalCompletion) {
-            console.log(`${indent()}<-- ${formatType(type)}`);
+            console.log(`${indent()}${tokenizerTransition ? '<<<' : '<--'} ${formatType(type)}`);
           } else {
             // TODO: distinguish error/final termination
             // In an error termination we don't want to make it look like we kept running the grammar
-            console.log(`${indent()}x-- ${formatType(type)}`);
+            console.log(`${indent()}${tokenizerTransition ? 'xxx' : 'x--'} ${formatType(type)}`);
           }
         }
       },

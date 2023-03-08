@@ -3,6 +3,7 @@ import {
   eatChrs as eat,
   matchChrs as match,
   eatMatchChrs as eatMatch,
+  fail,
 } from '@cst-tokens/helpers/grammar';
 import { WithToken } from '@cst-tokens/helpers/metaproductions';
 import { objectEntries } from '@cst-tokens/helpers/object';
@@ -31,6 +32,18 @@ const bareTransitions = new Map(
   }),
 );
 
+const triviaProductionFor = (chrs) => {
+  if (chrs === '/*') {
+    return 'BlockComment';
+  } else if (chrs === '//') {
+    return 'LineComment';
+  } else if (!chrs.trim()) {
+    return 'Whitespace';
+  } else {
+    throw new Error('Unknown trivia production');
+  }
+};
+
 function* NamedLiteral({ value }) {
   yield eat(chrs(value));
 }
@@ -42,9 +55,19 @@ export const productions = objectEntries({
   CommentStart: NamedLiteral,
   CommentEnd: NamedLiteral,
 
+  *Trivia() {
+    const chrs = yield match(/\/\*|\/\/|\s/y);
+    if (chrs) {
+      yield eat(tok(triviaProductionFor(chrs)));
+    } else {
+      yield fail();
+    }
+  },
+
   *Separator() {
-    yield eat(tok`Trivia`);
-    while (yield eatMatch(tok`Trivia`));
+    while (yield match(/\/\*|\/\/|\s/y)) {
+      yield eat(tok`Trivia`);
+    }
   },
 
   *BlockComment() {
