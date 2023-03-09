@@ -132,7 +132,7 @@ export const productions = objectEntries({
   },
 
   *Escape({ lexicalContext }) {
-    if (lexicalContext.startsWith('String')) {
+    if (lexicalContext === 'Bare' || lexicalContext.startsWith('String')) {
       yield eat(chrs('\\'));
     } else {
       throw new Error(`{lexicalContext: ${lexicalContext}} does not define any escapes`);
@@ -140,15 +140,17 @@ export const productions = objectEntries({
   },
 
   *EscapeCode({ lexicalContext }) {
-    if (lexicalContext.startsWith('String')) {
+    if (lexicalContext.startsWith('String') || lexicalContext === 'Bare') {
       if (yield eatMatch(/u{\d{1,6}}/y)) {
         // break
       } else if (yield eatMatch(/u\d\d\d\d/y)) {
         // break
-      } else if (yield eatMatch(/x\d\d/y)) {
-        // break
-      } else if (yield eatMatch(chrs(str(escapables.keys())))) {
-        // break
+      } else if (lexicalContext !== 'Bare') {
+        if (yield eatMatch(/x\d\d/y)) {
+          // break
+        } else if (yield eatMatch(chrs(str(escapables.keys())))) {
+          // break
+        }
       }
     } else {
       throw new Error(`{lexicalContext: ${lexicalContext}} does not define any escape codes`);

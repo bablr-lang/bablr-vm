@@ -18,7 +18,7 @@ const formatType = (type) => {
     ? 'fail 🐳'
     : typeof type === 'symbol'
     ? type.description.replace(/^cst-tokens\//, '')
-    : `'${type.replace(/['\\]/g, '\\$0')}'`;
+    : `'${type.replace(/['\\]/g, '\\$&')}'`;
 };
 
 const sourceText = `import {spec} from 'source'`;

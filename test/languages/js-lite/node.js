@@ -23,7 +23,7 @@ export const productions = objectEntries({
     const brace = special ? yield eatMatch(PN`,`, LPN`{`) : yield eatMatch(LPN`{`);
     if (brace) {
       for (;;) {
-        yield eat(node`ImportSpecifier:specifier`);
+        yield eat(node`ImportSpecifier:specifiers`);
 
         if (yield match(RPN`}`)) break;
         if (yield match(PN`,`, RPN`}`)) break;
