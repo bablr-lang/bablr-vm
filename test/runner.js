@@ -54,7 +54,7 @@ const WithLogging = ([type, production]) => {
         const baseIndentDepth = productionType === sym.token ? indents.get(context) : 0;
 
         const indent = (offset = 0) =>
-          ' '.repeat((baseIndentDepth + getState().depth + offset + 1) * 2);
+          ' '.repeat((1 + offset + baseIndentDepth + getState().depth) * 2);
 
         const tokenizerTransition = productionTypes.get(context) !== productionType;
 
@@ -90,16 +90,13 @@ const WithLogging = ([type, production]) => {
 
             console.log(`${indent()}${formattedVerb}${formattedMode}${formattedDescriptor}`);
 
-            const branches =
-              (instr.type === sym.match || instr.type === sym.eatMatch) &&
-              matchable.type !== sym.character;
             const eats = instr.type === sym.eat || instr.type === sym.eatMatch;
 
             const isTokenizerTransition =
               productionType === sym.node && matchable.type === sym.token;
 
             if (isTokenizerTransition) {
-              indents.set(context, getState().depth + (branches ? 1 : 0));
+              indents.set(context, getState().depth);
             }
 
             const result = yield instr;
