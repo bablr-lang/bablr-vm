@@ -93,7 +93,7 @@ const WithLogging = ([type, production]) => {
             const eats = instr.type === sym.eat || instr.type === sym.eatMatch;
 
             const isTokenizerTransition =
-              productionType === sym.node && matchable.type === sym.token;
+              productionType === sym.node && matchable?.type === sym.token;
 
             if (isTokenizerTransition) {
               indents.set(context, getState().depth);
