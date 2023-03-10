@@ -53,8 +53,11 @@ const WithLogging = ([type, production]) => {
 
         const baseIndentDepth = productionType === sym.token ? indents.get(context) : 0;
 
-        const indent = (offset = 0) =>
-          ' '.repeat((1 + offset + baseIndentDepth + getState().depth) * 2);
+        const i = (strings, ...args) => {
+          const indentation = ' '.repeat((1 + baseIndentDepth + getState().depth) * 2);
+          const content = String.raw(strings, ...args);
+          return `${indentation}${content}`;
+        };
 
         const tokenizerTransition = productionTypes.get(context) !== productionType;
 
@@ -62,7 +65,7 @@ const WithLogging = ([type, production]) => {
           productionTypes.set(context, sym.token);
         }
 
-        console.log(`${indent()}${tokenizerTransition ? '>>>' : '-->'} ${formatType(type)}`);
+        console.log(i`${tokenizerTransition ? '>>>' : '-->'} ${formatType(type)}`);
 
         let normalCompletion = false;
         try {
@@ -88,7 +91,7 @@ const WithLogging = ([type, production]) => {
                 }`
               : '';
 
-            console.log(`${indent()}${formattedVerb}${formattedMode}${formattedDescriptor}`);
+            console.log(i`${formattedVerb}${formattedMode}${formattedDescriptor}`);
 
             const eats = instr.type === sym.eat || instr.type === sym.eatMatch;
 
@@ -116,11 +119,11 @@ const WithLogging = ([type, production]) => {
           }
 
           if (normalCompletion) {
-            console.log(`${indent()}${tokenizerTransition ? '<<<' : '<--'} ${formatType(type)}`);
+            console.log(i`${tokenizerTransition ? '<<<' : '<--'} ${formatType(type)}`);
           } else {
             // TODO: distinguish error/final termination
             // In an error termination we don't want to make it look like we kept running the grammar
-            console.log(`${indent()}${tokenizerTransition ? 'xxx' : 'x--'} ${formatType(type)}`);
+            console.log(i`${tokenizerTransition ? 'xxx' : 'x--'} ${formatType(type)}`);
           }
         }
       },
