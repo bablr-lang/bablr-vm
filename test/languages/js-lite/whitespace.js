@@ -1,4 +1,4 @@
-import { eat, eatMatch } from '@cst-tokens/helpers/grammar';
+import { eatMatch, fail } from '@cst-tokens/helpers/grammar';
 import { tok } from '@cst-tokens/helpers/shorthand';
 import * as sym from '@cst-tokens/helpers/symbols';
 
@@ -12,18 +12,19 @@ const getPreviousRealToken = (token, context) => {
 
 const spaceDelimitedTypes = ['Identifier', 'Keyword'];
 
-export const WithWhitespace = ([key, production]) => {
+export const WithWhitespace = ([type, production]) => {
   const name = `WithWhitespace_${production.name}`;
 
   return [
-    key,
+    type,
     {
       *[name](props, ...args) {
         const { getState, context } = props;
+        const { tokenGrammar } = context;
 
         const generator = production(props, ...args);
         let current = generator.next();
-        let state;
+        let s;
 
         while (!current.done) {
           const cmd = current.value;
@@ -32,7 +33,7 @@ export const WithWhitespace = ([key, production]) => {
 
           cmd.error = cause && new Error(undefined, { cause });
 
-          state = getState();
+          s = getState();
 
           switch (cmd.type) {
             case sym.eat:
@@ -42,7 +43,7 @@ export const WithWhitespace = ([key, production]) => {
               const { type } = edible.value;
               let lastType = getPreviousRealToken(getState().result, context)?.type;
 
-              const spaceIsAllowed = state.lexicalContext === 'Bare';
+              const spaceIsAllowed = s.lexicalContext === 'Bare';
 
               if (spaceIsAllowed) {
                 const spaceIsNecessary =
@@ -50,10 +51,14 @@ export const WithWhitespace = ([key, production]) => {
                   spaceDelimitedTypes.includes(lastType) &&
                   spaceDelimitedTypes.includes(type);
 
-                if (spaceIsNecessary) {
-                  yield eat(tok`Separator`);
-                } else {
-                  yield eatMatch(tok`Separator`);
+                let matchedSeparator = s.result && tokenGrammar.is('Trivia', s.result.type);
+
+                if (!matchedSeparator) {
+                  matchedSeparator = !!(yield eatMatch(tok`Separator`));
+                }
+
+                if (spaceIsNecessary && !matchedSeparator) {
+                  yield fail();
                 }
               }
               // fallthrough
