@@ -24,7 +24,10 @@ export const WithWhitespace = ([type, production]) => {
 
         const generator = production(props, ...args);
         let current = generator.next();
-        let s;
+        let s = getState();
+
+        if (s.testCurrent(sym.StartNode)) {
+        }
 
         while (!current.done) {
           const cmd = current.value;
@@ -54,6 +57,7 @@ export const WithWhitespace = ([type, production]) => {
                 let matchedSeparator = s.result && tokenGrammar.is('Trivia', s.result.type);
 
                 if (!matchedSeparator) {
+                  // use edible.type and partial range to decide whether to match tok`Separator` or node`Separator`
                   matchedSeparator = !!(yield eatMatch(tok`Separator`));
                 }
 
