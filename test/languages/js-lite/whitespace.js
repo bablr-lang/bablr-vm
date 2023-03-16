@@ -47,22 +47,18 @@ export const WithWhitespace = ([type, production]) => {
               } else {
                 lastTypes.set(s, type);
 
-                if (lastType === 'Separator') {
-                  // nothing to do
-                } else {
-                  const spaceIsAllowed = s.lexicalContext === 'Bare';
+                const spaceIsAllowed = s.lexicalContext === 'Bare';
 
-                  if (spaceIsAllowed) {
-                    const spaceIsNecessary =
-                      !!lastType &&
-                      spaceDelimitedTypes.includes(lastType) &&
-                      spaceDelimitedTypes.includes(type);
+                if (spaceIsAllowed) {
+                  const spaceIsNecessary =
+                    !!lastType &&
+                    spaceDelimitedTypes.includes(lastType) &&
+                    spaceDelimitedTypes.includes(type);
 
-                    const matchedSeparator = !!(yield eatMatch(tok`Separator`));
+                  const matchedSeparator = !!(yield eatMatch(tok`Separator`));
 
-                    if (spaceIsNecessary && !matchedSeparator) {
-                      yield fail();
-                    }
+                  if (spaceIsNecessary && !matchedSeparator) {
+                    yield fail();
                   }
                 }
               }
