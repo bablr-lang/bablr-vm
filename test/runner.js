@@ -40,8 +40,8 @@ const WithLogging = ([type, production]) => {
     type,
     {
       *[name](props, grammar, next) {
-        const { getState, context } = props;
-        const { productionType } = getState();
+        const { state, context } = props;
+        const { productionType } = state;
 
         if (!productionTypes.has(context)) {
           productionTypes.set(context, sym.node);
@@ -54,7 +54,7 @@ const WithLogging = ([type, production]) => {
         const baseIndentDepth = productionType === sym.token ? indents.get(context) : 0;
 
         const i = (strings, ...args) => {
-          const indentation = ' '.repeat((1 + baseIndentDepth + getState().depth) * 2);
+          const indentation = ' '.repeat((1 + baseIndentDepth + state.depth) * 2);
           const content = String.raw(strings, ...args);
           return `${indentation}${content}`;
         };
@@ -99,7 +99,7 @@ const WithLogging = ([type, production]) => {
               productionType === sym.node && matchable?.type === sym.token;
 
             if (isTokenizerTransition) {
-              indents.set(context, getState().depth);
+              indents.set(context, state.depth);
             }
 
             const result = yield instr;
@@ -107,7 +107,7 @@ const WithLogging = ([type, production]) => {
             anyResult = anyResult || (eats && result);
 
             if (isTokenizerTransition) {
-              indents.set(context, getState().depth);
+              indents.set(context, state.depth);
             }
 
             current = generator.next(result);

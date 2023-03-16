@@ -18,9 +18,7 @@ export const WithWhitespace = ([type, production]) => {
     type,
     {
       *[name](props, ...args) {
-        const { path, getState } = props;
-
-        const s = getState();
+        const { path, state: s } = props;
 
         const generator = production(props, ...args);
         let current = generator.next();
@@ -74,16 +72,14 @@ export const WithWhitespace = ([type, production]) => {
             }
 
             case sym.startNode: {
-              let s = getState();
               let sep, sn;
 
               if (s.path !== path && s.testCurrent(sym.StartNode)) {
                 sn = yield startNode();
                 lastTypes.set(s, sym.StartNode);
-                s = getState();
               }
               do {
-                if (getState().path !== path) {
+                if (s.path !== path) {
                   sn = yield startNode();
                   lastTypes.set(s, sym.StartNode);
                 }
@@ -102,7 +98,6 @@ export const WithWhitespace = ([type, production]) => {
             }
 
             case sym.endNode: {
-              let s = getState();
               let sep, en;
 
               lastTypes.set(s, sym.EndNode);
@@ -113,10 +108,9 @@ export const WithWhitespace = ([type, production]) => {
                 if (s.path !== path && s.testCurrent(sym.endNode)) {
                   en = yield endNode();
                   lastTypes.set(s, sym.EndNode);
-                  s = getState();
                 }
                 do {
-                  if (getState().path !== path) {
+                  if (s.path !== path) {
                     en = yield endNode();
                     lastTypes.set(s, sym.EndNode);
                   }

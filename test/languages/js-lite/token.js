@@ -109,13 +109,13 @@ export const productions = objectEntries({
     yield eat(tok`StringEnd:${q}`);
   },
 
-  *Literal({ lexicalContext, getState }) {
+  *Literal({ lexicalContext, state }) {
     if (lexicalContext === 'String:Single') {
       yield eat(/[^\\']+/y);
     } else if (lexicalContext === 'String:Double') {
       yield eat(/[^\\"]+/y);
     } else if (lexicalContext === 'Bare') {
-      const lastType = getState().result?.type;
+      const lastType = state.result?.type;
       const isFirst = !lastType || lastType === 'EscapeCode' || lastType === 'Literal';
       if (isFirst) {
         yield eat(/[$_\w][$_\w\d]*/y);
