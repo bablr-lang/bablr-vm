@@ -1,16 +1,15 @@
-import { eatMatch, fail } from '@cst-tokens/helpers/grammar';
+import { eatMatch, fail, startNode, endNode } from '@cst-tokens/helpers/grammar';
 import { tok } from '@cst-tokens/helpers/shorthand';
 import * as sym from '@cst-tokens/helpers/symbols';
 
-const getPreviousRealToken = (token, context) => {
-  let real = token;
-  while (real && (real.type === 'StartNode' || real.type === 'EndNode')) {
-    real = context.getPreviousToken(real);
-  }
-  return real || null;
-};
-
 const spaceDelimitedTypes = ['Identifier', 'Keyword'];
+
+const boundariesGenerated = new WeakMap();
+const lastTypes = new WeakMap();
+
+const lastTypeFor = (s) => {
+  return lastTypes.get(s) || (s.parent && lastTypes.get(s.parent)) || null;
+};
 
 export const WithWhitespace = ([type, production]) => {
   const name = `WithWhitespace_${production.name}`;
@@ -19,12 +18,12 @@ export const WithWhitespace = ([type, production]) => {
     type,
     {
       *[name](props, ...args) {
-        const { getState, context } = props;
-        const { tokenGrammar } = context;
+        const { path, getState } = props;
+
+        const s = getState();
 
         const generator = production(props, ...args);
         let current = generator.next();
-        let s = getState();
 
         if (s.testCurrent(sym.StartNode)) {
         }
@@ -36,7 +35,7 @@ export const WithWhitespace = ([type, production]) => {
 
           cmd.error = cause && new Error(undefined, { cause });
 
-          s = getState();
+          const lastType = lastTypeFor(s);
 
           switch (cmd.type) {
             case sym.eat:
@@ -44,28 +43,93 @@ export const WithWhitespace = ([type, production]) => {
             case sym.eatMatch: {
               const edible = cmd.value;
               const { type } = edible.value;
-              let lastType = getPreviousRealToken(getState().result, context)?.type;
 
-              const spaceIsAllowed = s.lexicalContext === 'Bare';
+              if (edible.type === sym.node) {
+                // nothing to do
+              } else {
+                lastTypes.set(s, type);
 
-              if (spaceIsAllowed) {
-                const spaceIsNecessary =
-                  !!lastType &&
-                  spaceDelimitedTypes.includes(lastType) &&
-                  spaceDelimitedTypes.includes(type);
+                if (lastType === 'Separator') {
+                  // nothing to do
+                } else {
+                  const spaceIsAllowed = s.lexicalContext === 'Bare';
 
-                let matchedSeparator = s.result && tokenGrammar.is('Trivia', s.result.type);
+                  if (spaceIsAllowed) {
+                    const spaceIsNecessary =
+                      !!lastType &&
+                      spaceDelimitedTypes.includes(lastType) &&
+                      spaceDelimitedTypes.includes(type);
 
-                if (!matchedSeparator) {
-                  // use edible.type and partial range to decide whether to match tok`Separator` or node`Separator`
-                  matchedSeparator = !!(yield eatMatch(tok`Separator`));
-                }
+                    const matchedSeparator = !!(yield eatMatch(tok`Separator`));
 
-                if (spaceIsNecessary && !matchedSeparator) {
-                  yield fail();
+                    if (spaceIsNecessary && !matchedSeparator) {
+                      yield fail();
+                    }
+                  }
                 }
               }
-              // fallthrough
+
+              returnValue = yield cmd;
+              break;
+            }
+
+            case sym.startNode: {
+              let s = getState();
+              let sep, sn;
+
+              if (s.path !== path && s.testCurrent(sym.StartNode)) {
+                sn = yield startNode();
+                lastTypes.set(s, sym.StartNode);
+                s = getState();
+              }
+              do {
+                if (getState().path !== path) {
+                  sn = yield startNode();
+                  lastTypes.set(s, sym.StartNode);
+                }
+                if (lastTypeFor(s) === 'Separator') {
+                  sep = yield eatMatch(tok`Separator`);
+                }
+              } while (sep);
+
+              if (!sn) {
+                yield cmd;
+                boundariesGenerated.set(path, true);
+              }
+
+              returnValue = sn;
+              break;
+            }
+
+            case sym.endNode: {
+              let s = getState();
+              let sep, en;
+
+              lastTypes.set(s, sym.EndNode);
+
+              if (boundariesGenerated.get(path)) {
+                yield cmd;
+              } else {
+                if (s.path !== path && s.testCurrent(sym.endNode)) {
+                  en = yield endNode();
+                  lastTypes.set(s, sym.EndNode);
+                  s = getState();
+                }
+                do {
+                  if (getState().path !== path) {
+                    en = yield endNode();
+                    lastTypes.set(s, sym.EndNode);
+                  }
+                  if (lastTypeFor(s) === 'Separator') {
+                    sep = yield eatMatch(tok`Separator`);
+                  }
+                } while (sep);
+              }
+
+              if (!en) throw new Error();
+
+              returnValue = en;
+              break;
             }
 
             default:
