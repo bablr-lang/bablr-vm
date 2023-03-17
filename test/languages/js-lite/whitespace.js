@@ -71,21 +71,22 @@ export const WithWhitespace = ([type, production]) => {
             case sym.startNode: {
               let sep, sn;
 
-              if (s.path !== path && s.testCurrent(sym.StartNode)) {
-                sn = yield startNode();
-                lastTypes.set(s, sym.StartNode);
+              if (lastTypeFor(s) !== 'Separator') {
+                sep = yield eatMatch(tok`Separator`);
               }
-              do {
-                if (lastTypeFor(s) === 'Separator') {
-                  sep = yield eatMatch(tok`Separator`);
-                }
-                if (s.path !== path && s.testCurrent(sym.StartNode)) {
-                  sn = yield startNode();
-                  lastTypes.set(s, sym.StartNode);
-                }
-              } while (sep);
 
-              if (!sn) {
+              if (s.path !== path) {
+                do {
+                  if (s.testCurrent(sym.StartNode)) {
+                    sn = yield startNode();
+                    lastTypes.set(s, sym.StartNode);
+                  }
+
+                  sep = sn && (yield eatMatch(tok`Separator`));
+                } while (sep && !sn);
+              }
+
+              if (s.path !== path) {
                 sn = yield cmd;
                 boundariesGenerated = true;
               }
@@ -102,19 +103,18 @@ export const WithWhitespace = ([type, production]) => {
               if (boundariesGenerated) {
                 en = yield cmd;
               } else {
-                if (s.path !== path && s.testCurrent(sym.endNode)) {
-                  en = yield endNode();
-                  lastTypes.set(s, sym.EndNode);
+                if (lastTypeFor(s) !== 'Separator') {
+                  sep = yield eatMatch(tok`Separator`);
                 }
+
                 do {
-                  if (lastTypeFor(s) === 'Separator') {
-                    sep = yield eatMatch(tok`Separator`);
-                  }
-                  if (s.path !== path && s.testCurrent(sym.endNode)) {
+                  if (s.testCurrent(sym.EndNode)) {
                     en = yield endNode();
                     lastTypes.set(s, sym.EndNode);
                   }
-                } while (sep);
+
+                  sep = en && (yield eatMatch(tok`Separator`));
+                } while (sep && !en);
               }
 
               if (!en) throw new Error();
