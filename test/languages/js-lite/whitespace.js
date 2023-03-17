@@ -4,7 +4,6 @@ import * as sym from '@cst-tokens/helpers/symbols';
 
 const spaceDelimitedTypes = ['Identifier', 'Keyword'];
 
-const boundariesGenerated = new WeakMap();
 const lastTypes = new WeakMap();
 
 const lastTypeFor = (s) => {
@@ -13,6 +12,8 @@ const lastTypeFor = (s) => {
 
 export const WithWhitespace = ([type, production]) => {
   const name = `WithWhitespace_${production.name}`;
+
+  let boundariesGenerated = false;
 
   return [
     type,
@@ -75,18 +76,18 @@ export const WithWhitespace = ([type, production]) => {
                 lastTypes.set(s, sym.StartNode);
               }
               do {
-                if (s.path !== path) {
-                  sn = yield startNode();
-                  lastTypes.set(s, sym.StartNode);
-                }
                 if (lastTypeFor(s) === 'Separator') {
                   sep = yield eatMatch(tok`Separator`);
+                }
+                if (s.path !== path && s.testCurrent(sym.StartNode)) {
+                  sn = yield startNode();
+                  lastTypes.set(s, sym.StartNode);
                 }
               } while (sep);
 
               if (!sn) {
-                yield cmd;
-                boundariesGenerated.set(path, true);
+                sn = yield cmd;
+                boundariesGenerated = true;
               }
 
               returnValue = sn;
@@ -98,20 +99,20 @@ export const WithWhitespace = ([type, production]) => {
 
               lastTypes.set(s, sym.EndNode);
 
-              if (boundariesGenerated.get(path)) {
-                yield cmd;
+              if (boundariesGenerated) {
+                en = yield cmd;
               } else {
                 if (s.path !== path && s.testCurrent(sym.endNode)) {
                   en = yield endNode();
                   lastTypes.set(s, sym.EndNode);
                 }
                 do {
-                  if (s.path !== path) {
-                    en = yield endNode();
-                    lastTypes.set(s, sym.EndNode);
-                  }
                   if (lastTypeFor(s) === 'Separator') {
                     sep = yield eatMatch(tok`Separator`);
+                  }
+                  if (s.path !== path && s.testCurrent(sym.endNode)) {
+                    en = yield endNode();
+                    lastTypes.set(s, sym.EndNode);
                   }
                 } while (sep);
               }
