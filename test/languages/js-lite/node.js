@@ -51,7 +51,7 @@ export const productions = objectEntries({
     yield eat(PN`*`, KW`as`, node`Identifier:local`);
   },
 
-  *String() {
+  *StringLiteral() {
     yield eat(tok`String`);
   },
 

@@ -54,6 +54,8 @@ export const productions = objectEntries({
   RightPunctuator: NamedLiteral,
   CommentStart: NamedLiteral,
   CommentEnd: NamedLiteral,
+  StringStart: NamedLiteral,
+  StringEnd: NamedLiteral,
 
   *Trivia() {
     const chrs = yield match(/\/\*|\/\/|\s/y);

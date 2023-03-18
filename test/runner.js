@@ -29,7 +29,6 @@ function* concat(...iterables) {
   for (const iterable of iterables) if (iterable) yield* iterable;
 }
 
-const indents = new WeakMap();
 const productionTypes = new WeakMap();
 
 // Polyglot syntax/node metaproduction
@@ -47,14 +46,8 @@ const WithLogging = ([type, production]) => {
           productionTypes.set(context, sym.node);
         }
 
-        if (!indents.has(context)) {
-          indents.set(context, 0);
-        }
-
-        const baseIndentDepth = productionType === sym.token ? indents.get(context) : 0;
-
         const i = (strings, ...args) => {
-          const indentation = ' '.repeat((1 + baseIndentDepth + state.depth) * 2);
+          const indentation = ' '.repeat((1 + state.depth) * 2);
           const content = String.raw(strings, ...args);
           return `${indentation}${content}`;
         };
@@ -95,20 +88,9 @@ const WithLogging = ([type, production]) => {
 
             const eats = instr.type === sym.eat || instr.type === sym.eatMatch;
 
-            const isTokenizerTransition =
-              productionType === sym.node && matchable?.type === sym.token;
-
-            if (isTokenizerTransition) {
-              indents.set(context, state.depth);
-            }
-
             const result = yield instr;
 
             anyResult = anyResult || (eats && result);
-
-            if (isTokenizerTransition) {
-              indents.set(context, state.depth);
-            }
 
             current = generator.next(result);
           }
