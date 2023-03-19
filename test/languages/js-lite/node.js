@@ -25,15 +25,17 @@ export const productions = objectEntries({
 
     const brace = special ? yield eatMatch(PN`,`, LPN`{`) : yield eatMatch(LPN`{`);
     if (brace) {
+      let cb;
       for (;;) {
         yield eat(node`ImportSpecifier:specifiers`);
 
-        if (yield match(RPN`}`)) break;
-        if (yield match(PN`,`, RPN`}`)) break;
-        yield eat(PN`,`);
+        if (!(yield eatMatch(PN`,`))) break;
+
+        if ((cb = yield eatMatch(RPN`}`))) break;
       }
-      yield eatMatch(PN`,`);
-      yield eat(RPN`}`);
+
+      if (!cb) yield eat(RPN`}`);
+
       yield eat(KW`from`);
     }
 
@@ -44,7 +46,9 @@ export const productions = objectEntries({
   *ImportSpecifier() {
     yield eat(node`Identifier:imported`);
 
-    yield eatMatch(KW`as`, node`Identifier:local`);
+    let as = yield eatMatch(KW`as`);
+
+    if (as) yield eat(node`Identifier:local`);
   },
 
   *ImportDefaultSpecifier() {
