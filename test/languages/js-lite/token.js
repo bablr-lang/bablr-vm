@@ -90,7 +90,7 @@ export const productions = objectEntries({
     qr = yield eatMatch(tok('LeftPunctuator', `'`, 'String:Single'));
     qr = qr || (yield eat(tok('LeftPunctuator', `"`, 'String:Double')));
 
-    while ((yield eatMatch(tok`Escape`, tok`EscapeCode`)) || (yield eatMatch(tok`Literal`)));
+    while ((yield eatMatch(tok`Literal`)) || (yield eatMatch(tok`EscapeSequence`))) {}
 
     yield eat(tok('RightPunctuator', qr[0].value, sym.parent));
   },
@@ -114,15 +114,22 @@ export const productions = objectEntries({
   },
 
   *Identifier() {
-    while ((yield eatMatch(tok`Escape`, tok`EscapeCode`)) || (yield eatMatch(tok`Literal`)));
+    while ((yield eatMatch(tok`Literal`)) || (yield eatMatch(tok`EscapeSequence`))) {}
+  },
+
+  *EscapeSequence({ lexicalContext }) {
+    if (lexicalContext === 'Bare' || lexicalContext.startsWith('String')) {
+      if (!(yield match(chrs('\\')))) return;
+    }
+    yield eat(tok`Escape`);
+    yield eat(tok`EscapeCode`);
   },
 
   *Escape({ lexicalContext }) {
     if (lexicalContext === 'Bare' || lexicalContext.startsWith('String')) {
-      yield eat(chrs('\\'));
-    } else {
       throw new Error(`{lexicalContext: ${lexicalContext}} does not define any escapes`);
     }
+    yield eat(chrs('\\'));
   },
 
   *EscapeCode({ lexicalContext }) {
