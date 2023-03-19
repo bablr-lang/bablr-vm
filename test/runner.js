@@ -1,6 +1,7 @@
 import { print, traverse } from 'cst-tokens';
 import { parseModule as parse } from 'meriyah';
-import { Grammar } from '@cst-tokens/helpers/grammar';
+import { TokenGrammar } from '@cst-tokens/helpers/grammar/token';
+import { NodeGrammar } from '@cst-tokens/helpers/grammar/node';
 import * as sym from '@cst-tokens/helpers/symbols';
 
 import js from './languages/js-lite/index.js';
@@ -113,21 +114,20 @@ const WithLogging = ([type, production]) => {
   ];
 };
 
-const buildGrammar = (grammar, enhancers) => {
-  return new Grammar({
-    ...grammar,
-    enhancers: concat(enhancers, grammar.enhancers),
-  });
-};
-
 const buildLanguage = (language, enhancers) => {
   const { grammars } = language;
   return {
     ...language,
     grammars: {
       ...grammars,
-      node: buildGrammar(grammars.node, enhancers),
-      token: buildGrammar(grammars.token, enhancers),
+      node: new NodeGrammar({
+        ...grammars.node,
+        enhancers: concat(enhancers, grammars.node.enhancers),
+      }),
+      token: new TokenGrammar({
+        ...grammars.token,
+        enhancers: concat(enhancers, grammars.token.enhancers),
+      }),
     },
   };
 };

@@ -1,4 +1,4 @@
-import { eatMatch, fail, startNode, endNode } from '@cst-tokens/helpers/grammar';
+import { eatMatch, fail, startNode, endNode } from '@cst-tokens/helpers/grammar/node';
 import { tok } from '@cst-tokens/helpers/shorthand';
 import * as sym from '@cst-tokens/helpers/symbols';
 

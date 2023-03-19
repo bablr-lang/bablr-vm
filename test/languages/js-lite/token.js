@@ -1,14 +1,10 @@
 import { str } from 'iter-tools-es';
-import {
-  eatChrs as eat,
-  matchChrs as match,
-  eatMatchChrs as eatMatch,
-  fail,
-} from '@cst-tokens/helpers/grammar';
+import { eat, match, eatMatch, fail } from '@cst-tokens/helpers/grammar/token';
 import { WithToken } from '@cst-tokens/helpers/metaproductions';
 import { objectEntries } from '@cst-tokens/helpers/object';
 import { chrs, tok } from '@cst-tokens/helpers/shorthand';
-import { LexicalBoundary, EOF } from '@cst-tokens/helpers/symbols';
+import { EOF } from '@cst-tokens/helpers/symbols';
+import * as sym from '@cst-tokens/helpers/symbols';
 
 const escapables = new Map(
   objectEntries({
@@ -19,16 +15,6 @@ const escapables = new Map(
     t: '\t',
     v: '\v',
     0: '\0',
-  }),
-);
-
-const bareTransitions = new Map(
-  objectEntries({
-    "'": ["'", 'String:Single', "'"],
-    '"': ['"', 'String:Double', '"'],
-    '/*': ['/*', 'Comment:Block', '*/'],
-    '//': ['//', 'Comment:Line', '\n'],
-    '/': ['/', 'Regex', '/'],
   }),
 );
 
@@ -48,14 +34,12 @@ function* NamedLiteral({ value }) {
   yield eat(chrs(value));
 }
 
+export const productionType = sym.token;
+
 export const productions = objectEntries({
   Punctuator: NamedLiteral,
   LeftPunctuator: NamedLiteral,
   RightPunctuator: NamedLiteral,
-  CommentStart: NamedLiteral,
-  CommentEnd: NamedLiteral,
-  StringStart: NamedLiteral,
-  StringEnd: NamedLiteral,
 
   *Trivia() {
     const chrs = yield match(/\/\*|\/\/|\s/y);
@@ -73,21 +57,21 @@ export const productions = objectEntries({
   },
 
   *BlockComment() {
-    yield eat(tok`CommentStart:/*`);
+    yield eat(tok('LeftPunctuator', `/*`, 'Comment:Block'));
 
     yield eatMatch(tok`Literal`);
 
-    yield eat(tok`CommentEnd:*/`);
+    yield eat(tok('RightPunctuator', `*/`, sym.parent));
   },
 
-  *LineComment() {
-    yield eat(tok`CommentStart://`);
+  *LineComment({ state }) {
+    yield eat(tok('LeftPunctuator', `//`, 'Comment:Line'));
 
     yield eatMatch(tok`Literal`);
 
-    if (yield match(tok(EOF))) return;
+    if (state.testCurrent(EOF)) return;
 
-    yield eatMatch(tok`CommentEnd:\n`);
+    yield eat(tok('RightPunctuator', `\n`, sym.parent));
   },
 
   *Whitespace() {
@@ -102,13 +86,13 @@ export const productions = objectEntries({
   },
 
   *String() {
-    let q; // quotation mark
-    q = yield eatMatch(tok`StringStart:'`);
-    q = q || (yield eat(tok`StringStart:"`));
+    let qr;
+    qr = yield eatMatch(tok('LeftPunctuator', `'`, 'String:Single'));
+    qr = qr || (yield eat(tok('LeftPunctuator', `"`, 'String:Double')));
 
-    while ((yield eatMatch('Escape', 'EscapeCode')) || (yield eatMatch('Literal')));
+    while ((yield eatMatch(tok`Escape`, tok`EscapeCode`)) || (yield eatMatch(tok`Literal`)));
 
-    yield eat(tok`StringEnd:${q}`);
+    yield eat(tok('RightPunctuator', qr[0].value, sym.parent));
   },
 
   *Literal({ lexicalContext, state }) {
@@ -168,24 +152,11 @@ export const aliases = objectEntries({
     'LeftPunctuator',
     'RightPunctuator',
     'Literal',
-    'StringStart',
-    'StringEnd',
     'Escape',
     'EscapeCode',
   ],
   Comment: ['BlockComment', 'LineComment'],
   Trivia: ['Comment', 'Whitespace'],
-  [LexicalBoundary]: ['CommentStart', 'CommentEnd', 'StringStart', 'StringEnd'],
 });
-
-export const context = {
-  *transition(lexicalContext, boundaryToken) {
-    if (lexicalContext === 'Bare') {
-      yield* bareTransitions.get(boundaryToken);
-    } else {
-      throw new Error();
-    }
-  },
-};
 
 export const enhancers = [WithToken];
