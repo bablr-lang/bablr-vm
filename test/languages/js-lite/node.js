@@ -1,7 +1,8 @@
-import { eat, match, eatMatch } from '@cst-tokens/helpers/grammar/node';
+import { eat, eatMatch } from '@cst-tokens/helpers/grammar/node';
 import { objectEntries } from '@cst-tokens/helpers/object';
 import { tok, node } from '@cst-tokens/helpers/shorthand';
 import { WithNode } from '@cst-tokens/helpers/metaproductions';
+import { annotatedProductions } from '@cst-tokens/helpers/productions';
 import * as sym from '@cst-tokens/helpers/symbols';
 
 import { WithWhitespace } from './whitespace.js';
@@ -13,11 +14,12 @@ const KW = (...args) => tok('Keyword', String.raw(...args));
 
 export const productionType = sym.node;
 
-export const productions = objectEntries({
+export const productions = annotatedProductions({
   *Program() {
     while (yield eatMatch(node`ImportDeclaration:body`));
   },
 
+  ImportDeclaration$guard: /import\b/y,
   *ImportDeclaration() {
     yield eat(KW`import`);
 
@@ -28,12 +30,9 @@ export const productions = objectEntries({
       let cb;
       for (;;) {
         yield eat(node`ImportSpecifier:specifiers`);
-
         if (!(yield eatMatch(PN`,`))) break;
-
         if ((cb = yield eatMatch(RPN`}`))) break;
       }
-
       if (!cb) yield eat(RPN`}`);
 
       yield eat(KW`from`);
@@ -45,9 +44,7 @@ export const productions = objectEntries({
 
   *ImportSpecifier() {
     yield eat(node`Identifier:imported`);
-
     let as = yield eatMatch(KW`as`);
-
     if (as) yield eat(node`Identifier:local`);
   },
 
@@ -55,10 +52,12 @@ export const productions = objectEntries({
     yield eat(node`Identifier:local`);
   },
 
+  ImportNamespaceSpecifier$guard: '*',
   *ImportNamespaceSpecifier() {
     yield eat(PN`*`, KW`as`, node`Identifier:local`);
   },
 
+  StringLiteral$guard: /'|"/,
   *StringLiteral() {
     yield eat(tok`String`);
   },

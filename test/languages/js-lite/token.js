@@ -1,6 +1,7 @@
 import { str } from 'iter-tools-es';
-import { eat, match, eatMatch, fail } from '@cst-tokens/helpers/grammar/token';
+import { eat, match, eatMatch } from '@cst-tokens/helpers/grammar/token';
 import { WithToken } from '@cst-tokens/helpers/metaproductions';
+import { annotatedProductions } from '@cst-tokens/helpers/productions';
 import { objectEntries } from '@cst-tokens/helpers/object';
 import { chrs, tok } from '@cst-tokens/helpers/shorthand';
 import { EOF } from '@cst-tokens/helpers/symbols';
@@ -36,26 +37,28 @@ function* NamedLiteral({ value }) {
 
 export const productionType = sym.token;
 
-export const productions = objectEntries({
+export const productions = annotatedProductions({
+  Punctuator$guard: ({ value }) => value,
   Punctuator: NamedLiteral,
+
+  LeftPunctuator$guard: ({ value }) => value,
   LeftPunctuator: NamedLiteral,
+
+  RightPunctuator$guard: ({ value }) => value,
   RightPunctuator: NamedLiteral,
 
-  *Trivia() {
-    const chrs = yield match(/\/\*|\/\/|\s/y);
-    if (chrs) {
-      yield eat(tok(triviaProductionFor(chrs)));
-    } else {
-      yield fail();
-    }
+  Trivia$guard: /\/\*|\/\/|\s/y,
+  *Trivia({ guardMatch }) {
+    yield eat(tok(triviaProductionFor(guardMatch)));
   },
 
+  Separator$guard: /\/\*|\/\/|\s/y,
   *Separator() {
-    while (yield match(/\/\*|\/\/|\s/y)) {
-      yield eat(tok`Trivia`);
-    }
+    yield eat(tok`Trivia`);
+    while (yield eatMatch(tok`Trivia`));
   },
 
+  BlockComment$guard: '/*',
   *BlockComment() {
     yield eat(tok('LeftPunctuator', `/*`, 'Comment:Block'));
 
@@ -64,6 +67,7 @@ export const productions = objectEntries({
     yield eat(tok('RightPunctuator', `*/`, sym.parent));
   },
 
+  LineComment$guard: '//',
   *LineComment({ state }) {
     yield eat(tok('LeftPunctuator', `//`, 'Comment:Line'));
 
@@ -74,10 +78,12 @@ export const productions = objectEntries({
     yield eat(tok('RightPunctuator', `\n`, sym.parent));
   },
 
+  Whitespace$guard: /\s/y,
   *Whitespace() {
     yield eat(/\s+/y);
   },
 
+  Keyword$guard: ({ value }) => value,
   *Keyword({ value, lexicalContext }) {
     if (lexicalContext !== 'Bare') {
       throw new Error(`{lexicalContext: ${lexicalContext}} does not allow keywords`);
@@ -85,6 +91,7 @@ export const productions = objectEntries({
     yield eat(chrs(value));
   },
 
+  String$guard: /['"]/y,
   *String() {
     let qr;
     qr = yield eatMatch(tok('LeftPunctuator', `'`, 'String:Single'));
@@ -119,36 +126,40 @@ export const productions = objectEntries({
     while ((yield eatMatch(tok`Literal`)) || (yield eatMatch(tok`EscapeSequence`))) {}
   },
 
+  EscapeSequence$guard: '\\',
   *EscapeSequence({ lexicalContext }) {
-    if (lexicalContext === 'Bare' || lexicalContext.startsWith('String')) {
-      if (!(yield match(chrs('\\')))) return;
+    if (!(lexicalContext === 'Bare' || lexicalContext.startsWith('String'))) {
+      throw new Error(`{lexicalContext: ${lexicalContext}} does not define an escape sequence`);
     }
+
     yield eat(tok`Escape`);
     yield eat(tok`EscapeCode`);
   },
 
+  Escape$guard: '\\',
   *Escape({ lexicalContext }) {
-    if (lexicalContext === 'Bare' || lexicalContext.startsWith('String')) {
-      throw new Error(`{lexicalContext: ${lexicalContext}} does not define any escapes`);
+    if (!(lexicalContext === 'Bare' || lexicalContext.startsWith('String'))) {
+      throw new Error(`{lexicalContext: ${lexicalContext}} does not define an escape`);
     }
+
     yield eat(chrs('\\'));
   },
 
   *EscapeCode({ lexicalContext }) {
-    if (lexicalContext.startsWith('String') || lexicalContext === 'Bare') {
-      if (yield eatMatch(/u{\d{1,6}}/y)) {
-        // break
-      } else if (yield eatMatch(/u\d\d\d\d/y)) {
-        // break
-      } else if (lexicalContext !== 'Bare') {
-        if (yield eatMatch(/x\d\d/y)) {
-          // break
-        } else if (yield eatMatch(chrs(str(escapables.keys())))) {
-          // break
-        }
-      }
-    } else {
+    if (!(lexicalContext.startsWith('String') || lexicalContext === 'Bare')) {
       throw new Error(`{lexicalContext: ${lexicalContext}} does not define any escape codes`);
+    }
+
+    if (yield eatMatch(/u{\d{1,6}}/y)) {
+      // break
+    } else if (yield eatMatch(/u\d\d\d\d/y)) {
+      // break
+    } else if (lexicalContext !== 'Bare') {
+      if (yield eatMatch(/x\d\d/y)) {
+        // break
+      } else if (yield eatMatch(chrs(str(escapables.keys())))) {
+        // break
+      }
     }
   },
 });

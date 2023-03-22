@@ -14,10 +14,10 @@
   "dependencies": {
     "@iter-tools/imm-stack": "1.1.0",
     "@iter-tools/regex": "0.3.2",
-    "escape-string-regexp": "4.0.0"
+    "escape-string-regexp": "5.0.0"
   },
   "devDependencies": {
-    "@cst-tokens/helpers": "0.12.0",
+    "@cst-tokens/helpers": "0.13.0",
     "enhanced-resolve": "^5.12.0",
     "eslint": "^8.32.0",
     "eslint-import-resolver-enhanced-resolve": "^1.0.5",

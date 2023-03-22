@@ -1,11 +1,11 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@cst-tokens/helpers': 0.12.0
+  '@cst-tokens/helpers': 0.13.0
   '@iter-tools/imm-stack': 1.1.0
   '@iter-tools/regex': 0.3.2
   enhanced-resolve: ^5.12.0
-  escape-string-regexp: 4.0.0
+  escape-string-regexp: 5.0.0
   eslint: ^8.32.0
   eslint-import-resolver-enhanced-resolve: ^1.0.5
   eslint-plugin-import: ^2.27.5
@@ -16,10 +16,10 @@ specifiers:
 dependencies:
   '@iter-tools/imm-stack': 1.1.0
   '@iter-tools/regex': 0.3.2
-  escape-string-regexp: 4.0.0
+  escape-string-regexp: 5.0.0
 
 devDependencies:
-  '@cst-tokens/helpers': 0.12.0
+  '@cst-tokens/helpers': 0.13.0
   enhanced-resolve: 5.12.0
   eslint: 8.32.0
   eslint-import-resolver-enhanced-resolve: 1.0.5
@@ -30,14 +30,15 @@ devDependencies:
 
 packages:
 
-  /@cst-tokens/grammar/0.3.2:
-    resolution: {integrity: sha512-uCon6+u00yzqvc1RH942P+hKi6HmAhxsAGtuwnYx88c8ZErR5yNt9SARbTX6tMSY5wIBWkJO7vSeH53ZAasQUw==}
+  /@cst-tokens/grammar/0.4.0:
+    resolution: {integrity: sha512-p9CJ7YTE+vLD+3Kp30TFTrUJ4vjVObt9pxLeB5EfLnJJy/yBCSxNhlpFMR8ecu16/donkbWc1pAgSFUchHVYHA==}
     dev: true
 
-  /@cst-tokens/helpers/0.12.0:
-    resolution: {integrity: sha512-Hh3PtyWK6oOz4VHTfARecqhJGpLZvTqBWYi42Vk8hifSmLKMraP/hvADysNP385xDWbGc22TWnX3RNfuNy1ggA==}
+  /@cst-tokens/helpers/0.13.0:
+    resolution: {integrity: sha512-jEuVSD0icQY/6D00vErejzxv9hmZHGpTXL9DrXdb26lTFpOVaesa4wbFJceyjmRCvamfAlm+dniwPFOqXdp/Qw==}
     dependencies:
-      '@cst-tokens/grammar': 0.3.2
+      '@cst-tokens/grammar': 0.4.0
+      escape-string-regexp: 5.0.0
     dev: true
 
   /@eslint/eslintrc/1.4.1:
@@ -369,6 +370,11 @@ packages:
   /escape-string-regexp/4.0.0:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
+    dev: true
+
+  /escape-string-regexp/5.0.0:
+    resolution: {integrity: sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==}
+    engines: {node: '>=12'}
 
   /eslint-import-resolver-enhanced-resolve/1.0.5:
     resolution: {integrity: sha512-Ss07NWhqdeOHq+Jevl4f5gPqHoRKyNTSXUoLxP/dMCXUUCsowGFv7/ccJ4fMcAdeqL+WhfA/p4AYWbtY6fB0wQ==}
