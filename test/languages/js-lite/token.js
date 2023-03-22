@@ -38,13 +38,10 @@ function* NamedLiteral({ value }) {
 export const productionType = sym.token;
 
 export const productions = annotatedProductions({
-  Punctuator$guard: ({ value }) => value,
   Punctuator: NamedLiteral,
 
-  LeftPunctuator$guard: ({ value }) => value,
   LeftPunctuator: NamedLiteral,
 
-  RightPunctuator$guard: ({ value }) => value,
   RightPunctuator: NamedLiteral,
 
   Trivia$guard: /\/\*|\/\/|\s/y,
@@ -58,7 +55,6 @@ export const productions = annotatedProductions({
     while (yield eatMatch(tok`Trivia`));
   },
 
-  BlockComment$guard: '/*',
   *BlockComment() {
     yield eat(tok('LeftPunctuator', `/*`, 'Comment:Block'));
 
@@ -67,7 +63,6 @@ export const productions = annotatedProductions({
     yield eat(tok('RightPunctuator', `*/`, sym.parent));
   },
 
-  LineComment$guard: '//',
   *LineComment({ state }) {
     yield eat(tok('LeftPunctuator', `//`, 'Comment:Line'));
 
@@ -78,20 +73,17 @@ export const productions = annotatedProductions({
     yield eat(tok('RightPunctuator', `\n`, sym.parent));
   },
 
-  Whitespace$guard: /\s/y,
   *Whitespace() {
     yield eat(/\s+/y);
   },
 
-  Keyword$guard: ({ value }) => value,
-  *Keyword({ value, lexicalContext }) {
+  *Keyword({ value, state: { lexicalContext } }) {
     if (lexicalContext !== 'Bare') {
       throw new Error(`{lexicalContext: ${lexicalContext}} does not allow keywords`);
     }
     yield eat(chrs(value));
   },
 
-  String$guard: /['"]/y,
   *String() {
     let qr;
     qr = yield eatMatch(tok('LeftPunctuator', `'`, 'String:Single'));
@@ -104,13 +96,13 @@ export const productions = annotatedProductions({
     yield eat(tok('RightPunctuator', qr[0].value, sym.parent));
   },
 
-  *Literal({ lexicalContext, state }) {
+  *Literal({ state: { lexicalContext, result } }) {
     if (lexicalContext === 'String:Single') {
       yield eat(/[^\\']+/y);
     } else if (lexicalContext === 'String:Double') {
       yield eat(/[^\\"]+/y);
     } else if (lexicalContext === 'Bare') {
-      const lastType = state.result?.type;
+      const lastType = result?.type;
       const isFirst = !lastType || lastType === 'EscapeCode' || lastType === 'Literal';
       if (isFirst) {
         yield eat(/[$_\w][$_\w\d]*/y);
@@ -126,8 +118,7 @@ export const productions = annotatedProductions({
     while ((yield eatMatch(tok`Literal`)) || (yield eatMatch(tok`EscapeSequence`))) {}
   },
 
-  EscapeSequence$guard: '\\',
-  *EscapeSequence({ lexicalContext }) {
+  *EscapeSequence({ state: { lexicalContext } }) {
     if (!(lexicalContext === 'Bare' || lexicalContext.startsWith('String'))) {
       throw new Error(`{lexicalContext: ${lexicalContext}} does not define an escape sequence`);
     }
@@ -136,8 +127,7 @@ export const productions = annotatedProductions({
     yield eat(tok`EscapeCode`);
   },
 
-  Escape$guard: '\\',
-  *Escape({ lexicalContext }) {
+  *Escape({ state: { lexicalContext } }) {
     if (!(lexicalContext === 'Bare' || lexicalContext.startsWith('String'))) {
       throw new Error(`{lexicalContext: ${lexicalContext}} does not define an escape`);
     }
@@ -145,7 +135,7 @@ export const productions = annotatedProductions({
     yield eat(chrs('\\'));
   },
 
-  *EscapeCode({ lexicalContext }) {
+  *EscapeCode({ state: { lexicalContext } }) {
     if (!(lexicalContext.startsWith('String') || lexicalContext === 'Bare')) {
       throw new Error(`{lexicalContext: ${lexicalContext}} does not define any escape codes`);
     }

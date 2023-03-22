@@ -40,9 +40,10 @@ export const WithWhitespace = (production) => {
     ...production,
     annotations,
     *match(props, ...args) {
-      const { path, state: s } = props;
+      const { state: s } = props;
+      const outerPath = s.path;
 
-      // props.guardMatch = ???
+      // props.guardMatch = ??
 
       const generator = production.match(props, ...args);
       let current = generator.next();
@@ -95,7 +96,7 @@ export const WithWhitespace = (production) => {
               sep = yield eatMatch(tok`Separator`);
             }
 
-            if (s.path !== path) {
+            if (s.path === outerPath) {
               do {
                 if (s.testCurrent(sym.StartNode)) {
                   sn = yield startNode();
@@ -106,7 +107,7 @@ export const WithWhitespace = (production) => {
               } while (sep && !sn);
             }
 
-            if (s.path !== path) {
+            if (s.path === outerPath) {
               sn = yield cmd;
               boundariesGenerated = true;
             }

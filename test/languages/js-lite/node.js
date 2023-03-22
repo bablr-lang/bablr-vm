@@ -16,10 +16,9 @@ export const productionType = sym.node;
 
 export const productions = annotatedProductions({
   *Program() {
-    while (yield eatMatch(node`ImportDeclaration:body`));
+    while (yield eatMatch(node`Statement:body`));
   },
 
-  ImportDeclaration$guard: /import\b/y,
   *ImportDeclaration() {
     yield eat(KW`import`);
 
@@ -52,12 +51,10 @@ export const productions = annotatedProductions({
     yield eat(node`Identifier:local`);
   },
 
-  ImportNamespaceSpecifier$guard: '*',
   *ImportNamespaceSpecifier() {
     yield eat(PN`*`, KW`as`, node`Identifier:local`);
   },
 
-  StringLiteral$guard: /'|"/,
   *StringLiteral() {
     yield eat(tok`String`);
   },
@@ -68,16 +65,18 @@ export const productions = annotatedProductions({
 });
 
 export const aliases = objectEntries({
+  Statement: ['ImportDeclaration'],
+  Expression: ['String', 'Identifier'],
   Literal: ['StringLiteral'],
   ImportSpecialSpecifier: ['ImportDefaultSpecifier', 'ImportNamespaceSpecifier'],
   Node: [
     'Program',
+    'String',
+    'Identifier',
     'ImportDeclaration',
     'ImportSpecifier',
     'ImportDefaultSpecifier',
     'ImportNamespaceSpecifier',
-    'String',
-    'Identifier',
   ],
 });
 
