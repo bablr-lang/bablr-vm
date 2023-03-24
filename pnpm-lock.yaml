@@ -1,7 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@cst-tokens/helpers': 0.13.0
+  '@cst-tokens/helpers': github:js-cst-tokens/helpers#12cde2f2eb85139e0947c7460184aa18ea480d43
   '@iter-tools/imm-stack': 1.1.0
   '@iter-tools/regex': 0.3.2
   enhanced-resolve: ^5.12.0
@@ -19,7 +19,7 @@ dependencies:
   escape-string-regexp: 5.0.0
 
 devDependencies:
-  '@cst-tokens/helpers': 0.13.0
+  '@cst-tokens/helpers': github.com/js-cst-tokens/helpers/12cde2f2eb85139e0947c7460184aa18ea480d43
   enhanced-resolve: 5.12.0
   eslint: 8.32.0
   eslint-import-resolver-enhanced-resolve: 1.0.5
@@ -30,15 +30,8 @@ devDependencies:
 
 packages:
 
-  /@cst-tokens/grammar/0.4.0:
-    resolution: {integrity: sha512-p9CJ7YTE+vLD+3Kp30TFTrUJ4vjVObt9pxLeB5EfLnJJy/yBCSxNhlpFMR8ecu16/donkbWc1pAgSFUchHVYHA==}
-    dev: true
-
-  /@cst-tokens/helpers/0.13.0:
-    resolution: {integrity: sha512-jEuVSD0icQY/6D00vErejzxv9hmZHGpTXL9DrXdb26lTFpOVaesa4wbFJceyjmRCvamfAlm+dniwPFOqXdp/Qw==}
-    dependencies:
-      '@cst-tokens/grammar': 0.4.0
-      escape-string-regexp: 5.0.0
+  /@cst-tokens/grammar/0.4.1:
+    resolution: {integrity: sha512-e4Ld37xV87dw/BHFHTKoRKF6wCBXOGFHrcrefDoJRrAIg8GpzOsULgmNvbczr1NieK2IkCQJ3VpZPQu+b0jMeg==}
     dev: true
 
   /@eslint/eslintrc/1.4.1:
@@ -1291,4 +1284,13 @@ packages:
   /yocto-queue/0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+    dev: true
+
+  github.com/js-cst-tokens/helpers/12cde2f2eb85139e0947c7460184aa18ea480d43:
+    resolution: {tarball: https://codeload.github.com/js-cst-tokens/helpers/tar.gz/12cde2f2eb85139e0947c7460184aa18ea480d43}
+    name: '@cst-tokens/helpers'
+    version: 0.13.0
+    dependencies:
+      '@cst-tokens/grammar': 0.4.1
+      escape-string-regexp: 5.0.0
     dev: true

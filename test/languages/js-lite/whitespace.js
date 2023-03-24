@@ -80,7 +80,12 @@ export const WithWhitespace = (production) => {
                 const matchedSeparator = !!(yield eatMatch(tok`Separator`));
 
                 if (spaceIsNecessary && !matchedSeparator) {
-                  yield fail();
+                  if (cmd.type === sym.eat) {
+                    yield fail();
+                  } else {
+                    returnValue = null;
+                    break;
+                  }
                 }
               }
             }

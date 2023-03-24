@@ -19,6 +19,17 @@ export const productions = annotatedProductions({
     while (yield eatMatch(node`Statement:body`));
   },
 
+  *BlockStatement() {
+    yield eat(LPN`{`);
+    while (yield eatMatch(node`Statement:body`));
+    yield eat(RPN`}`);
+  },
+
+  *ExpressionStatement() {
+    yield eat(node`Expression:expression`);
+    yield eatMatch(PN`;`);
+  },
+
   *ImportDeclaration() {
     yield eat(KW`import`);
 
@@ -26,14 +37,14 @@ export const productions = annotatedProductions({
 
     const brace = special ? yield eatMatch(PN`,`, LPN`{`) : yield eatMatch(LPN`{`);
     if (brace) {
-      let cb;
-      for (;;) {
-        yield eat(node`ImportSpecifier:specifiers`);
-        if (!(yield eatMatch(PN`,`))) break;
-        if ((cb = yield eatMatch(RPN`}`))) break;
-      }
-      if (!cb) yield eat(RPN`}`);
+      yield eat(
+        node('ValueList', null, { separator: PN`,`, matchable: node`ImportSpecifier:specifiers` }),
+      );
 
+      yield eat(RPN`}`);
+    }
+
+    if (special || brace) {
       yield eat(KW`from`);
     }
 
@@ -59,25 +70,59 @@ export const productions = annotatedProductions({
     yield eat(tok`String`);
   },
 
+  *CallExpression() {
+    yield eat(node`Expression:callee`);
+    yield eat(LPN`(`);
+    yield eat(node('ValueList', null, { separator: PN`,`, matchable: node`Expression:arguments` }));
+    yield eat(RPN`)`);
+  },
+
+  *MemberExpression() {
+    yield eat(node`Expression:object`);
+    yield eat(PN`.`);
+    yield eat(node`Identifier`);
+  },
+
+  *ArrowFunctionExpression() {
+    let body;
+    yield eat(LPN`(`);
+    yield eat(node('ValueList', null, { separator: PN`,`, matchable: node`Expression:params` }));
+    yield eat(RPN`)`);
+    yield eat(PN`=>`);
+    body = yield eatMatch(node`BlockStatement:body`);
+    if (!body) yield eatMatch(node`Expresssion:body`);
+  },
+
   *Identifier() {
     yield eat(tok`Identifier`);
+  },
+
+  *ValueList({
+    value: { separator, matchable, allowHoles = false, allowTrailingSeparator = true },
+  }) {
+    let sep, item;
+    for (;;) {
+      item = yield eatMatch(matchable);
+      if (item || allowTrailingSeparator) {
+        sep = yield eatMatch(separator);
+      }
+      if (!(sep || allowHoles)) break;
+    }
   },
 });
 
 export const aliases = objectEntries({
-  Statement: ['ImportDeclaration'],
-  Expression: ['String', 'Identifier'],
+  Statement: ['ImportDeclaration', 'ExpressionStatement', 'BlockStatement'],
+  Expression: [
+    'Literal',
+    'Identifier',
+    'ArrowFunctionExpression',
+    'MemberExpression',
+    'CallExpression',
+  ],
   Literal: ['StringLiteral'],
   ImportSpecialSpecifier: ['ImportDefaultSpecifier', 'ImportNamespaceSpecifier'],
-  Node: [
-    'Program',
-    'String',
-    'Identifier',
-    'ImportDeclaration',
-    'ImportSpecifier',
-    'ImportDefaultSpecifier',
-    'ImportNamespaceSpecifier',
-  ],
+  Node: ['Program', 'Statement', 'ImportSpecifier', 'ImportSpecialSpecifier'],
 });
 
 export const enhancers = [WithWhitespace, WithNode];
