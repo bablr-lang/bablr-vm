@@ -86,7 +86,6 @@ export const WithWhitespace = (production) => {
                       yield fail();
                     } else {
                       returnValue = null;
-                      break;
                     }
                   }
                 }
