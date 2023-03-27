@@ -89,9 +89,7 @@ export const productions = annotatedProductions({
     qr = yield eatMatch(tok('LeftPunctuator', `'`, 'String:Single'));
     qr = qr || (yield eat(tok('LeftPunctuator', `"`, 'String:Double')));
 
-    while ((yield eatMatch(tok`Literal`)) || (yield eatMatch(tok`EscapeSequence`))) {
-      if (!(yield match(chrs(/[\w\\]/y)))) break;
-    }
+    while ((yield eatMatch(tok`Literal`)) || (yield eatMatch(tok`EscapeSequence`)));
 
     yield eat(tok('RightPunctuator', qr[0].value, sym.parent));
   },
