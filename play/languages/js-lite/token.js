@@ -1,5 +1,5 @@
 import { str } from 'iter-tools-es';
-import { eat, match, eatMatch } from '@cst-tokens/helpers/grammar/token';
+import { eat, eatMatch } from '@cst-tokens/helpers/grammar/token';
 import { WithToken } from '@cst-tokens/helpers/metaproductions';
 import { annotatedProductions } from '@cst-tokens/helpers/productions';
 import { objectEntries } from '@cst-tokens/helpers/object';

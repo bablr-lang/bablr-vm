@@ -5,7 +5,7 @@ import { WithNode } from '@cst-tokens/helpers/metaproductions';
 import { annotatedProductions } from '@cst-tokens/helpers/productions';
 import * as sym from '@cst-tokens/helpers/symbols';
 
-import { WithWhitespace } from './whitespace.js';
+import { WithWhitespace } from './trivia.js';
 
 const PN = (...args) => tok('Punctuator', String.raw(...args));
 const LPN = (...args) => tok('LeftPunctuator', String.raw(...args));
