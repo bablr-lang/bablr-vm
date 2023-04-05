@@ -2,15 +2,10 @@ import { eatMatch, fail, startNode, endNode } from '@cst-tokens/helpers/grammar/
 import { tok } from '@cst-tokens/helpers/shorthand';
 import { regexFromPattern } from '@cst-tokens/helpers/regex';
 import { isFunction } from '@cst-tokens/helpers/object';
+import { mapProductions } from '@cst-tokens/helpers/enhancers';
 import * as sym from '@cst-tokens/helpers/symbols';
 
 const spaceDelimitedTypes = ['Identifier', 'Keyword'];
-
-const lastTypes = new WeakMap();
-
-const lastTypeFor = (s) => {
-  return lastTypes.get(s) || (s.parent && lastTypes.get(s.parent)) || null;
-};
 
 const getGuardPattern = (guard, props) => {
   const guard_ = isFunction(guard) ? guard(props) : guard;
@@ -18,148 +13,152 @@ const getGuardPattern = (guard, props) => {
   return regexFromPattern(guard_);
 };
 
-export const WithWhitespace = (production) => {
-  let { annotations } = production;
-
-  const baseGuard = annotations?.get('guard');
-
-  if (baseGuard) {
-    annotations.set('guard', (props) => {
-      const s = props.state;
-      const basePattern = baseGuard && getGuardPattern(baseGuard, props);
-
-      return s.lexicalContext === 'Bare' && basePattern
-        ? new RegExp(`${/\/\*|\/\/|\s/.source}|${basePattern.source}`, 'y')
-        : basePattern;
-    });
+const getlastRealToken = (context, s) => {
+  let token = s.result;
+  while (token.type === sym.startNode || token.type === sym.endNode) {
+    token = context.getPreviousToken(token);
   }
+  return token;
+};
 
-  let boundariesGenerated = false;
+const requiresSeparator = (context, s, type) => {
+  return (
+    !!s.result.size &&
+    spaceDelimitedTypes.includes(getlastRealToken(s).type) &&
+    spaceDelimitedTypes.includes(type)
+  );
+};
 
-  return {
-    ...production,
-    annotations,
-    *match(props, ...args) {
-      const { state: s } = props;
-      const outerPath = s.path;
+export const triviaEnhancer = (grammar) => {
+  return mapProductions((production) => {
+    let { annotations } = production;
 
-      // props.guardMatch = ??
+    const baseGuard = annotations?.get('guard');
 
-      const generator = production.match(props, ...args);
+    if (baseGuard) {
+      annotations.set('guard', (props) => {
+        const s = props.state;
+        const basePattern = baseGuard && getGuardPattern(baseGuard, props);
 
-      try {
-        let current = generator.next();
+        return s.lexicalContext === 'Bare' && basePattern
+          ? new RegExp(`${/\/\*|\/\/|\s/.source}|${basePattern.source}`, 'y')
+          : basePattern;
+      });
+    }
 
-        while (!current.done) {
-          const cmd = current.value;
-          const cause = cmd.error;
-          let returnValue;
+    let boundariesGenerated = false;
 
-          cmd.error = cause && new Error(undefined, { cause });
+    return {
+      ...production,
+      annotations,
+      *match(props, ...args) {
+        const { state: s, context: ctx } = props;
+        const outerPath = s.path;
 
-          const lastType = lastTypeFor(s);
+        // props.guardMatch = ??
 
-          switch (cmd.type) {
-            case sym.eat:
-            case sym.match:
-            case sym.eatMatch: {
-              const edible = cmd.value;
-              const { type } = edible.value;
+        const generator = production.match(props, ...args);
 
-              if (edible.type === sym.node) {
-                // nothing to do
-              } else {
-                lastTypes.set(s, type);
+        try {
+          let current = generator.next();
 
-                const spaceIsAllowed = s.lexicalContext === 'Bare';
+          while (!current.done) {
+            const cmd = current.value;
+            const cause = cmd.error;
+            let returnValue;
 
-                if (spaceIsAllowed) {
-                  const spaceIsNecessary =
-                    !!lastType &&
-                    spaceDelimitedTypes.includes(lastType) &&
-                    spaceDelimitedTypes.includes(type);
+            cmd.error = cause && new Error(undefined, { cause });
 
-                  const matchedSeparator = !!(yield eatMatch(tok`Separator`));
+            switch (cmd.type) {
+              case sym.eat:
+              case sym.match:
+              case sym.eatMatch: {
+                const edible = cmd.value;
+                const { type } = edible.value;
 
-                  if (spaceIsNecessary && !matchedSeparator) {
-                    if (cmd.type === sym.eat) {
-                      yield fail();
-                    } else {
-                      returnValue = null;
+                if (edible.type === sym.node) {
+                  // nothing to do
+                } else {
+                  const spaceIsAllowed = s.lexicalContext === 'Bare';
+
+                  if (spaceIsAllowed) {
+                    const matchedSeparator =
+                      s.result.type === 'EndComment' ||
+                      s.result.type === 'Whitespace' ||
+                      !!(yield eatMatch(tok`Separator`));
+
+                    if (requiresSeparator(ctx, s, type) && !matchedSeparator) {
+                      if (cmd.type === sym.eat) {
+                        yield fail();
+                      } else {
+                        returnValue = null;
+                      }
                     }
                   }
                 }
+
+                returnValue = returnValue || (yield cmd);
+                break;
               }
 
-              returnValue = returnValue || (yield cmd);
-              break;
-            }
+              case sym.startNode: {
+                let sep, sn;
 
-            case sym.startNode: {
-              let sep, sn;
-
-              if (lastTypeFor(s) !== 'Separator') {
                 sep = yield eatMatch(tok`Separator`);
-              }
 
-              if (s.path === outerPath) {
-                do {
-                  if (s.testCurrent(sym.StartNode)) {
-                    sn = yield startNode();
-                    lastTypes.set(s, sym.StartNode);
-                  }
+                if (s.path === outerPath) {
+                  do {
+                    if (s.testCurrent(sym.StartNode)) {
+                      sn = yield startNode();
+                    }
 
-                  sep = sn && (yield eatMatch(tok`Separator`));
-                } while (sep && !sn);
-              }
-
-              if (s.path === outerPath) {
-                sn = yield cmd;
-                boundariesGenerated = true;
-              }
-
-              returnValue = sn;
-              break;
-            }
-
-            case sym.endNode: {
-              let sep, en;
-
-              lastTypes.set(s, sym.EndNode);
-
-              if (boundariesGenerated) {
-                en = yield cmd;
-              } else {
-                if (lastTypeFor(s) !== 'Separator') {
-                  sep = yield eatMatch(tok`Separator`);
+                    sep = sn && (yield eatMatch(tok`Separator`));
+                  } while (sep && !sn);
                 }
 
-                do {
-                  if (s.testCurrent(sym.EndNode)) {
-                    en = yield endNode();
-                    lastTypes.set(s, sym.EndNode);
-                  }
+                if (s.path === outerPath) {
+                  sn = yield cmd;
+                  boundariesGenerated = true;
+                }
 
-                  sep = en && (yield eatMatch(tok`Separator`));
-                } while (sep && !en);
+                returnValue = sn;
+                break;
               }
 
-              if (!en) throw new Error();
+              case sym.endNode: {
+                let sep, en;
 
-              returnValue = en;
-              break;
+                if (boundariesGenerated) {
+                  en = yield cmd;
+                } else {
+                  sep = yield eatMatch(tok`Separator`);
+
+                  do {
+                    if (s.testCurrent(sym.EndNode)) {
+                      en = yield endNode();
+                    }
+
+                    sep = en && (yield eatMatch(tok`Separator`));
+                  } while (sep && !en);
+                }
+
+                if (!en) throw new Error();
+
+                returnValue = en;
+                break;
+              }
+
+              default:
+                returnValue = yield cmd;
+                break;
             }
 
-            default:
-              returnValue = yield cmd;
-              break;
+            current = generator.next(returnValue);
           }
-
-          current = generator.next(returnValue);
+        } catch (e) {
+          generator.throw(e);
         }
-      } catch (e) {
-        generator.throw(e);
-      }
-    },
-  };
+      },
+    };
+  }, grammar);
 };
