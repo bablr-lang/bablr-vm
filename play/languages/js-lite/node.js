@@ -123,7 +123,7 @@ export const grammar = {
     ],
     Literal: ['StringLiteral'],
     ImportSpecialSpecifier: ['ImportDefaultSpecifier', 'ImportNamespaceSpecifier'],
-    Node: ['Program', 'Statement', 'ImportSpecifier', 'ImportSpecialSpecifier'],
+    Node: ['Program', 'Statement', 'Expression', 'ImportSpecifier', 'ImportSpecialSpecifier'],
   }),
 
   enhancers: [triviaEnhancer, nodeBoundsEnhancer],

@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@babel/parser': ^7.21.4
   '@cst-tokens/helpers': github:js-cst-tokens/helpers#b2c59e01bef80a79614ceba1df031f20bc8ba713
   '@iter-tools/imm-stack': 1.1.0
   '@iter-tools/regex': 0.3.2
@@ -10,7 +11,6 @@ specifiers:
   eslint-import-resolver-enhanced-resolve: ^1.0.5
   eslint-plugin-import: ^2.27.5
   iter-tools-es: ^7.3.1
-  meriyah: ^4.3.3
   prettier: ^2.6.2
 
 dependencies:
@@ -19,16 +19,43 @@ dependencies:
   escape-string-regexp: 5.0.0
 
 devDependencies:
+  '@babel/parser': 7.21.4
   '@cst-tokens/helpers': github.com/js-cst-tokens/helpers/b2c59e01bef80a79614ceba1df031f20bc8ba713
   enhanced-resolve: 5.12.0
   eslint: 8.32.0
   eslint-import-resolver-enhanced-resolve: 1.0.5
   eslint-plugin-import: 2.27.5_eslint@8.32.0
   iter-tools-es: 7.3.1
-  meriyah: 4.3.3
   prettier: 2.6.2
 
 packages:
+
+  /@babel/helper-string-parser/7.19.4:
+    resolution: {integrity: sha512-nHtDoQcuqFmwYNYPz3Rah5ph2p8PFeFCsZk9A/48dPc/rGocJ5J3hAAZ7pb76VWX3fZKu+uEr/FhH5jLx7umrw==}
+    engines: {node: '>=6.9.0'}
+    dev: true
+
+  /@babel/helper-validator-identifier/7.19.1:
+    resolution: {integrity: sha512-awrNfaMtnHUr653GgGEs++LlAvW6w+DcPrOliSMXWCKo597CwL5Acf/wWdNkf/tfEQE3mjkeD1YOVZOUV/od1w==}
+    engines: {node: '>=6.9.0'}
+    dev: true
+
+  /@babel/parser/7.21.4:
+    resolution: {integrity: sha512-alVJj7k7zIxqBZ7BTRhz0IqJFxW1VJbm6N8JbcYhQ186df9ZBPbZBmWSqAMXwHGsCJdYks7z/voa3ibiS5bCIw==}
+    engines: {node: '>=6.0.0'}
+    hasBin: true
+    dependencies:
+      '@babel/types': 7.21.4
+    dev: true
+
+  /@babel/types/7.21.4:
+    resolution: {integrity: sha512-rU2oY501qDxE8Pyo7i/Orqma4ziCOrby0/9mvbDUGEfvZjb279Nk9k19e2fiCxHbRRpY2ZyrgW1eq22mvmOIzA==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      '@babel/helper-string-parser': 7.19.4
+      '@babel/helper-validator-identifier': 7.19.1
+      to-fast-properties: 2.0.0
+    dev: true
 
   /@cst-tokens/grammar/0.5.0:
     resolution: {integrity: sha512-3E6lWH1HAxw/wmFLcBj6fXnhDW44/w1WPsxi8a+2j16oeiyChxOLdCZnm5Ab9kmB2m0ORAzni2Z6lmBaXdT4Rg==}
@@ -937,11 +964,6 @@ packages:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
     dev: true
 
-  /meriyah/4.3.3:
-    resolution: {integrity: sha512-7+EKEzAp0Gvp739Dv9F6ci9FXqqAz4QDAPVaLt15s9UF9gwQLwspqQzmoGjbavnTiFXZ5hf+EDdu5MtlkMCZfA==}
-    engines: {node: '>=10.4.0'}
-    dev: true
-
   /minimatch/3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
     dependencies:
@@ -1196,6 +1218,11 @@ packages:
 
   /text-table/0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
+    dev: true
+
+  /to-fast-properties/2.0.0:
+    resolution: {integrity: sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==}
+    engines: {node: '>=4'}
     dev: true
 
   /tsconfig-paths/3.14.1:

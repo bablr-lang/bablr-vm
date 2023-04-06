@@ -1,21 +1,17 @@
 import { dirname, resolve } from 'path';
 import { readFileSync } from 'fs';
 import { print, traverse } from 'cst-tokens';
-import { parseModule as parse } from 'meriyah';
+import { parse } from '@babel/parser';
 import { TokenGrammar } from '@cst-tokens/helpers/grammar/token';
 import { NodeGrammar } from '@cst-tokens/helpers/grammar/node';
 import { concat } from '@cst-tokens/helpers/iterable';
 
-import { logEnhancer } from './enhancers/log.js';
+import { logEnhancer, formatType } from './enhancers/log.js';
 import js from './languages/js-lite/index.js';
 
 const ownDir = new URL(dirname(import.meta.url)).pathname;
 
 Error.stackTraceLimit = 20;
-
-const sourceText = readFileSync(resolve(ownDir, 'fixture'), 'utf8');
-
-// console.log(JSON.stringify(parse(sourceText), undefined, 2));
 
 const buildGrammars = (grammars, enhancers) => {
   const { node, token } = grammars;
@@ -31,10 +27,23 @@ const buildLanguage = (language, enhancers) => {
   return { ...language, grammars: buildGrammars(language.grammars, enhancers) };
 };
 
+const sourceText = readFileSync(resolve(ownDir, 'fixture'), 'utf8');
+const ast = parse(sourceText, { sourceType: 'module', ranges: false }).program;
+
+console.log('');
+
+console.log(sourceText);
+
 console.log('');
 
 try {
-  traverse(buildLanguage(js, [logEnhancer]), parse(sourceText), sourceText);
+  const tokens = [...traverse(buildLanguage(js, [logEnhancer]), ast, sourceText)].map(
+    ({ type, value }) => `    { type: ${formatType(type)}, value: ${formatType(value)} }`,
+  );
+
+  console.log('');
+
+  console.log(`  [\n${tokens.join(',\n')}\n  ]`);
 } catch (e) {
   console.log('');
   console.error(e);

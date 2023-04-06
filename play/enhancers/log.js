@@ -3,7 +3,7 @@ import * as sym from '@cst-tokens/helpers/symbols';
 
 const isString = (val) => typeof val === 'string';
 
-const formatType = (type) => {
+export const formatType = (type) => {
   return type === undefined
     ? ''
     : type === null
