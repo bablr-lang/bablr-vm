@@ -11,6 +11,9 @@
     ".": "./lib/index.js"
   },
   "sideEffects": false,
+  "scripts": {
+    "test": "node ./play/runner.js"
+  },
   "dependencies": {
     "@iter-tools/imm-stack": "1.1.0",
     "@iter-tools/regex": "0.3.2",

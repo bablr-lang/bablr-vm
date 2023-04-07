@@ -24,7 +24,7 @@ const getlastRealToken = (context, s) => {
 const requiresSeparator = (context, s, type) => {
   return (
     !!s.result.size &&
-    spaceDelimitedTypes.includes(getlastRealToken(s).type) &&
+    spaceDelimitedTypes.includes(getlastRealToken(context, s).type) &&
     spaceDelimitedTypes.includes(type)
   );
 };
