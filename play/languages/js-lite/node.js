@@ -5,7 +5,7 @@ import { nodeBoundsEnhancer } from '@cst-tokens/helpers/enhancers';
 import { annotatedProductions } from '@cst-tokens/helpers/productions';
 import * as sym from '@cst-tokens/helpers/symbols';
 
-import { triviaEnhancer } from './trivia.js';
+import { triviaEnhancer } from './enhancers/trivia.js';
 
 const PN = (...args) => tok('Punctuator', String.raw(...args));
 const LPN = (...args) => tok('LeftPunctuator', String.raw(...args));
