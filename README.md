@@ -109,41 +109,45 @@ new Grammar({
     // Here is what the same production looks like when the actions are written explicitly:
     *ImportSpecifier() {
       yield {
-        type: sym.eat,
+        verb: sym.eat,
+        branch: false,
         value: {
           type: sym.node,
-          value: { type: 'Identifier', property: 'imported' },
+          property: 'imported',
+          value: { type: 'Identifier' },
         },
       };
 
       yield {
-        type: sym.eatMatch,
+        verb: sym.eat,
+        branch: true,
         value: {
           // passing multiple arguments to the eatMatch helper was actually creating an All production
           type: sym.node,
           value: {
             type: sym.All,
-            props: {
-              // this production does not map to a real AST node
-              property: undefined,
-              matchables: [
-                {
-                  type: sym.token,
-                  value: { type: 'Keyword', value: 'as' },
-                },
-                {
-                  type: sym.node,
-                  value: { type: 'Identifier', property: 'local' },
-                },
-              ],
-            },
+            // this production does not map to a real AST node
+            property: undefined,
+            value: [
+              {
+                type: sym.token,
+                value: { type: 'Keyword', value: 'as' },
+              },
+              {
+                type: sym.node,
+                property: 'local',
+                value: { type: 'Identifier' },
+              },
+            ],
           },
         },
       };
     },
+
     *Identifier() {
       yield eat(tok`Identifier`);
     },
+
     *[sym.All]({ matchables }) {
       for (const matchable of matchables) {
         yield eat(matchable);
