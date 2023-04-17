@@ -71,8 +71,7 @@ export const triviaEnhancer = (grammar) => {
 
             switch (cmd.type) {
               case sym.eat:
-              case sym.match:
-              case sym.eatMatch: {
+              case sym.match: {
                 const edible = cmd.value;
                 const { type } = edible.value;
 
