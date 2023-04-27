@@ -8,7 +8,14 @@ module.exports = {
     es2021: true,
   },
   extends: ['plugin:import/recommended'],
-  overrides: [],
+  overrides: [
+    {
+      files: ['play/**/*.js'],
+      env: {
+        browser: true,
+      },
+    },
+  ],
   parserOptions: {
     ecmaVersion: '2020',
     sourceType: 'module',

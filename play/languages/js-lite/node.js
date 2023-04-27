@@ -2,8 +2,7 @@ import { eat, eatMatch } from '@cst-tokens/helpers/grammar/node';
 import { objectEntries } from '@cst-tokens/helpers/object';
 import { tok, node } from '@cst-tokens/helpers/shorthand';
 import { nodeBoundsEnhancer } from '@cst-tokens/helpers/enhancers';
-import { annotatedProductions } from '@cst-tokens/helpers/productions';
-import * as sym from '@cst-tokens/helpers/symbols';
+import { productions } from '@cst-tokens/helpers/productions';
 
 import { triviaEnhancer } from './enhancers/trivia.js';
 
@@ -15,9 +14,7 @@ const KW = (...args) => tok('Keyword', String.raw(...args));
 const valueList = (props) => node('ValueList', null, props);
 
 export const grammar = {
-  productionType: sym.node,
-
-  productions: annotatedProductions({
+  productions: productions({
     *Program() {
       while (yield eatMatch(node`Statement:body`));
     },

@@ -12,7 +12,7 @@
   },
   "sideEffects": false,
   "scripts": {
-    "test": "node ./play/runner.js"
+    "play": "vite serve play"
   },
   "dependencies": {
     "@iter-tools/imm-stack": "1.1.0",
@@ -21,13 +21,15 @@
   },
   "devDependencies": {
     "@babel/parser": "^7.21.4",
-    "@cst-tokens/helpers": "github:js-cst-tokens/helpers#ebcbadb511d803f0f60174c15c78baae59dbf42b",
+    "@cst-tokens/helpers": "github:js-cst-tokens/helpers#b26b721b66032c24ebad39fc966469b4b01714e3",
+    "@humanwhocodes/momoa": "^3.0.0",
     "enhanced-resolve": "^5.12.0",
     "eslint": "^8.32.0",
     "eslint-import-resolver-enhanced-resolve": "^1.0.5",
     "eslint-plugin-import": "^2.27.5",
     "iter-tools-es": "^7.3.1",
-    "prettier": "^2.6.2"
+    "prettier": "^2.6.2",
+    "vite": "^4.2.2"
   },
   "repository": "github:js-cst-tokens/cst-tokens",
   "homepage": "https://github.com/js-cst-tokens/cst-tokens",

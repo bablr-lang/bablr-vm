@@ -1,20 +1,12 @@
-import { eatMatch, fail, startNode, endNode } from '@cst-tokens/helpers/grammar/node';
-import { tok } from '@cst-tokens/helpers/shorthand';
-import { regexFromPattern } from '@cst-tokens/helpers/regex';
-import { isFunction } from '@cst-tokens/helpers/object';
+import { match, eatMatch, fail, startNode, endNode } from '@cst-tokens/helpers/grammar/node';
+import { tok, chrs } from '@cst-tokens/helpers/shorthand';
 import { mapProductions } from '@cst-tokens/helpers/enhancers';
 import * as sym from '@cst-tokens/helpers/symbols';
 
 const spaceDelimitedTypes = ['Identifier', 'Keyword'];
 
-const getGuardPattern = (guard, props) => {
-  const guard_ = isFunction(guard) ? guard(props) : guard;
-
-  return regexFromPattern(guard_);
-};
-
 const getlastRealToken = (context, s) => {
-  let token = s.result;
+  let token = s.lastToken;
   while (token.type === sym.startNode || token.type === sym.endNode) {
     token = context.getPreviousToken(token);
   }
@@ -23,28 +15,22 @@ const getlastRealToken = (context, s) => {
 
 const requiresSeparator = (context, s, type) => {
   return (
-    !!s.result.size &&
+    !!s.lastToken &&
     spaceDelimitedTypes.includes(getlastRealToken(context, s).type) &&
     spaceDelimitedTypes.includes(type)
   );
 };
 
+export const triviaPattern = /\s|\/\*|\/\//y;
+
+function* eatSep() {
+  const guardMatch = yield match(chrs(triviaPattern));
+  if (guardMatch) yield eatMatch(tok('Separator', { guardMatch }));
+}
+
 export const triviaEnhancer = (grammar) => {
   return mapProductions((production) => {
     let { annotations } = production;
-
-    const baseGuard = annotations?.get('guard');
-
-    if (baseGuard) {
-      annotations.set('guard', (props) => {
-        const s = props.state;
-        const basePattern = baseGuard && getGuardPattern(baseGuard, props);
-
-        return s.lexicalContext === 'Bare' && basePattern
-          ? new RegExp(`${/\/\*|\/\/|\s/.source}|${basePattern.source}`, 'y')
-          : basePattern;
-      });
-    }
 
     let boundariesGenerated = false;
 
@@ -55,39 +41,36 @@ export const triviaEnhancer = (grammar) => {
         const { state: s, context: ctx } = props;
         const outerPath = s.path;
 
-        // props.guardMatch = ??
-
         const generator = production.match(props, ...args);
 
         try {
           let current = generator.next();
 
           while (!current.done) {
-            const cmd = current.value;
-            const cause = cmd.error;
+            const instr = current.value;
+            const cause = instr.error;
             let returnValue;
 
-            cmd.error = cause && new Error(undefined, { cause });
+            instr.error = cause && new Error(undefined, { cause });
 
-            switch (cmd.type) {
-              case sym.eat:
+            switch (instr.type) {
               case sym.match: {
-                const edible = cmd.value;
-                const { type } = edible.value;
+                const { matchable, failureEffect } = instr.value;
+                const { type } = matchable.value;
 
-                if (edible.type === sym.node) {
+                if (matchable.type === sym.node) {
                   // nothing to do
                 } else {
                   const spaceIsAllowed = s.lexicalContext === 'Bare';
 
                   if (spaceIsAllowed) {
                     const matchedSeparator =
-                      s.result.type === 'EndComment' ||
-                      s.result.type === 'Whitespace' ||
-                      !!(yield eatMatch(tok`Separator`));
+                      s.lastToken.type === 'EndComment' ||
+                      s.lastToken.type === 'Whitespace' ||
+                      !!(yield* eatSep());
 
                     if (requiresSeparator(ctx, s, type) && !matchedSeparator) {
-                      if (cmd.type === sym.eat) {
+                      if (failureEffect === sym.fail) {
                         yield fail();
                       } else {
                         returnValue = null;
@@ -96,14 +79,14 @@ export const triviaEnhancer = (grammar) => {
                   }
                 }
 
-                returnValue = returnValue || (yield cmd);
+                returnValue = returnValue || (yield instr);
                 break;
               }
 
               case sym.startNode: {
                 let sep, sn;
 
-                sep = yield eatMatch(tok`Separator`);
+                sep = yield* eatSep();
 
                 if (s.path === outerPath) {
                   do {
@@ -111,12 +94,12 @@ export const triviaEnhancer = (grammar) => {
                       sn = yield startNode();
                     }
 
-                    sep = sn && (yield eatMatch(tok`Separator`));
+                    sep = sn && (yield* eatSep());
                   } while (sep && !sn);
                 }
 
                 if (s.path === outerPath) {
-                  sn = yield cmd;
+                  sn = yield instr;
                   boundariesGenerated = true;
                 }
 
@@ -128,16 +111,16 @@ export const triviaEnhancer = (grammar) => {
                 let sep, en;
 
                 if (boundariesGenerated) {
-                  en = yield cmd;
+                  en = yield instr;
                 } else {
-                  sep = yield eatMatch(tok`Separator`);
+                  sep = yield* eatSep();
 
                   do {
                     if (s.testCurrent(sym.EndNode)) {
                       en = yield endNode();
                     }
 
-                    sep = en && (yield eatMatch(tok`Separator`));
+                    sep = en && (yield* eatSep());
                   } while (sep && !en);
                 }
 
@@ -148,7 +131,7 @@ export const triviaEnhancer = (grammar) => {
               }
 
               default:
-                returnValue = yield cmd;
+                returnValue = yield instr;
                 break;
             }
 

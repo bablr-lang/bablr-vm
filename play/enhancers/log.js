@@ -15,6 +15,78 @@ export const formatType = (type) => {
     : `'${type.replace(/['\\]/g, '\\$&')}'`;
 };
 
+export const formatValue = (value) => {
+  if (isString(value)) {
+    return `'${value.replace(/['\\]/g, '\\$&')}'`;
+  } else {
+    return String(value);
+  }
+};
+
+const formatNodeProduction = (production) => {
+  return formatType(production.type);
+};
+
+const formatTokenProduction = (production) => {
+  return formatType(production.type);
+};
+
+const formatGrammarType = (type) => {
+  // prettier-ignore
+  switch (type) {
+      case sym.node: return 'node';
+      case sym.token: return 'tokn';
+      case sym.character: return 'char'
+      default: return '?';
+    }
+};
+
+const formatMatchable = (matchable) => {
+  let formattedValue = '';
+  switch (matchable.type) {
+    case sym.node:
+      formattedValue = ` ${formatNodeProduction(matchable.value)}`;
+      break;
+    case sym.token:
+      formattedValue = ` ${formatTokenProduction(matchable.value)}`;
+      break;
+    case sym.character:
+      formattedValue = ` ${formatValue(matchable.value)}`;
+      break;
+  }
+  return `${formatGrammarType(matchable.type)}${formattedValue}`;
+};
+
+const formatEffect = (effect) => {
+  // prettier-ignore
+  switch (effect) {
+    case sym.eat: return 'E';
+    case sym.fail: return 'F';
+    case sym.none: return ' '
+    default: return '?';
+  }
+};
+
+const formatMatch = (instruction) => {
+  const { matchable, successEffect, failureEffect } = instruction;
+
+  const formattedEffects = `${formatEffect(successEffect)} ${formatEffect(failureEffect)}`;
+
+  return `${formattedEffects} ${formatMatchable(matchable)}`;
+};
+
+const formatInstr = (instr) => {
+  const formattedVerb = instr.type ? `${formatType(instr.type)}` : '<unknown>';
+
+  let formattedValue = '';
+
+  if (instr.type === sym.match) {
+    formattedValue = ` ${formatMatch(instr.value)}`;
+  }
+
+  return `${formattedVerb}${formattedValue}`;
+};
+
 const productionTypes = new WeakMap();
 
 // Polyglot syntax/node enhancer
@@ -32,17 +104,17 @@ export const logEnhancer = (grammar) => {
           productionTypes.set(context, sym.node);
         }
 
-        const i = (strings, ...args) => {
-          const indentation = ' '.repeat((1 + state.depth) * 2);
-          const content = String.raw(strings, ...args);
-          return `${indentation}${content}`;
-        };
-
         const tokenizerTransition = productionTypes.get(context) !== productionType;
 
         if (tokenizerTransition) {
           productionTypes.set(context, sym.token);
         }
+
+        const i = (strings, ...args) => {
+          const indentation = ' '.repeat((1 + state.depth) * 2);
+          const content = String.raw(strings, ...args);
+          return `${indentation}${content}`;
+        };
 
         console.log(i`${tokenizerTransition ? '>>>' : '-->'} ${formatType(type)}`);
 
@@ -56,23 +128,9 @@ export const logEnhancer = (grammar) => {
           while (!current.done) {
             const instr = current.value;
 
-            const formattedVerb = instr.type ? `${formatType(instr.type)}` : '<unknown>';
-            const matchable = instr.value;
-            const formattedMode = matchable
-              ? ` ${formatType(isString(matchable) ? matchable : matchable.type)}`
-              : '';
-            const descriptor = matchable?.value;
-            const formattedDescriptor = descriptor
-              ? ` ${
-                  descriptor.source && descriptor.flags
-                    ? descriptor.toString()
-                    : formatType(isString(descriptor) ? descriptor : descriptor?.type)
-                }`
-              : '';
+            console.log(i`${formatInstr(instr)}`);
 
-            console.log(i`${formattedVerb}${formattedMode}${formattedDescriptor}`);
-
-            const eats = instr.type === sym.eat || instr.type === sym.eatMatch;
+            const eats = instr.type === sym.match && instr.value.successEffect === sym.eat;
 
             const result = yield instr;
 

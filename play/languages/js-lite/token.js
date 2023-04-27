@@ -1,7 +1,7 @@
 import { str } from 'iter-tools-es';
-import { eat, eatMatch } from '@cst-tokens/helpers/grammar/token';
+import { eat, eatMatch, fail, guard } from '@cst-tokens/helpers/grammar/token';
 import { tokenBoundsEnhancer } from '@cst-tokens/helpers/enhancers';
-import { annotatedProductions } from '@cst-tokens/helpers/productions';
+import { productions } from '@cst-tokens/helpers/productions';
 import { objectEntries } from '@cst-tokens/helpers/object';
 import { chrs, tok } from '@cst-tokens/helpers/shorthand';
 import { EOF } from '@cst-tokens/helpers/symbols';
@@ -35,25 +35,37 @@ function* NamedLiteral({ value }) {
   yield eat(chrs(value));
 }
 
-export const grammar = {
-  productionType: sym.token,
+const triviaPattern = /\s|\/\*|\/\//y;
 
-  productions: annotatedProductions({
+export const grammar = {
+  productions: productions({
     Punctuator: NamedLiteral,
     LeftPunctuator: NamedLiteral,
     RightPunctuator: NamedLiteral,
     CommentStart: NamedLiteral,
     CommentEnd: NamedLiteral,
 
-    Trivia$guard: /\/\*|\/\/|\s/y,
-    *Trivia({ guardMatch }) {
-      yield eat(tok(triviaProductionFor(guardMatch)));
+    *Trivia({ value: { guardMatch } = {} }) {
+      let guardMatch_ = guardMatch;
+
+      if (guardMatch === undefined) {
+        guardMatch_ = yield guard(triviaPattern);
+      }
+
+      yield eat(tok(triviaProductionFor(guardMatch_)));
     },
 
-    Separator$guard: /\/\*|\/\/|\s/y,
-    *Separator() {
-      yield eat(tok`Trivia`);
-      while (yield eatMatch(tok`Trivia`));
+    *Separator({ value: { guardMatch } = {} }) {
+      let guardMatch_ = guardMatch;
+
+      if (guardMatch === undefined) {
+        guardMatch_ = yield guard(triviaPattern);
+      }
+
+      while (guardMatch) {
+        yield eat(tok('Trivia', { guardMatch: guardMatch_ }));
+        guardMatch = yield guard(triviaPattern);
+      }
     },
 
     *BlockComment() {
@@ -121,7 +133,6 @@ export const grammar = {
       while ((yield eatMatch(tok`Literal`)) || (yield eatMatch(tok`EscapeSequence`))) {}
     },
 
-    EscapeSequence$guard: '\\',
     *EscapeSequence({ state: { lexicalContext } }) {
       if (!(lexicalContext === 'Bare' || lexicalContext.startsWith('String'))) {
         throw new Error(`{lexicalContext: ${lexicalContext}} does not define an escape sequence`);
@@ -153,7 +164,11 @@ export const grammar = {
           // break
         } else if (yield eatMatch(chrs(str(escapables.keys())))) {
           // break
+        } else {
+          yield fail();
         }
+      } else {
+        yield fail();
       }
     },
   }),

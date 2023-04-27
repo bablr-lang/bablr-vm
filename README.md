@@ -95,7 +95,7 @@ A language is made up of two main grammars: a node grammar and a token grammar. 
 ```js
 import * as sym from '@cst-tokens/helpers/symbols';
 import { tok, prod } from '@cst-tokens/helpers/shorthand';
-import { eat, eatMatch } from '@cst-tokens/helpers/commands';
+import { eat, eatMatch, Grammar } from '@cst-tokens/helpers/grammar/node';
 
 new Grammar({
   productions: {
@@ -109,38 +109,48 @@ new Grammar({
     // Here is what the same production looks like when the actions are written explicitly:
     *ImportSpecifier() {
       yield {
-        verb: sym.eat,
-        branch: false,
-        value: {
-          type: sym.node,
-          property: 'imported',
-          value: { type: 'Identifier' },
+        verb: sym.match,
+        value {
+          successEffect: sym.eat,
+          failureEffect: sym.fail,
+          matchable: {
+            grammar: sym.node,
+            production: {
+              type: 'Identifier',
+              property: 'imported',
+            },
+          },
         },
       };
 
       yield {
-        verb: sym.eat,
-        branch: true,
+        verb: sym.match,
         value: {
-          // passing multiple arguments to the eatMatch helper was actually creating an All production
-          type: sym.node,
-          value: {
-            type: sym.All,
-            // this production does not map to a real AST node
-            property: undefined,
-            value: [
-              {
-                type: sym.token,
-                value: { type: 'Keyword', value: 'as' },
-              },
-              {
-                type: sym.node,
-                property: 'local',
-                value: { type: 'Identifier' },
-              },
-            ],
-          },
-        },
+          successEffect: sym.eat,
+          failureEffect: sym.none,
+          matchable: {
+            // passing multiple arguments to the eatMatch helper was actually creating an All production
+            grammar: sym.node,
+            production: {
+              type: sym.All,
+              // this production does not map to a real AST node
+              property: null,
+              value: [
+                {
+                  grammar: sym.token,
+                  production: { type: 'Keyword', value: 'as' },
+                },
+                {
+                  grammar: sym.node,
+                  production: {
+                    type: 'Identifier', 
+                    property: 'local',
+                  },
+                },
+              ],
+            },
+          }
+        }
       };
     },
 
