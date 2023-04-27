@@ -1,5 +1,5 @@
 import { str } from 'iter-tools-es';
-import { eat, eatMatch, fail, guard } from '@cst-tokens/helpers/grammar/token';
+import { eat, eatMatch, fail, guard, match } from '@cst-tokens/helpers/grammar/token';
 import { tokenBoundsEnhancer } from '@cst-tokens/helpers/enhancers';
 import { productions } from '@cst-tokens/helpers/productions';
 import { objectEntries } from '@cst-tokens/helpers/object';
@@ -64,7 +64,7 @@ export const grammar = {
 
       while (guardMatch) {
         yield eat(tok('Trivia', { guardMatch: guardMatch_ }));
-        guardMatch = yield guard(triviaPattern);
+        guardMatch = yield match(triviaPattern);
       }
     },
 
