@@ -110,15 +110,12 @@ new Grammar({
     *ImportSpecifier() {
       yield {
         verb: sym.match,
-        value {
+        value: {
           successEffect: sym.eat,
           failureEffect: sym.fail,
           matchable: {
             grammar: sym.node,
-            production: {
-              type: 'Identifier',
-              property: 'imported',
-            },
+            production: { type: 'Identifier', property: 'imported' },
           },
         },
       };
@@ -142,10 +139,7 @@ new Grammar({
                 },
                 {
                   grammar: sym.node,
-                  production: {
-                    type: 'Identifier', 
-                    property: 'local',
-                  },
+                  production: { type: 'Identifier', property: 'local' },
                 },
               ],
             },

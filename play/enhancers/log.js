@@ -23,12 +23,21 @@ export const formatValue = (value) => {
   }
 };
 
-const formatNodeProduction = (production) => {
-  return formatType(production.type);
-};
+const formatProduction = (type, p) => {
+  switch (type) {
+    case sym.node:
+      return ` ${formatType(p.type)}`;
 
-const formatTokenProduction = (production) => {
-  return formatType(production.type);
+    case sym.character:
+      return ` ${formatValue(p)}`;
+
+    case sym.token:
+      const formattedValue = isString(p.value) ? ` ${formatValue(p.value)}` : '';
+      return ` ${formatType(p.type)}${formattedValue}`;
+
+    case sym.boundary:
+      return p ? ` ${formatType(p.type)}` : '';
+  }
 };
 
 const formatGrammarType = (type) => {
@@ -36,25 +45,14 @@ const formatGrammarType = (type) => {
   switch (type) {
       case sym.node: return 'node';
       case sym.token: return 'tokn';
-      case sym.character: return 'char'
+      case sym.character: return 'char';
+      case sym.boundary: return 'boun';
       default: return '?';
     }
 };
 
 const formatMatchable = (matchable) => {
-  let formattedValue = '';
-  switch (matchable.type) {
-    case sym.node:
-      formattedValue = ` ${formatNodeProduction(matchable.value)}`;
-      break;
-    case sym.token:
-      formattedValue = ` ${formatTokenProduction(matchable.value)}`;
-      break;
-    case sym.character:
-      formattedValue = ` ${formatValue(matchable.value)}`;
-      break;
-  }
-  return `${formatGrammarType(matchable.type)}${formattedValue}`;
+  return `${formatGrammarType(matchable.type)}${formatProduction(matchable.type, matchable.value)}`;
 };
 
 const formatEffect = (effect) => {

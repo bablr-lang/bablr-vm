@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@babel/parser": "^7.21.4",
-    "@cst-tokens/helpers": "github:js-cst-tokens/helpers#b26b721b66032c24ebad39fc966469b4b01714e3",
+    "@cst-tokens/helpers": "github:js-cst-tokens/helpers#cefd12f3611565a462c3c42f2cc7887c31a23b08",
     "@humanwhocodes/momoa": "^3.0.0",
     "enhanced-resolve": "^5.12.0",
     "eslint": "^8.32.0",

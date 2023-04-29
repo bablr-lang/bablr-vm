@@ -1,8 +1,9 @@
-import { eat, eatMatch } from '@cst-tokens/helpers/grammar/node';
+import { eat, match, eatMatch } from '@cst-tokens/helpers/grammar/node';
 import { objectEntries } from '@cst-tokens/helpers/object';
-import { tok, node } from '@cst-tokens/helpers/shorthand';
+import { tok, node, bnd } from '@cst-tokens/helpers/shorthand';
 import { nodeBoundsEnhancer } from '@cst-tokens/helpers/enhancers';
 import { productions } from '@cst-tokens/helpers/productions';
+import * as sym from '@cst-tokens/helpers/symbols';
 
 import { triviaEnhancer } from './enhancers/trivia.js';
 
@@ -16,7 +17,9 @@ const valueList = (props) => node('ValueList', null, props);
 export const grammar = {
   productions: productions({
     *Program() {
-      while (yield eatMatch(node`Statement:body`));
+      while (!(yield match(bnd(sym.EOF)))) {
+        yield eat(node`Statement:body`);
+      }
     },
 
     *BlockStatement() {

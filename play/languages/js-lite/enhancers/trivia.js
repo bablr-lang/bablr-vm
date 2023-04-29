@@ -1,4 +1,4 @@
-import { match, eatMatch, fail, startNode, endNode } from '@cst-tokens/helpers/grammar/node';
+import { match, eatMatch, fail } from '@cst-tokens/helpers/grammar/node';
 import { tok, chrs } from '@cst-tokens/helpers/shorthand';
 import { mapProductions } from '@cst-tokens/helpers/enhancers';
 import * as sym from '@cst-tokens/helpers/symbols';
@@ -90,10 +90,7 @@ export const triviaEnhancer = (grammar) => {
 
                 if (s.path === outerPath) {
                   do {
-                    if (s.testCurrent(sym.StartNode)) {
-                      sn = yield startNode();
-                    }
-
+                    sn = yield match(tok(sym.StartNode));
                     sep = sn && (yield* eatSep());
                   } while (sep && !sn);
                 }
@@ -116,9 +113,7 @@ export const triviaEnhancer = (grammar) => {
                   sep = yield* eatSep();
 
                   do {
-                    if (s.testCurrent(sym.EndNode)) {
-                      en = yield endNode();
-                    }
+                    en = yield match(tok(sym.EndNode));
 
                     sep = en && (yield* eatSep());
                   } while (sep && !en);

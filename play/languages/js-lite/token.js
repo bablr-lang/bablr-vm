@@ -138,6 +138,8 @@ export const grammar = {
         throw new Error(`{lexicalContext: ${lexicalContext}} does not define an escape sequence`);
       }
 
+      yield guard(chrs('\\'));
+
       yield eat(tok`Escape`);
       yield eat(tok`EscapeCode`);
     },
