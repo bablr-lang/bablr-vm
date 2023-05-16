@@ -7,7 +7,7 @@ import { concat } from '@cst-tokens/helpers/iterable';
 import * as sym from '@cst-tokens/helpers/symbols';
 
 import { logEnhancer, formatType } from './enhancers/log.js';
-import js, { parse } from './languages/js-lite/index.js';
+import regex, { parse } from './languages/regexpp/index.js';
 
 const ownDir = new URL(dirname(import.meta.url)).pathname;
 
@@ -38,7 +38,7 @@ console.log('');
 const ast = parse(sourceText);
 
 try {
-  const tokens = [...traverse(buildLanguage(js, [logEnhancer]), ast, sourceText)].map(
+  const tokens = [...traverse(buildLanguage(regex, [logEnhancer]), ast, sourceText)].map(
     ({ type, value }) => `    { type: ${formatType(type)}, value: ${formatType(value)} }`,
   );
 
@@ -49,15 +49,3 @@ try {
   console.log('');
   console.error(e);
 }
-
-// console.log(JSON.stringify(cst, undefined, 2));
-
-// const printed = print(cst);
-
-// if (printed !== sourceText) {
-//   let m;
-//   m = `source text could not be reconstructed from CST
-//   Source: \`${`${sourceText.replace(/\n/g, '\\n')}`}\`
-//   Printed: \`${`${printed.replace(/\n/g, '\\n')}`}\``;
-//   throw new Error(m);
-// }
