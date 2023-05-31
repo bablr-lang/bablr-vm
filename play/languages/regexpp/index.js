@@ -1,4 +1,3 @@
-export { parse } from 'regexpp';
 
 import { match, eat, Any } from '@cst-tokens/helpers/grammar/node';
 import { NamedLiteral } from '@cst-tokens/helpers/grammar/token';
@@ -9,6 +8,7 @@ import { productions } from '@cst-tokens/helpers/productions';
 import * as sym from '@cst-tokens/helpers/symbols';
 
 // Welcome!
+const PN = (...args) => tok('Punctuator', String.raw(...args));
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Cheatsheet
 
@@ -18,25 +18,31 @@ export default {
   grammars: {
     [sym.node]: {
       productions: productions({
-        *CharacterClass() {
-          yield eat(tok('Punctuator', `[`, 'CharacterClass')); // sets lexicalContext to CharacterClass
-          while (!(yield match(chrs`]`))) {
-            yield eat(Any(node`Character:elements`, node`CharacterClassRange:elements`));
-          }
-          yield eat(tok('Punctuator', `]`, sym.parent));
+        // *CharacterClass() {
+        //   yield eat(tok('Punctuator', `[`, 'CharacterClass')); // sets lexicalContext to CharacterClass
+        //   while (!(yield match(chrs`]`))) {
+        //     yield eat(Any(node`Character:elements`, node`CharacterClassRange:elements`));
+        //   }
+        //   yield eat(tok('Punctuator', `]`, sym.parent));
+        // },
+
+        *RegExpLiteral(){
+          yield eat(PN`/`);
         },
 
         *Character() {
-          // implement me
+          while (!(yield match(chrs`/`))){
+            yield eat(Any(node`Character:elements`))
+          }
         },
 
-        *CharacterClassRange() {
-          // implement me
-        },
+        // *CharacterClassRange() {
+        // implement me
+        // },
       }),
 
       aliases: objectEntries({
-        Node: ['CharacterClass', 'Character', 'CharacterClassRange'],
+        Node: ['RegExpLiteral', 'Character'],
       }),
 
       enhancers: [nodeBoundsEnhancer],
