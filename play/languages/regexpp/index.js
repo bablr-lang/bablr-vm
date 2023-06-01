@@ -73,12 +73,9 @@ export default {
         //   }
         // },
 
-        *Literal({ state: { lexicalContext } }) {
-          if (lexicalContext === 'string') {
-            yield eatChrs(/[^"\n]+/y);
-          } else {
-            throw new Error("hi from new ones");
-          }
+        *Literal() {
+          yield eatChrs(/\w/y);
+
         },
 
         *EscapeSequence() {
