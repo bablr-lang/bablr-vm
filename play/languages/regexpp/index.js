@@ -18,13 +18,14 @@ export default {
   grammars: {
     [sym.node]: {
       productions: productions({
-        // *CharacterClass() {
-        //   yield eat(tok('Punctuator', `[`, 'CharacterClass')); // sets lexicalContext to CharacterClass
-        //   while (!(yield match(chrs`]`))) {
-        //     yield eat(Any(node`Character:elements`, node`CharacterClassRange:elements`));
-        //   }
-        //   yield eat(tok('Punctuator', `]`, sym.parent));
-        // },
+        *CharacterClass() {
+          yield eat(tok('Punctuator', `[`, 'CharacterClass')); // sets lexicalContext to CharacterClass
+          while (!(yield match(chrs`]`))) {
+            // yield eat(Any(node`Character:elements`, node`CharacterClassRange:elements`));
+            yield eat(Any(node`Character:elements`))
+          }
+          yield eat(tok('Punctuator', `]`, sym.parent));
+        },
 
         *RegExpLiteral(){
           yield eat(PN`/`);
@@ -33,13 +34,11 @@ export default {
         },
 
         *Character() {
-          // while (!(yield match(chrs`/`))){
           yield eat(tok`Literal`);
-          // }
         },
 
         *Alternative(){
-          yield eat(node`Character:elements`)
+          yield eat(Any(node`Character:elements`, node`CharacterClass:elements`))
         },
 
         *Pattern(){
@@ -49,6 +48,7 @@ export default {
         // *CharacterClassRange() {
         // implement me
         // },
+
       }),
 
       aliases: objectEntries({
@@ -62,21 +62,24 @@ export default {
       productions: productions({
         Punctuator: NamedLiteral,
 
-        // *Literal({ state: { lexicalContext } }) {
-        //   if (lexicalContext === 'CharacterClass') {
-        //     yield eatChrs(/[^"\n]+/y);
-        //     // `/` is a literal here
-        //   } else if (lexicalContext === 'Base') {
-        //     // `/` is definitely not a literal here
-        //   } else {
-        //     throw new Error();
-        //   }
-        // },
+        *Literal({ state: { lexicalContext } }) {
+          if (lexicalContext === 'CharacterClass') {
+            // `/` is a literal here
+            yield eatChrs(/\w/y);
 
-        *Literal() {
-          yield eatChrs(/\w/y);
+          } else if (lexicalContext === 'Base') {
+            // `/` is definitely not a literal here
+            yield eatChrs(/\w|[^/]/);
 
+          } else {
+            throw new Error();
+          }
         },
+
+        // *Literal() {
+        //   yield eatChrs(/\w/y);
+        //
+        // },
 
         *EscapeSequence() {
           yield eat(tok`Escape`);
