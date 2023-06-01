@@ -28,7 +28,7 @@ export default {
 
         *RegExpLiteral(){
           yield eat(PN`/`);
-          yield eat(node`Pattern`)
+          yield eat(node`Pattern:pattern`)
           yield eat(PN`/`);
         },
 
@@ -39,11 +39,11 @@ export default {
         },
 
         *Alternative(){
-          yield eat(node`Character`)
+          yield eat(node`Character:elements`)
         },
 
         *Pattern(){
-          yield eat(node`Alternative`)
+          yield eat(node`Alternative:alternatives`)
         }
 
         // *CharacterClassRange() {

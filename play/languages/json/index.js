@@ -71,7 +71,7 @@ export default {
             yield eatChrs(/[^"\n]+/y);
           } else {
             throw new Error();
-          }
+        }
         },
 
         *Number() {
