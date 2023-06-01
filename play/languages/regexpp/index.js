@@ -1,6 +1,6 @@
 
-import { match, eat, Any } from '@cst-tokens/helpers/grammar/node';
-import { NamedLiteral } from '@cst-tokens/helpers/grammar/token';
+import {match, eat, Any, List} from '@cst-tokens/helpers/grammar/node';
+import {eat as eatChrs, NamedLiteral} from '@cst-tokens/helpers/grammar/token';
 import { objectEntries } from '@cst-tokens/helpers/object';
 import { tok, node, chrs } from '@cst-tokens/helpers/shorthand';
 import { nodeBoundsEnhancer, tokenBoundsEnhancer } from '@cst-tokens/helpers/enhancers';
@@ -28,13 +28,23 @@ export default {
 
         *RegExpLiteral(){
           yield eat(PN`/`);
+          yield eat(node`Pattern`)
+          yield eat(PN`/`);
         },
 
         *Character() {
-          while (!(yield match(chrs`/`))){
-            yield eat(Any(node`Character:elements`))
-          }
+          // while (!(yield match(chrs`/`))){
+          yield eat(tok`Literal`);
+          // }
         },
+
+        *Alternative(){
+          yield eat(node`Character`)
+        },
+
+        *Pattern(){
+          yield eat(node`Alternative`)
+        }
 
         // *CharacterClassRange() {
         // implement me
@@ -42,7 +52,7 @@ export default {
       }),
 
       aliases: objectEntries({
-        Node: ['RegExpLiteral', 'Character'],
+        Node: ['RegExpLiteral', 'Character', 'Alternative', 'Pattern'],
       }),
 
       enhancers: [nodeBoundsEnhancer],
@@ -52,13 +62,22 @@ export default {
       productions: productions({
         Punctuator: NamedLiteral,
 
+        // *Literal({ state: { lexicalContext } }) {
+        //   if (lexicalContext === 'CharacterClass') {
+        //     yield eatChrs(/[^"\n]+/y);
+        //     // `/` is a literal here
+        //   } else if (lexicalContext === 'Base') {
+        //     // `/` is definitely not a literal here
+        //   } else {
+        //     throw new Error();
+        //   }
+        // },
+
         *Literal({ state: { lexicalContext } }) {
-          if (lexicalContext === 'CharacterClass') {
-            // `/` is a literal here
-          } else if (lexicalContext === 'Base') {
-            // `/` is definitely not a literal here
+          if (lexicalContext === 'string') {
+            yield eatChrs(/[^"\n]+/y);
           } else {
-            throw new Error();
+            throw new Error("hi from new ones");
           }
         },
 
@@ -70,6 +89,7 @@ export default {
         *Escape() {
           yield eat(chrs('\\'));
         },
+
 
         *EscapeCode({ state: { lexicalContext } }) {
           // implement escapes like \n and \u1234

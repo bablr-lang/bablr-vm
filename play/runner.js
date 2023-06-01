@@ -5,9 +5,9 @@ import { TokenGrammar } from '@cst-tokens/helpers/grammar/token';
 import { NodeGrammar } from '@cst-tokens/helpers/grammar/node';
 import { concat } from '@cst-tokens/helpers/iterable';
 import * as sym from '@cst-tokens/helpers/symbols';
-
+import {parseRegExpLiteral as parse} from 'regexpp'
 import { logEnhancer, formatType } from './enhancers/log.js';
-import regex, { parse } from './languages/regexpp/index.js';
+import regex from './languages/regexpp/index.js';
 
 const ownDir = new URL(dirname(import.meta.url)).pathname;
 
@@ -27,7 +27,7 @@ const buildLanguage = (language, enhancers) => {
   return { ...language, grammars: buildGrammars(language.grammars, enhancers) };
 };
 
-const sourceText = readFileSync(resolve(ownDir, 'fixture'), 'utf8');
+const sourceText = readFileSync(resolve(ownDir.slice(1), 'fixture'), 'utf8');
 
 console.log('');
 
