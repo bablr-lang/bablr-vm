@@ -22,9 +22,9 @@ export default {
           yield eat(tok('Punctuator', `[`, 'CharacterClass')); // sets lexicalContext to CharacterClass
           while (!(yield match(chrs`]`))) {
             // yield eat(Any(node`Character:elements`, node`CharacterClassRange:elements`));
-            yield eat(Any(node`Character:elements`))
+            yield eat(node`Character:elements`)
           }
-          yield eat(tok('Punctuator', `]`, sym.parent));
+          yield eat(tok('Punctuator', `]`));
         },
 
         *RegExpLiteral(){
@@ -52,7 +52,7 @@ export default {
       }),
 
       aliases: objectEntries({
-        Node: ['RegExpLiteral', 'Character', 'Alternative', 'Pattern'],
+        Node: ['RegExpLiteral', 'Character', 'Alternative', 'Pattern', 'CharacterClass'],
       }),
 
       enhancers: [nodeBoundsEnhancer],
@@ -65,11 +65,11 @@ export default {
         *Literal({ state: { lexicalContext } }) {
           if (lexicalContext === 'CharacterClass') {
             // `/` is a literal here
-            yield eatChrs(/\w/y);
+            yield eatChrs(/[^[\]\\]/y);
 
           } else if (lexicalContext === 'Base') {
             // `/` is definitely not a literal here
-            yield eatChrs(/\w|[^/]/);
+            yield eatChrs(/[^/[\]]/y);
 
           } else {
             throw new Error();
