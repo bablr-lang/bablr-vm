@@ -17,15 +17,17 @@ const valueList = (props) => node('ValueList', null, props);
 export const grammar = {
   productions: productions({
     *Program() {
+      yield eat(node`StatementList`);
+    },
+
+    *StatementList() {
       while (!(yield match(bnd(sym.EOF)))) {
         yield eat(node`Statement:body`);
       }
     },
 
     *BlockStatement() {
-      yield eat(LPN`{`);
-      while (yield eatMatch(node`Statement:body`));
-      yield eat(RPN`}`);
+      yield eat(tok('Block', { start: PN`{`, body: node`StatementList:body`, end: PN`}` }));
     },
 
     *ExpressionStatement() {
