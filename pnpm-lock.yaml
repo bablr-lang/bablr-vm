@@ -2,7 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@babel/parser': ^7.21.4
-  '@cst-tokens/helpers': github:js-cst-tokens/helpers#cefd12f3611565a462c3c42f2cc7887c31a23b08
+  '@cst-tokens/helpers': github:js-cst-tokens/helpers#11de884fc2b941c5514748fccb842ad96c426330
   '@humanwhocodes/momoa': ^3.0.0
   '@iter-tools/imm-stack': 1.1.0
   '@iter-tools/regex': 0.3.2
@@ -22,7 +22,7 @@ dependencies:
 
 devDependencies:
   '@babel/parser': 7.21.4
-  '@cst-tokens/helpers': github.com/js-cst-tokens/helpers/cefd12f3611565a462c3c42f2cc7887c31a23b08
+  '@cst-tokens/helpers': github.com/js-cst-tokens/helpers/11de884fc2b941c5514748fccb842ad96c426330
   '@humanwhocodes/momoa': 3.0.0
   enhanced-resolve: 5.12.0
   eslint: 8.32.0
@@ -1623,8 +1623,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  github.com/js-cst-tokens/helpers/cefd12f3611565a462c3c42f2cc7887c31a23b08:
-    resolution: {tarball: https://codeload.github.com/js-cst-tokens/helpers/tar.gz/cefd12f3611565a462c3c42f2cc7887c31a23b08}
+  github.com/js-cst-tokens/helpers/11de884fc2b941c5514748fccb842ad96c426330:
+    resolution: {tarball: https://codeload.github.com/js-cst-tokens/helpers/tar.gz/11de884fc2b941c5514748fccb842ad96c426330}
     name: '@cst-tokens/helpers'
     version: 0.13.0
     dependencies:

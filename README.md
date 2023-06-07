@@ -111,8 +111,10 @@ new Grammar({
       yield {
         verb: sym.match,
         value: {
-          successEffect: sym.eat,
-          failureEffect: sym.fail,
+          effects: {
+            success: sym.eat,
+            failure: sym.fail,
+          },
           matchable: {
             grammar: sym.node,
             production: { type: 'Identifier', property: 'imported' },
@@ -123,8 +125,10 @@ new Grammar({
       yield {
         verb: sym.match,
         value: {
-          successEffect: sym.eat,
-          failureEffect: sym.none,
+          effects: {
+            success: sym.eat,
+            failure: sym.none,
+          },
           matchable: {
             // passing multiple arguments to the eatMatch helper was actually creating an All production
             grammar: sym.node,

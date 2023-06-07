@@ -27,7 +27,9 @@ export const grammar = {
     },
 
     *BlockStatement() {
-      yield eat(tok('Block', { start: PN`{`, body: node`StatementList:body`, end: PN`}` }));
+      yield eat(tok('Punctuator', '{', { guard: '}' }));
+      yield eatMatch(node`StatementList`);
+      yield eat(tok('Punctuator', '}'));
     },
 
     *ExpressionStatement() {
