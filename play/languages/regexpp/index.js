@@ -34,7 +34,7 @@ export default {
         },
 
         *Character() {
-          yield eat(tok`Literal`);
+          yield eat(Any(tok`Literal`,tok`Escape`));
         },
 
         *Alternative(){
@@ -71,8 +71,6 @@ export default {
             // `/` is definitely not a literal here
             yield eatChrs(/[^/[\]]/y);
 
-          } else {
-            throw new Error();
           }
         },
 
