@@ -32,14 +32,11 @@ export const triviaEnhancer = (grammar) => {
   return mapProductions((production) => {
     let { annotations } = production;
 
-    let boundariesGenerated = false;
-
     return {
       ...production,
       annotations,
       *match(props, ...args) {
         const { state: s, context: ctx } = props;
-        const outerPath = s.path;
 
         const generator = production.match(props, ...args);
 
@@ -58,9 +55,7 @@ export const triviaEnhancer = (grammar) => {
                 const { matchable, failureEffect } = instr.value;
                 const { type } = matchable.value;
 
-                if (matchable.type === sym.node) {
-                  // nothing to do
-                } else {
+                if (matchable.type === sym.token) {
                   const spaceIsAllowed = s.lexicalContext === 'Bare';
 
                   if (spaceIsAllowed) {
@@ -80,48 +75,6 @@ export const triviaEnhancer = (grammar) => {
                 }
 
                 returnValue = returnValue || (yield instr);
-                break;
-              }
-
-              case sym.startNode: {
-                let sep, sn;
-
-                sep = yield* eatSep();
-
-                if (s.path === outerPath) {
-                  do {
-                    sn = yield match(tok(sym.StartNode));
-                    sep = sn && (yield* eatSep());
-                  } while (sep && !sn);
-                }
-
-                if (s.path === outerPath) {
-                  sn = yield instr;
-                  boundariesGenerated = true;
-                }
-
-                returnValue = sn;
-                break;
-              }
-
-              case sym.endNode: {
-                let sep, en;
-
-                if (boundariesGenerated) {
-                  en = yield instr;
-                } else {
-                  sep = yield* eatSep();
-
-                  do {
-                    en = yield match(tok(sym.EndNode));
-
-                    sep = en && (yield* eatSep());
-                  } while (sep && !en);
-                }
-
-                if (!en) throw new Error();
-
-                returnValue = en;
                 break;
               }
 

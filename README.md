@@ -139,7 +139,7 @@ new Grammar({
               value: [
                 {
                   grammar: sym.token,
-                  production: { type: 'Keyword', value: 'as' },
+                  production: { type: 'Keyword', value: 'as', alterLexicalContext: null },
                 },
                 {
                   grammar: sym.node,
