@@ -1,6 +1,5 @@
-
-import {match, eat, Any, List} from '@cst-tokens/helpers/grammar/node';
-import {eat as eatChrs, NamedLiteral} from '@cst-tokens/helpers/grammar/token';
+import { match, eat, Any, List } from '@cst-tokens/helpers/grammar/node';
+import { eat as eatChrs, NamedLiteral } from '@cst-tokens/helpers/grammar/token';
 import { objectEntries } from '@cst-tokens/helpers/object';
 import { tok, node, chrs } from '@cst-tokens/helpers/shorthand';
 import { nodeBoundsEnhancer, tokenBoundsEnhancer } from '@cst-tokens/helpers/enhancers';
@@ -22,33 +21,32 @@ export default {
           yield eat(tok('Punctuator', `[`, 'CharacterClass')); // sets lexicalContext to CharacterClass
           while (!(yield match(chrs`]`))) {
             // yield eat(Any(node`Character:elements`, node`CharacterClassRange:elements`));
-            yield eat(node`Character:elements`)
+            yield eat(node`Character:elements`);
           }
           yield eat(tok('Punctuator', `]`));
         },
 
-        *RegExpLiteral(){
+        *RegExpLiteral() {
           yield eat(PN`/`);
-          yield eat(node`Pattern:pattern`)
+          yield eat(node`Pattern:pattern`);
           yield eat(PN`/`);
         },
 
         *Character() {
-          yield eat(Any(tok`Literal`,tok`Escape`));
+          yield eat(Any(tok`Literal`, tok`EscapeSequence`));
         },
 
-        *Alternative(){
-          yield eat(Any(node`Character:elements`, node`CharacterClass:elements`))
+        *Alternative() {
+          yield eat(Any(node`Character:elements`, node`CharacterClass:elements`));
         },
 
-        *Pattern(){
-          yield eat(node`Alternative:alternatives`)
-        }
+        *Pattern() {
+          yield eat(node`Alternative:alternatives`);
+        },
 
         // *CharacterClassRange() {
         // implement me
         // },
-
       }),
 
       aliases: objectEntries({
@@ -66,18 +64,11 @@ export default {
           if (lexicalContext === 'CharacterClass') {
             // `/` is a literal here
             yield eatChrs(/[^[\]\\]/y);
-
-          } else if (lexicalContext === 'Base') {
+          } else if (lexicalContext === 'Bare') {
             // `/` is definitely not a literal here
-            yield eatChrs(/[^/[\]]/y);
-
+            yield eatChrs(/[^/[\]\\]/y);
           }
         },
-
-        // *Literal() {
-        //   yield eatChrs(/\w/y);
-        //
-        // },
 
         *EscapeSequence() {
           yield eat(tok`Escape`);
@@ -88,11 +79,11 @@ export default {
           yield eat(chrs('\\'));
         },
 
-
         *EscapeCode({ state: { lexicalContext } }) {
           // implement escapes like \n and \u1234
           // To start with ignore \0, \1 etc because the rules of how those get parsed are INSANE:
           // https://hackernoon.com/the-madness-of-parsing-real-world-javascript-regexps-d9ee336df983
+          yield eat(chrs(/[\\ntr]/y));
         },
       }),
 
