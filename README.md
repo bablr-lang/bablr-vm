@@ -109,21 +109,21 @@ new Grammar({
     // Here is what the same production looks like when the actions are written explicitly:
     *ImportSpecifier() {
       yield {
-        verb: sym.match,
+        type: sym.match,
         value: {
           effects: {
             success: sym.eat,
             failure: sym.fail,
           },
           matchable: {
-            grammar: sym.node,
+            type: sym.node,
             production: { type: 'Identifier', property: 'imported' },
           },
         },
       };
 
       yield {
-        verb: sym.match,
+        type: sym.match,
         value: {
           effects: {
             success: sym.eat,
@@ -131,18 +131,18 @@ new Grammar({
           },
           matchable: {
             // passing multiple arguments to the eatMatch helper was actually creating an All production
-            grammar: sym.node,
+            type: sym.node,
             production: {
               type: sym.All,
               // this production does not map to a real AST node
               property: null,
               value: [
                 {
-                  grammar: sym.token,
-                  production: { type: 'Keyword', value: 'as', alterLexicalContext: null },
+                  type: sym.token,
+                  production: { type: 'Keyword', value: 'as' },
                 },
                 {
-                  grammar: sym.node,
+                  type: sym.node,
                   production: { type: 'Identifier', property: 'local' },
                 },
               ],
