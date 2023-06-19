@@ -3,9 +3,11 @@ import { eat, eatMatch, fail, guard, match } from '@cst-tokens/helpers/grammar/t
 import { tokenBoundsEnhancer } from '@cst-tokens/helpers/enhancers';
 import { productions } from '@cst-tokens/helpers/productions';
 import { objectEntries } from '@cst-tokens/helpers/object';
-import { chrs, tok, node } from '@cst-tokens/helpers/shorthand';
+import { chrs, tok } from '@cst-tokens/helpers/shorthand';
 import { EOF } from '@cst-tokens/helpers/symbols';
 import * as sym from '@cst-tokens/helpers/symbols';
+
+import { triviaEnhancer } from './enhancers/trivia.js';
 
 const escapables = new Map(
   objectEntries({
@@ -192,7 +194,7 @@ export const grammar = {
     Trivia: ['Comment', 'Whitespace'],
   }),
 
-  enhancers: [tokenBoundsEnhancer],
+  enhancers: [triviaEnhancer, tokenBoundsEnhancer],
 };
 
 export default grammar;

@@ -1,11 +1,8 @@
 import { eat, match, eatMatch } from '@cst-tokens/helpers/grammar/node';
 import { objectEntries } from '@cst-tokens/helpers/object';
-import { tok, node, bnd } from '@cst-tokens/helpers/shorthand';
+import { tok, node } from '@cst-tokens/helpers/shorthand';
 import { nodeBoundsEnhancer } from '@cst-tokens/helpers/enhancers';
 import { productions } from '@cst-tokens/helpers/productions';
-import * as sym from '@cst-tokens/helpers/symbols';
-
-import { triviaEnhancer } from './enhancers/trivia.js';
 
 const PN = (...args) => tok('Punctuator', String.raw(...args));
 const LPN = (...args) => tok('LeftPunctuator', String.raw(...args));
@@ -21,7 +18,7 @@ export const grammar = {
     },
 
     *StatementList() {
-      while (!(yield match(bnd(sym.EOF)))) {
+      while (!(yield match(tok(/$/y)))) {
         yield eat(node`Statement:body`);
       }
     },
@@ -130,7 +127,7 @@ export const grammar = {
     Node: ['Program', 'Statement', 'Expression', 'ImportSpecifier', 'ImportSpecialSpecifier'],
   }),
 
-  enhancers: [triviaEnhancer, nodeBoundsEnhancer],
+  enhancers: [nodeBoundsEnhancer],
 };
 
 export default grammar;

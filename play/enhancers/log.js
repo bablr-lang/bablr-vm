@@ -52,7 +52,10 @@ const formatGrammarType = (type) => {
 };
 
 const formatMatchable = (matchable) => {
-  return `${formatGrammarType(matchable.type)}${formatProduction(matchable.type, matchable.value)}`;
+  return `${formatGrammarType(matchable.type)}${formatProduction(
+    matchable.type,
+    matchable.production,
+  )}`;
 };
 
 const formatEffect = (effect) => {
@@ -66,9 +69,9 @@ const formatEffect = (effect) => {
 };
 
 const formatMatch = (instruction) => {
-  const { matchable, successEffect, failureEffect } = instruction;
+  const { matchable, effects } = instruction;
 
-  const formattedEffects = `${formatEffect(successEffect)} ${formatEffect(failureEffect)}`;
+  const formattedEffects = `${formatEffect(effects.success)} ${formatEffect(effects.failure)}`;
 
   return `${formattedEffects} ${formatMatchable(matchable)}`;
 };

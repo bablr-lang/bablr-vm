@@ -30,13 +30,11 @@ function* eatSep() {
 
 export const triviaEnhancer = (grammar) => {
   return mapProductions((production) => {
-    let { annotations } = production;
-
     return {
       ...production,
-      annotations,
       *match(props, ...args) {
         const { state: s, context: ctx } = props;
+        const grammar = ctx.grammars.get(sym.token);
 
         const generator = production.match(props, ...args);
 
@@ -52,10 +50,10 @@ export const triviaEnhancer = (grammar) => {
 
             switch (instr.type) {
               case sym.match: {
-                const { matchable, failureEffect } = instr.value;
-                const { type } = matchable.value;
+                const { matchable, effects } = instr.value;
+                const { type } = matchable.production;
 
-                if (matchable.type === sym.token) {
+                if (matchable.type === sym.token && grammar.is('Token', type)) {
                   const spaceIsAllowed = s.lexicalContext === 'Bare';
 
                   if (spaceIsAllowed) {
@@ -65,7 +63,7 @@ export const triviaEnhancer = (grammar) => {
                       !!(yield* eatSep());
 
                     if (requiresSeparator(ctx, s, type) && !matchedSeparator) {
-                      if (failureEffect === sym.fail) {
+                      if (effects.failure === sym.fail) {
                         yield fail();
                       } else {
                         returnValue = null;
