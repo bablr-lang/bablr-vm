@@ -1,13 +1,13 @@
 import { dirname, resolve } from 'path';
 import { readFileSync } from 'fs';
-import { traverse } from 'cst-tokens';
+import { tokenize } from 'cst-tokens';
 import { TokenGrammar } from '@cst-tokens/helpers/grammar/token';
 import { NodeGrammar } from '@cst-tokens/helpers/grammar/node';
 import { concat } from '@cst-tokens/helpers/iterable';
 import * as sym from '@cst-tokens/helpers/symbols';
 
 import { logEnhancer, formatType } from './enhancers/log.js';
-import js, { parse } from './languages/js-lite/index.js';
+import js from '../lib/languages/cstml/index.js';
 
 const ownDir = new URL(dirname(import.meta.url)).pathname;
 
@@ -35,10 +35,8 @@ console.log(sourceText);
 
 console.log('');
 
-const ast = parse(sourceText);
-
 try {
-  const tokens = [...traverse(buildLanguage(js, [logEnhancer]), ast, sourceText)].map(
+  const tokens = [...tokenize(buildLanguage(js, [logEnhancer]), sourceText, 'Fragment')].map(
     ({ type, value }) => `    { type: ${formatType(type)}, value: ${formatType(value)} }`,
   );
 

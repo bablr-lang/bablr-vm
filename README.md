@@ -95,14 +95,14 @@ A language is made up of two main grammars: a node grammar and a token grammar. 
 ```js
 import * as sym from '@cst-tokens/helpers/symbols';
 import { tok, prod } from '@cst-tokens/helpers/shorthand';
-import { eat, eatMatch, Grammar } from '@cst-tokens/helpers/grammar/node';
+import { eat, eatMatch, Grammar, All } from '@cst-tokens/helpers/grammar/node';
 
 new Grammar({
   productions: {
     // This version of ImportSpecifier uses helpers to be concise:
     *ImportSpecifier() {
       yield eat(prod`Identifier:imported`);
-      yield eatMatch(tok`Keyword:as`, prod`Identifier:local`);
+      yield eatMatch(All(tok`Keyword:as`, prod`Identifier:local`));
     },
 
     // The helpers were being used to build up instructions
@@ -130,7 +130,6 @@ new Grammar({
             failure: sym.none,
           },
           matchable: {
-            // passing multiple arguments to the eatMatch helper was actually creating an All production
             type: sym.node,
             production: {
               type: sym.All,

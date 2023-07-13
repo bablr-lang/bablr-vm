@@ -119,9 +119,8 @@ export const logEnhancer = (grammar) => {
 
         console.log(i`${tokenizerTransition ? '>>>' : '-->'} ${formatType(type)}`);
 
-        let normalCompletion = false;
         try {
-          const generator = production.match(props, grammar, next);
+          const generator = production.value(props, grammar, next);
           let current = generator.next();
 
           let anyResult = false;
@@ -131,7 +130,7 @@ export const logEnhancer = (grammar) => {
 
             console.log(i`${formatInstr(instr)}`);
 
-            const eats = instr.type === sym.match && instr.value.successEffect === sym.eat;
+            const eats = instr.type === sym.match && instr.value.effects.success === sym.eat;
 
             const result = yield instr;
 
@@ -139,18 +138,20 @@ export const logEnhancer = (grammar) => {
 
             current = generator.next(result);
           }
-          normalCompletion = anyResult;
+
+          if (anyResult) {
+            console.log(i`${tokenizerTransition ? '<<<' : '<--'} ${formatType(type)}`);
+          } else {
+            console.log(i`${tokenizerTransition ? 'xxx' : 'x--'} ${formatType(type)}`);
+          }
+        } catch (e) {
+          if (e === 'failure') {
+            console.log(i`${tokenizerTransition ? 'xxx' : 'x--'} ${formatType(type)}`);
+          }
+          throw e;
         } finally {
           if (tokenizerTransition) {
             productionTypes.set(context, sym.node);
-          }
-
-          if (normalCompletion) {
-            console.log(i`${tokenizerTransition ? '<<<' : '<--'} ${formatType(type)}`);
-          } else {
-            // TODO: distinguish error/final termination
-            // In an error termination we don't want to make it look like we kept running the grammar
-            console.log(i`${tokenizerTransition ? 'xxx' : 'x--'} ${formatType(type)}`);
           }
         }
       },
