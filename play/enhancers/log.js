@@ -12,12 +12,12 @@ export const formatType = (type) => {
     ? 'fail 🐳'
     : typeof type === 'symbol'
     ? type.description.replace(/^cst-tokens\//, '')
-    : `'${type.replace(/['\\]/g, '\\$&')}'`;
+    : `\`${type.replace(/[`\\]/g, '\\$&')}\``;
 };
 
 export const formatValue = (value) => {
   if (isString(value)) {
-    return `'${value.replace(/['\\]/g, '\\$&')}'`;
+    return `\`${value.replace(/[`\\]/g, '\\$&')}\``;
   } else {
     return String(value);
   }
@@ -26,17 +26,14 @@ export const formatValue = (value) => {
 const formatProduction = (type, p) => {
   switch (type) {
     case sym.node:
-      return ` ${formatType(p.type)}`;
+      return formatType(p.type);
 
     case sym.character:
-      return ` ${formatValue(p)}`;
+      return formatValue(p);
 
     case sym.token:
-      const formattedValue = isString(p.value) ? ` ${formatValue(p.value)}` : '';
-      return ` ${formatType(p.type)}${formattedValue}`;
-
-    case sym.boundary:
-      return p ? ` ${formatType(p.type)}` : '';
+      const formattedValue = isString(p.value) ? `:${formatValue(p.value).slice(1, -1)}` : '';
+      return `\`${formatType(p.type).slice(1, -1)}${formattedValue}\``;
   }
 };
 
@@ -44,9 +41,8 @@ const formatGrammarType = (type) => {
   // prettier-ignore
   switch (type) {
       case sym.node: return 'node';
-      case sym.token: return 'tokn';
-      case sym.character: return 'char';
-      case sym.boundary: return 'boun';
+      case sym.token: return 'tok';
+      case sym.character: return 'chr';
       default: return '?';
     }
 };
@@ -76,6 +72,10 @@ const formatMatch = (instruction) => {
   return `${formattedEffects} ${formatMatchable(matchable)}`;
 };
 
+const formatDisambiguate = (cases) => {
+  return cases.map(([matchable]) => formatMatchable(matchable)).join(' ');
+};
+
 const formatInstr = (instr) => {
   const formattedVerb = instr.type ? `${formatType(instr.type)}` : '<unknown>';
 
@@ -83,6 +83,8 @@ const formatInstr = (instr) => {
 
   if (instr.type === sym.match) {
     formattedValue = ` ${formatMatch(instr.value)}`;
+  } else if (instr.type === sym.disambiguate) {
+    formattedValue = ` ${formatDisambiguate(instr.value)}`;
   }
 
   return `${formattedVerb}${formattedValue}`;

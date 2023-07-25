@@ -1,6 +1,6 @@
 import { dirname, resolve } from 'path';
 import { readFileSync } from 'fs';
-import { tokenize } from 'cst-tokens';
+import { parse } from 'cst-tokens';
 import { TokenGrammar } from '@cst-tokens/helpers/grammar/token';
 import { NodeGrammar } from '@cst-tokens/helpers/grammar/node';
 import { concat } from '@cst-tokens/helpers/iterable';
@@ -36,13 +36,14 @@ console.log(sourceText);
 console.log('');
 
 try {
-  const tokens = [...tokenize(buildLanguage(js, [logEnhancer]), sourceText, 'Fragment')].map(
-    ({ type, value }) => `    { type: ${formatType(type)}, value: ${formatType(value)} }`,
-  );
+  for (const token of parse(buildLanguage(js, [logEnhancer]), sourceText, 'Fragment')) {
+    const { type, value } = token;
+
+    console.log(token);
+    // console.log(`    { type: ${formatType(type)}, value: ${formatType(value)} }`);
+  }
 
   console.log('');
-
-  console.log(`  [\n${tokens.join(',\n')}\n  ]`);
 } catch (e) {
   console.log('');
   console.error(e);
