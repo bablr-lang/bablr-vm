@@ -36,7 +36,7 @@ console.log(sourceText);
 console.log('');
 
 try {
-  for (const token of parse(buildLanguage(js, [logEnhancer]), sourceText, 'Fragment')) {
+  for (const token of parse(buildLanguage(js, [logEnhancer]), sourceText, 'Tag')) {
     const { type, value } = token;
 
     console.log(token);
