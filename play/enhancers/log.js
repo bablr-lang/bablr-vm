@@ -1,4 +1,5 @@
 import { mapProductions } from '@cst-tokens/helpers/productions';
+import { debugPrint } from '@cst-tokens/helpers/tag';
 import * as sym from '@cst-tokens/helpers/symbols';
 
 const isString = (val) => typeof val === 'string';
@@ -23,37 +24,6 @@ export const formatValue = (value) => {
   }
 };
 
-const formatProduction = (type, p) => {
-  switch (type) {
-    case sym.node:
-      return formatType(p.type);
-
-    case sym.character:
-      return formatValue(p);
-
-    case sym.token:
-      const formattedValue = isString(p.value) ? `:${formatValue(p.value).slice(1, -1)}` : '';
-      return `\`${formatType(p.type).slice(1, -1)}${formattedValue}\``;
-  }
-};
-
-const formatGrammarType = (type) => {
-  // prettier-ignore
-  switch (type) {
-      case sym.node: return 'node';
-      case sym.token: return 'tok';
-      case sym.character: return 'chr';
-      default: return '?';
-    }
-};
-
-const formatMatchable = (matchable) => {
-  return `${formatGrammarType(matchable.type)}${formatProduction(
-    matchable.type,
-    matchable.production,
-  )}`;
-};
-
 const formatEffect = (effect) => {
   // prettier-ignore
   switch (effect) {
@@ -69,11 +39,11 @@ const formatMatch = (instruction) => {
 
   const formattedEffects = `${formatEffect(effects.success)} ${formatEffect(effects.failure)}`;
 
-  return `${formattedEffects} ${formatMatchable(matchable)}`;
+  return `${formattedEffects} ${debugPrint(matchable)}`;
 };
 
 const formatDisambiguate = (cases) => {
-  return cases.map(([matchable]) => formatMatchable(matchable)).join(' ');
+  return cases.map(([matchable]) => debugPrint(matchable)).join(' ');
 };
 
 const formatInstr = (instr) => {
@@ -99,19 +69,8 @@ export const logEnhancer = (grammar) => {
 
     return {
       ...production,
-      *match(props, grammar, next) {
-        const { state, context } = props;
-        const { productionType } = state;
-
-        if (!productionTypes.has(context)) {
-          productionTypes.set(context, sym.node);
-        }
-
-        const tokenizerTransition = productionTypes.get(context) !== productionType;
-
-        if (tokenizerTransition) {
-          productionTypes.set(context, sym.token);
-        }
+      *value(props, grammar, next) {
+        const { state } = props;
 
         const i = (strings, ...args) => {
           const indentation = ' '.repeat((1 + state.depth) * 2);
@@ -119,7 +78,7 @@ export const logEnhancer = (grammar) => {
           return `${indentation}${content}`;
         };
 
-        console.log(i`${tokenizerTransition ? '>>>' : '-->'} ${formatType(type)}`);
+        console.log(i`--> ${formatType(type)}`);
 
         try {
           const generator = production.value(props, grammar, next);
@@ -142,19 +101,15 @@ export const logEnhancer = (grammar) => {
           }
 
           if (anyResult) {
-            console.log(i`${tokenizerTransition ? '<<<' : '<--'} ${formatType(type)}`);
+            console.log(i`<-- ${formatType(type)}`);
           } else {
-            console.log(i`${tokenizerTransition ? 'xxx' : 'x--'} ${formatType(type)}`);
+            console.log(i`x-- ${formatType(type)}`);
           }
         } catch (e) {
           if (e === 'failure') {
-            console.log(i`${tokenizerTransition ? 'xxx' : 'x--'} ${formatType(type)}`);
+            console.log(i`x-- ${formatType(type)}`);
           }
           throw e;
-        } finally {
-          if (tokenizerTransition) {
-            productionTypes.set(context, sym.node);
-          }
         }
       },
     };

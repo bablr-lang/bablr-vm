@@ -7,7 +7,7 @@ import { concat } from '@cst-tokens/helpers/iterable';
 import * as sym from '@cst-tokens/helpers/symbols';
 
 import { logEnhancer, formatType } from './enhancers/log.js';
-import js from '../lib/languages/cstml/index.js';
+import cstml from '../lib/languages/cstml/index.js';
 
 const ownDir = new URL(dirname(import.meta.url)).pathname;
 
@@ -36,7 +36,7 @@ console.log(sourceText);
 console.log('');
 
 try {
-  for (const token of parse(buildLanguage(js, [logEnhancer]), sourceText, 'Tag')) {
+  for (const token of parse(buildLanguage(cstml, [logEnhancer]), sourceText, 'Tag')) {
     const { type, value } = token;
 
     console.log(token);
