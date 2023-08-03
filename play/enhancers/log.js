@@ -1,5 +1,5 @@
 import { mapProductions } from '@cst-tokens/helpers/productions';
-import { debugPrint } from '@cst-tokens/helpers/tag';
+import { print as printTag } from '@cst-tokens/helpers/matchable';
 import * as sym from '@cst-tokens/helpers/symbols';
 
 const isString = (val) => typeof val === 'string';
@@ -39,11 +39,11 @@ const formatMatch = (instruction) => {
 
   const formattedEffects = `${formatEffect(effects.success)} ${formatEffect(effects.failure)}`;
 
-  return `${formattedEffects} ${debugPrint(matchable)}`;
+  return `${formattedEffects} ${printTag(matchable)}`;
 };
 
 const formatDisambiguate = (cases) => {
-  return cases.map(([matchable]) => debugPrint(matchable)).join(' ');
+  return cases.map(([matchable]) => printTag(matchable)).join(' ');
 };
 
 const formatInstr = (instr) => {

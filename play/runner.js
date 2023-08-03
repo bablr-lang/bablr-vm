@@ -1,8 +1,7 @@
 import { dirname, resolve } from 'path';
 import { readFileSync } from 'fs';
 import { parse } from 'cst-tokens';
-import { TokenGrammar } from '@cst-tokens/helpers/grammar/token';
-import { NodeGrammar } from '@cst-tokens/helpers/grammar/node';
+import { Grammar } from '@cst-tokens/helpers/grammar';
 import { concat } from '@cst-tokens/helpers/iterable';
 import * as sym from '@cst-tokens/helpers/symbols';
 
@@ -18,8 +17,8 @@ const buildGrammars = (grammars, enhancers) => {
 
   return {
     ...grammars,
-    [sym.node]: new NodeGrammar(node, concat(enhancers, node.enhancers)),
-    [sym.token]: new TokenGrammar(token, concat(enhancers, token.enhancers)),
+    [sym.node]: new Grammar(node, concat(enhancers, node.enhancers)),
+    [sym.token]: new Grammar(token, concat(enhancers, token.enhancers)),
   };
 };
 
@@ -36,7 +35,7 @@ console.log(sourceText);
 console.log('');
 
 try {
-  for (const token of parse(buildLanguage(cstml, [logEnhancer]), sourceText, 'Tag')) {
+  for (const token of parse(buildLanguage(cstml, [logEnhancer]), sourceText, 'Element')) {
     const { type, value } = token;
 
     console.log(token);
