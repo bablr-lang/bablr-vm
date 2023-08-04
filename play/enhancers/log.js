@@ -73,7 +73,8 @@ export const logEnhancer = (grammar) => {
         const { state } = props;
 
         const i = (strings, ...args) => {
-          const indentation = ' '.repeat((1 + state.depth) * 2);
+          const indentation = ' '.repeat(2);
+          // const indentation = ' '.repeat((1 + state.depth) * 2);
           const content = String.raw(strings, ...args);
           return `${indentation}${content}`;
         };
