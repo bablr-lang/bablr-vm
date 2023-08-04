@@ -36,6 +36,7 @@ console.log('');
 
 try {
   for (const token of parse(buildLanguage(cstml, [logEnhancer]), sourceText, 'Element')) {
+    // for (const token of parse(buildLanguage(cstml, []), sourceText, 'Element')) {
     const { type, value } = token;
 
     console.log(token);
