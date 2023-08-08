@@ -23,6 +23,7 @@ module.exports = {
   rules: {
     'no-undef': 'error',
     'no-fallthrough': 'error',
+    'no-const-assign': 'error',
   },
   settings: {
     'import/resolver': {
