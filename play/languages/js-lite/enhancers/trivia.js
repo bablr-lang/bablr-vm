@@ -1,7 +1,7 @@
-import { match, eatMatch, fail } from '@cst-tokens/helpers/grammar/node';
-import { tok, chrs } from '@cst-tokens/helpers/shorthand';
-import { mapProductions } from '@cst-tokens/helpers/enhancers';
-import * as sym from '@cst-tokens/helpers/symbols';
+import { match, eatMatch, fail } from '@bablr/helpers/grammar/node';
+import { tok, chrs } from '@bablr/helpers/shorthand';
+import { mapProductions } from '@bablr/helpers/enhancers';
+import * as sym from '@bablr/helpers/symbols';
 
 const spaceDelimitedTypes = ['Identifier', 'Keyword'];
 

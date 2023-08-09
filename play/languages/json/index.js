@@ -1,13 +1,13 @@
 import { parse as parseDocument } from '@humanwhocodes/momoa';
 
-import { eat, List } from '@cst-tokens/helpers/grammar/node';
-import { eat as eatChrs, NamedLiteral } from '@cst-tokens/helpers/grammar/token';
-import { objectEntries } from '@cst-tokens/helpers/object';
-import { tok, node } from '@cst-tokens/helpers/shorthand';
-import { nodeBoundsEnhancer, tokenBoundsEnhancer } from '@cst-tokens/helpers/enhancers';
-import { productions } from '@cst-tokens/helpers/productions';
-import { parent } from '@cst-tokens/helpers/symbols';
-import * as sym from '@cst-tokens/helpers/symbols';
+import { eat, List } from '@bablr/helpers/grammar/node';
+import { eat as eatChrs, NamedLiteral } from '@bablr/helpers/grammar/token';
+import { objectEntries } from '@bablr/helpers/object';
+import { tok, node } from '@bablr/helpers/shorthand';
+import { nodeBoundsEnhancer, tokenBoundsEnhancer } from '@bablr/helpers/enhancers';
+import { productions } from '@bablr/helpers/productions';
+import { parent } from '@bablr/helpers/symbols';
+import * as sym from '@bablr/helpers/symbols';
 
 const PN = (...args) => tok('Punctuator', String.raw(...args));
 

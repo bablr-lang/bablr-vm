@@ -1,9 +1,9 @@
 import { dirname, resolve } from 'path';
 import { readFileSync } from 'fs';
-import { parse } from 'cst-tokens';
-import { Grammar } from '@cst-tokens/helpers/grammar';
-import { concat } from '@cst-tokens/helpers/iterable';
-import * as sym from '@cst-tokens/helpers/symbols';
+import { parse } from '@bablr/vm';
+import { Grammar } from '@bablr/helpers/grammar';
+import { concat } from '@bablr/helpers/iterable';
+import * as sym from '@bablr/helpers/symbols';
 
 import { logEnhancer, formatType } from './enhancers/log.js';
 import cstml from '../lib/languages/cstml/index.js';

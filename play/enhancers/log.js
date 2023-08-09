@@ -1,6 +1,6 @@
-import { mapProductions } from '@cst-tokens/helpers/productions';
-import { print as printTag } from '@cst-tokens/helpers/matchable';
-import * as sym from '@cst-tokens/helpers/symbols';
+import { mapProductions } from '@bablr/helpers/productions';
+import { print as printTag } from '@bablr/helpers/matchable';
+import * as sym from '@bablr/helpers/symbols';
 
 const isString = (val) => typeof val === 'string';
 
@@ -12,7 +12,7 @@ export const formatType = (type) => {
     : type === sym.fail
     ? 'fail 🐳'
     : typeof type === 'symbol'
-    ? type.description.replace(/^cst-tokens\//, '')
+    ? type.description.replace(/^@bablr\//, '')
     : `\`${type.replace(/[`\\]/g, '\\$&')}\``;
 };
 

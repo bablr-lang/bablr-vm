@@ -1,11 +1,11 @@
 import { str } from 'iter-tools-es';
-import { eat, eatMatch, fail, guard, match } from '@cst-tokens/helpers/grammar/token';
-import { tokenBoundsEnhancer } from '@cst-tokens/helpers/enhancers';
-import { productions } from '@cst-tokens/helpers/productions';
-import { objectEntries } from '@cst-tokens/helpers/object';
-import { chrs, tok } from '@cst-tokens/helpers/shorthand';
-import { EOF } from '@cst-tokens/helpers/symbols';
-import * as sym from '@cst-tokens/helpers/symbols';
+import { eat, eatMatch, fail, guard, match } from '@bablr/helpers/grammar/token';
+import { tokenBoundsEnhancer } from '@bablr/helpers/enhancers';
+import { productions } from '@bablr/helpers/productions';
+import { objectEntries } from '@bablr/helpers/object';
+import { chrs, tok } from '@bablr/helpers/shorthand';
+import { EOF } from '@bablr/helpers/symbols';
+import * as sym from '@bablr/helpers/symbols';
 
 import { triviaEnhancer } from './enhancers/trivia.js';
 

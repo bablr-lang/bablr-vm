@@ -1,8 +1,8 @@
-import { eat, match, eatMatch } from '@cst-tokens/helpers/grammar/node';
-import { objectEntries } from '@cst-tokens/helpers/object';
-import { tok, node } from '@cst-tokens/helpers/shorthand';
-import { nodeBoundsEnhancer } from '@cst-tokens/helpers/enhancers';
-import { productions } from '@cst-tokens/helpers/productions';
+import { eat, match, eatMatch } from '@bablr/helpers/grammar/node';
+import { objectEntries } from '@bablr/helpers/object';
+import { tok, node } from '@bablr/helpers/shorthand';
+import { nodeBoundsEnhancer } from '@bablr/helpers/enhancers';
+import { productions } from '@bablr/helpers/productions';
 
 const PN = (...args) => tok('Punctuator', String.raw(...args));
 const LPN = (...args) => tok('LeftPunctuator', String.raw(...args));

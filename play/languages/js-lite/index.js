@@ -1,5 +1,5 @@
 import { parse as babelParse } from '@babel/parser';
-import * as sym from '@cst-tokens/helpers/symbols';
+import * as sym from '@bablr/helpers/symbols';
 
 export const parse = (sourceText) => {
   return babelParse(sourceText, { sourceType: 'module', ranges: false }).program;
