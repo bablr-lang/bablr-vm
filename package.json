@@ -1,7 +1,7 @@
 {
-  "name": "cst-tokens",
-  "description": "A library for traversing and manipulating CSTs",
-  "version": "0.12.0",
+  "name": "@bablr/vm",
+  "description": "A VM for executing BABLR grammars",
+  "version": "0.0.0",
   "author": "Conrad Buck<conartist6@gmail.com>",
   "type": "module",
   "files": [
@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@babel/parser": "^7.21.4",
-    "@cst-tokens/helpers": "github:js-cst-tokens/helpers#11de884fc2b941c5514748fccb842ad96c426330",
+    "@bablr/helpers": "github:bablr-lang/helpers#11de884fc2b941c5514748fccb842ad96c426330",
     "@humanwhocodes/momoa": "^3.0.0",
     "enhanced-resolve": "^5.12.0",
     "eslint": "^8.32.0",
@@ -31,7 +31,7 @@
     "prettier": "^2.6.2",
     "vite": "^4.2.2"
   },
-  "repository": "github:js-cst-tokens/cst-tokens",
-  "homepage": "https://github.com/js-cst-tokens/cst-tokens",
+  "repository": "github:bablr-lang/bablr-vm",
+  "homepage": "https://github.com/bablr-lang/bablr-vm",
   "license": "MIT"
 }
