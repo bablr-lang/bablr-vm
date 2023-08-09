@@ -16,20 +16,20 @@ This API differs from that of most other production-grade parsers, which are mos
 
 CSTML is (more or less) a set of extensions to XML, designed primarily as a machine-readable format:
 
-- Documents are stuctured trees of nodes
-  - e.g. `<Expression path="expr"></Expression>`
-    - **nodes _must_ have children!**
-  - `</>` is allowed as shorthand for `</Expression>`
 - It borrows JSON's conventions for escaping
   - e.g. it uses `'\''` instead of XML's `'&apos;'`
+- Documents are stuctured trees of nodes
+  - e.g. `<Expression path="expr"></Expression>`
+    - **nodes _must_ have children!** (omitted above)
+  - `</>` is allowed as shorter closing tag
 - It has tokens which looks like this: `<| Type 'value' |>`
   - Token tags cannot have children
   - All document content must be present in token values
   - Built by a just-in-time scoped tokenizer
-- Only whitespace is permitted outside of tags
 - It includes gap tags like `<[Expression]>`
   - Means "an `Expression` node is missing here"
   - Nodes that exist may still express their gap type
+- Only whitespace is permitted outside of tags
 
 Here is a CSTML document for the Javascript expression `2 + 2`:
 
