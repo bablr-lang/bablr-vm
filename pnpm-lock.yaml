@@ -2,7 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@babel/parser': ^7.21.4
-  '@bablr/helpers': github:bablr-lang/helpers#b3a4605328ea08bfb6f3257e9c01a6ed0190a175
+  '@bablr/helpers': github:bablr-lang/helpers#7841031000c6e57e861c660bc2c616b7b9568e16
   '@humanwhocodes/momoa': ^3.0.0
   '@iter-tools/imm-stack': 1.1.0
   '@iter-tools/regex': 0.3.2
@@ -22,7 +22,7 @@ dependencies:
 
 devDependencies:
   '@babel/parser': 7.21.4
-  '@bablr/helpers': github.com/bablr-lang/helpers/b3a4605328ea08bfb6f3257e9c01a6ed0190a175
+  '@bablr/helpers': github.com/bablr-lang/helpers/7841031000c6e57e861c660bc2c616b7b9568e16
   '@humanwhocodes/momoa': 3.0.0
   enhanced-resolve: 5.12.0
   eslint: 8.32.0
@@ -1625,8 +1625,8 @@ packages:
     version: 0.0.0
     dev: true
 
-  github.com/bablr-lang/helpers/b3a4605328ea08bfb6f3257e9c01a6ed0190a175:
-    resolution: {tarball: https://codeload.github.com/bablr-lang/helpers/tar.gz/b3a4605328ea08bfb6f3257e9c01a6ed0190a175}
+  github.com/bablr-lang/helpers/7841031000c6e57e861c660bc2c616b7b9568e16:
+    resolution: {tarball: https://codeload.github.com/bablr-lang/helpers/tar.gz/7841031000c6e57e861c660bc2c616b7b9568e16}
     name: '@bablr/helpers'
     version: 0.0.0
     dependencies:
