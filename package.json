@@ -21,7 +21,8 @@
   },
   "devDependencies": {
     "@babel/parser": "^7.21.4",
-    "@bablr/helpers": "github:bablr-lang/helpers#7841031000c6e57e861c660bc2c616b7b9568e16",
+    "@bablr/grammar": "github:bablr-lang/grammar#fa62bc72a6f4515b96fafc90c4cb64c407ef8033",
+    "@bablr/helpers": "github:bablr-lang/helpers#951b00ebd0a3295f996d68bfc23362765adba475",
     "@humanwhocodes/momoa": "^3.0.0",
     "enhanced-resolve": "^5.12.0",
     "eslint": "^8.32.0",

@@ -2,7 +2,8 @@ lockfileVersion: 5.4
 
 specifiers:
   '@babel/parser': ^7.21.4
-  '@bablr/helpers': github:bablr-lang/helpers#7841031000c6e57e861c660bc2c616b7b9568e16
+  '@bablr/grammar': github:bablr-lang/grammar#fa62bc72a6f4515b96fafc90c4cb64c407ef8033
+  '@bablr/helpers': github:bablr-lang/helpers#951b00ebd0a3295f996d68bfc23362765adba475
   '@humanwhocodes/momoa': ^3.0.0
   '@iter-tools/imm-stack': 1.1.0
   '@iter-tools/regex': 0.3.2
@@ -22,7 +23,8 @@ dependencies:
 
 devDependencies:
   '@babel/parser': 7.21.4
-  '@bablr/helpers': github.com/bablr-lang/helpers/7841031000c6e57e861c660bc2c616b7b9568e16
+  '@bablr/grammar': github.com/bablr-lang/grammar/fa62bc72a6f4515b96fafc90c4cb64c407ef8033
+  '@bablr/helpers': github.com/bablr-lang/helpers/951b00ebd0a3295f996d68bfc23362765adba475
   '@humanwhocodes/momoa': 3.0.0
   enhanced-resolve: 5.12.0
   eslint: 8.32.0
@@ -1619,17 +1621,17 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  github.com/bablr-lang/grammar/a94f47ea04eace3c036aee353d641875cfce311b:
-    resolution: {tarball: https://codeload.github.com/bablr-lang/grammar/tar.gz/a94f47ea04eace3c036aee353d641875cfce311b}
+  github.com/bablr-lang/grammar/fa62bc72a6f4515b96fafc90c4cb64c407ef8033:
+    resolution: {tarball: https://codeload.github.com/bablr-lang/grammar/tar.gz/fa62bc72a6f4515b96fafc90c4cb64c407ef8033}
     name: '@bablr/grammar'
     version: 0.0.0
     dev: true
 
-  github.com/bablr-lang/helpers/7841031000c6e57e861c660bc2c616b7b9568e16:
-    resolution: {tarball: https://codeload.github.com/bablr-lang/helpers/tar.gz/7841031000c6e57e861c660bc2c616b7b9568e16}
+  github.com/bablr-lang/helpers/951b00ebd0a3295f996d68bfc23362765adba475:
+    resolution: {tarball: https://codeload.github.com/bablr-lang/helpers/tar.gz/951b00ebd0a3295f996d68bfc23362765adba475}
     name: '@bablr/helpers'
     version: 0.0.0
     dependencies:
-      '@bablr/grammar': github.com/bablr-lang/grammar/a94f47ea04eace3c036aee353d641875cfce311b
+      '@bablr/grammar': github.com/bablr-lang/grammar/fa62bc72a6f4515b96fafc90c4cb64c407ef8033
       escape-string-regexp: 5.0.0
     dev: true

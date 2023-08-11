@@ -1,5 +1,5 @@
-import { mapProductions } from '@bablr/helpers/productions';
 import { print as printTag } from '@bablr/helpers/matchable';
+import { memoize, mapProductions, mapGrammars } from '@bablr/helpers/enhancers';
 import * as sym from '@bablr/helpers/symbols';
 
 const isString = (val) => typeof val === 'string';
@@ -60,10 +60,8 @@ const formatInstr = (instr) => {
   return `${formattedVerb}${formattedValue}`;
 };
 
-const productionTypes = new WeakMap();
-
 // Polyglot syntax/node enhancer
-export const logEnhancer = (grammar) => {
+export const logGrammarEnhancer = (grammar) => {
   return mapProductions((production) => {
     const { type } = production;
 
@@ -116,3 +114,7 @@ export const logEnhancer = (grammar) => {
     };
   }, grammar);
 };
+
+export const logEnhancer = memoize((language) => {
+  return mapGrammars(logGrammarEnhancer, language);
+});
