@@ -8,29 +8,27 @@
     "lib"
   ],
   "exports": {
-    ".": "./lib/index.js"
+    ".": "./lib/index.js",
+    "./warmup": "./lib/warmup.js"
   },
   "sideEffects": false,
-  "scripts": {
-    "play": "vite serve play"
-  },
   "dependencies": {
     "@iter-tools/imm-stack": "1.1.0",
-    "@iter-tools/regex": "0.3.2",
-    "escape-string-regexp": "5.0.0"
+    "@bablr/regex": "github:bablr-lang/regex#aa08dbb0eb6d89eb4cb9dabd225ea165cf6abd60",
+    "iter-tools-es": "^7.5.3"
   },
   "devDependencies": {
     "@babel/parser": "^7.21.4",
-    "@bablr/grammar": "github:bablr-lang/grammar#fa62bc72a6f4515b96fafc90c4cb64c407ef8033",
-    "@bablr/helpers": "github:bablr-lang/helpers#97d43d667a3532d6f0160fb4c999178073ab1bc0",
+    "@bablr/eslint-config-base": "github:bablr-lang/eslint-config-base#a49dbe6861a82d96864ee89fbf0ec1844a8a5e8e",
+    "@bablr/helpers": "github:bablr-lang/helpers#5e1d68d1a241713ee037de871a04466083e4c2e8",
+    "@bablr/language-enhancer-debug-log": "github:bablr-lang/language-enhancer-debug-log#b21062c3e738e292b1e17337e775f0a098caba52",
     "@humanwhocodes/momoa": "^3.0.0",
     "enhanced-resolve": "^5.12.0",
     "eslint": "^8.32.0",
     "eslint-import-resolver-enhanced-resolve": "^1.0.5",
     "eslint-plugin-import": "^2.27.5",
     "iter-tools-es": "^7.3.1",
-    "prettier": "^2.6.2",
-    "vite": "^4.2.2"
+    "prettier": "^2.6.2"
   },
   "repository": "github:bablr-lang/bablr-vm",
   "homepage": "https://github.com/bablr-lang/bablr-vm",

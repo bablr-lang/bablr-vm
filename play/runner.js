@@ -1,15 +1,17 @@
+/* global console, URL */
+
 import { dirname, resolve } from 'path';
 import { readFileSync } from 'fs';
 import { parse } from '@bablr/vm';
 
-import { logEnhancer, formatType } from './enhancers/log.js';
-import cstml from '../lib/languages/cstml/index.js';
+import { logEnhancer } from '@bablr/language-enhancer-debug-log';
+import * as cstml from '../lib/languages/cstml/index.js';
 
 const ownDir = new URL(dirname(import.meta.url)).pathname;
 
 Error.stackTraceLimit = 20;
 
-const sourceText = readFileSync(resolve(ownDir, 'fixture'), 'utf8');
+const sourceText = readFileSync(resolve(ownDir, 'fixtures/play'), 'utf8');
 
 console.log('');
 
