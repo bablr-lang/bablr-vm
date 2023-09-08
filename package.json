@@ -21,7 +21,7 @@
     "@babel/parser": "^7.21.4",
     "@bablr/eslint-config-base": "github:bablr-lang/eslint-config-base#c040bc95f2dddac160628e4757a412016044b3ef",
     "@bablr/helpers": "github:bablr-lang/helpers#2baf82d1729b52fcf3f954147d313bcd91b6e8ac",
-    "@bablr/language-enhancer-debug-log": "github:bablr-lang/language-enhancer-debug-log#b42b37272db93ba8ee6b904b25d4ee5358b0a5fa",
+    "@bablr/language-enhancer-debug-log": "github:bablr-lang/language-enhancer-debug-log#09dffc1bcd290e33de8326dd61b110ee60ceb032",
     "@humanwhocodes/momoa": "^3.0.0",
     "enhanced-resolve": "^5.12.0",
     "eslint": "^8.32.0",
