@@ -19,9 +19,9 @@
   },
   "devDependencies": {
     "@babel/parser": "^7.21.4",
-    "@bablr/eslint-config-base": "github:bablr-lang/eslint-config-base#a49dbe6861a82d96864ee89fbf0ec1844a8a5e8e",
-    "@bablr/helpers": "github:bablr-lang/helpers#5e1d68d1a241713ee037de871a04466083e4c2e8",
-    "@bablr/language-enhancer-debug-log": "github:bablr-lang/language-enhancer-debug-log#b21062c3e738e292b1e17337e775f0a098caba52",
+    "@bablr/eslint-config-base": "github:bablr-lang/eslint-config-base#c040bc95f2dddac160628e4757a412016044b3ef",
+    "@bablr/helpers": "github:bablr-lang/helpers#2baf82d1729b52fcf3f954147d313bcd91b6e8ac",
+    "@bablr/language-enhancer-debug-log": "github:bablr-lang/language-enhancer-debug-log#b42b37272db93ba8ee6b904b25d4ee5358b0a5fa",
     "@humanwhocodes/momoa": "^3.0.0",
     "enhanced-resolve": "^5.12.0",
     "eslint": "^8.32.0",
