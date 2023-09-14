@@ -50,7 +50,7 @@ Here is a CSTML document for the Javascript expression `2 + 2`:
 
 ## BABLR Grammars
 
-More documentation here soon. In the mean time check out [the BABLR grammar for CSTML](https://github.com/js-cst-tokens/cst-tokens/blob/trunk/lib/languages/cstml/index.js)!
+More documentation here soon. In the mean time check out [the BABLR grammar for CSTML](https://github.com/bablr-lang/language-cstml/blob/trunk/lib/node.grammar.js)!
 
 ## Prior Art
 
