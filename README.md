@@ -52,6 +52,8 @@ Here is a CSTML document for the Javascript expression `2 + 2`:
 
 More documentation here soon. In the mean time check out [the BABLR grammar for CSTML](https://github.com/bablr-lang/language-cstml/blob/trunk/lib/node.grammar.js)!
 
+You can also see a desugared grammar for regex [here](https://github.com/bablr-lang/language-regex-vm-pattern/blob/trunk/lib/node.grammar.js), which is a great way to get a sense for the architecture.
+
 ## Prior Art
 
 BABLR is actually portmanteau of [Babel](https://babeljs.io/), and [ANTLR](https://www.antlr.org/). It would be reasonable to describe this project as being a mixture of the ideas from those two, with a bit of help from [SrcML](https://www.srcml.org/), [Tree-sitter](https://tree-sitter.github.io/), and the fabulous [Redux](https://redux.js.org/).

@@ -12,17 +12,26 @@
     "./warmup": "./lib/warmup.js"
   },
   "sideEffects": false,
+  "scripts": {
+    "generate": "babel lib/transforms.js --out-file lib/transforms.generated.js",
+    "clean": "rm lib/transforms.generated.js"
+  },
   "dependencies": {
     "@iter-tools/imm-stack": "1.1.0",
-    "@bablr/regex": "github:bablr-lang/regex#aa08dbb0eb6d89eb4cb9dabd225ea165cf6abd60",
+    "@bablr/boot-helpers": "github:bablr-lang/boot-helpers#8d35611ba68ef2ea33180cabd743966ce508794a",
+    "@bablr/regex-vm": "github:bablr-lang/regex-vm#b9307e6f9587f047c762dd871137f68839bad581",
     "iter-tools-es": "^7.5.3"
   },
   "devDependencies": {
+    "@babel/cli": "7.22.15",
+    "@babel/core": "7.22.20",
+    "@bablr/boot": "github:bablr-lang/boot#f90eac1421ecb5c83a20bb8288c32ea9035b01f3",
     "@babel/parser": "^7.21.4",
     "@bablr/eslint-config-base": "github:bablr-lang/eslint-config-base#c040bc95f2dddac160628e4757a412016044b3ef",
     "@bablr/helpers": "github:bablr-lang/helpers#2baf82d1729b52fcf3f954147d313bcd91b6e8ac",
     "@bablr/language-enhancer-debug-log": "github:bablr-lang/language-enhancer-debug-log#09dffc1bcd290e33de8326dd61b110ee60ceb032",
     "@humanwhocodes/momoa": "^3.0.0",
+    "babel-plugin-macros": "3.1.0",
     "enhanced-resolve": "^5.12.0",
     "eslint": "^8.32.0",
     "eslint-import-resolver-enhanced-resolve": "^1.0.5",
