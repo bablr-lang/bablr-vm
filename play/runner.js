@@ -1,10 +1,12 @@
 /* global console, URL */
 
 import { dirname, resolve } from 'path';
-import { parse } from '@bablr/vm';
+import { parse, print } from '@bablr/vm';
 import { spam } from '@bablr/boot';
 import { logEnhancer } from '@bablr/language-enhancer-debug-log';
 import * as JSON from './languages/json.js';
+
+globalThis.__print = print;
 
 const ownDir = new URL(dirname(import.meta.url)).pathname;
 

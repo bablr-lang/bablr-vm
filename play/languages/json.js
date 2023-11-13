@@ -78,6 +78,8 @@ export const grammar = class JSONGrammar {
 
   // @Node
   *Punctuator({ attrs, value }) {
+    if (!value) throw new Error('Bad punctuator');
+
     yield i`eat(${value})`;
 
     return { attrs };
