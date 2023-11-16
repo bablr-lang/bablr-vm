@@ -19,18 +19,11 @@ export const grammar = class JSONGrammar {
   // @Node
   *Array() {
     yield i`eat(<| Punctuator '[' .open balanced=']' |>)`;
-    for (let _ of yield i`* eat(<ArrayElements .elements>)`) {
-      if (yield i`eat(<| Punctuator ',' .separators |>)`) {
-        continue;
-      }
-      break;
-    }
+    yield i`eat(<List> {
+        separator: <| Punctuator ',' .separators |>
+        element: <Element .elements>
+      })`;
     yield i`eat(<| Punctuator ']' .close balancer |>)`;
-  }
-
-  // @List
-  *ArrayElements() {
-    while (true) yield i`yield eat(<Element>)`;
   }
 
   // @CoveredBy('Expression')
