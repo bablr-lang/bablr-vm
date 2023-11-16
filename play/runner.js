@@ -1,7 +1,7 @@
 /* global console, URL */
 
 import { dirname, resolve } from 'path';
-import { parse, print } from '@bablr/vm';
+import { parse, print, printTerminal } from '@bablr/vm';
 import { spam } from '@bablr/boot';
 import { logEnhancer } from '@bablr/language-enhancer-debug-log';
 import * as JSON from './languages/json.js';
@@ -22,12 +22,10 @@ console.log(sourceText);
 console.log('');
 
 try {
-  // for (const token of parse(logEnhancer(JSON), sourceText, spam`<String>`)) {
-  for (const token of parse(JSON, sourceText, spam`<String>`)) {
-    const { type, value } = token;
+  for (const token of parse(logEnhancer(JSON), sourceText, spam`<String>`)) {
+    // for (const token of parse(JSON, sourceText, spam`<String>`)) {
 
-    console.log(token);
-    // console.log(`    { type: ${formatType(type)}, value: ${formatType(value)} }`);
+    console.log('  >>>', token.children ? print(token) : printTerminal(token));
   }
 
   console.log('');
