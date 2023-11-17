@@ -1,6 +1,6 @@
 /* global console, URL, globalThis */
 
-import { parseCSTML, print, printTerminal } from '@bablr/vm';
+import { parseCSTML, print } from '@bablr/vm';
 import { spam } from '@bablr/boot';
 import { logEnhancer } from '@bablr/language-enhancer-debug-log';
 import * as JSON from './languages/json.js';
@@ -9,12 +9,12 @@ const jsonTestCases = [
   {
     matcher: spam`<Expression>`,
     sourceText: '"hello"',
-    parsed: `<String><Punctuator>'"'</><StringContent>'hello'</><Punctuator>'"'</></>`,
+    parsed: `<String><Punctuator .open balanced='"' innerSpan='String'>'"'</><StringContent .content>'hello'</><Punctuator .close balancer=true>'"'</></>`,
   },
   {
     matcher: spam`<Expression>`,
     sourceText: 'true',
-    parsed: "<Boolean><Keyword>'true'</></>",
+    parsed: "<Boolean><Keyword .value>'true'</></>",
   },
 ];
 

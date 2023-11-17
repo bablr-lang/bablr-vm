@@ -1,5 +1,7 @@
 import { i } from '@bablr/boot';
+import isString from 'iter-tools-es/methods/is-string';
 import { buildCovers } from '@bablr/helpers/grammar';
+import { buildString } from '../../lib/transforms.generated.js';
 
 const node = Symbol.for('@bablr/node');
 
@@ -17,7 +19,8 @@ export const grammar = class JSONGrammar {
 
   *Match(matchers) {
     for (const { 0: matcher, 1: guard } of matchers) {
-      if (yield i`match(${guard})`) {
+      const guard_ = isString(guard) ? buildString(guard) : guard;
+      if (yield i`match(${guard_})`) {
         yield i`eat(${matcher})`;
         break;
       }
@@ -111,7 +114,8 @@ export const grammar = class JSONGrammar {
 
   // @Node
   *Punctuator({ attrs, value }) {
-    yield i`eat(${value})`;
+    const value_ = isString(value) ? buildString(value) : value;
+    yield i`eat(${value_})`;
 
     return { attrs };
   }
