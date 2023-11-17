@@ -10,9 +10,29 @@ export const name = 'JSON';
 export const grammar = class JSONGrammar {
   constructor() {
     this.covers = buildCovers({
-      [node]: ['Expression', 'Property', 'Element', 'StringContent', 'Punctuator'],
-      Expression: ['Array', 'Object', 'String', 'Number', 'Null'],
+      [node]: ['Expression', 'Property', 'Element', 'StringContent', 'Punctuator', 'Keyword'],
+      Expression: ['Array', 'Object', 'String', 'Boolean', 'Number', 'Null'],
     });
+  }
+
+  *Match(matchers) {
+    for (const { 0: matcher, 1: guard } of matchers) {
+      if (yield i`match(${guard})`) {
+        yield i`eat(${matcher})`;
+        break;
+      }
+    }
+  }
+
+  *Expression() {
+    yield i`eat(<Match> [
+        [<Array> '[']
+        [<Object> '{']
+        [<String> '"']
+        [<Number> /\d/]
+        [<Null> 'null']
+        [<Boolean> /true|false/]
+      ])`;
   }
 
   // @CoveredBy('Expression')
@@ -72,14 +92,25 @@ export const grammar = class JSONGrammar {
 
   // @CoveredBy('Expression')
   // @Node
+  *Boolean() {
+    yield i`eat(<| Keyword /true|false/ .value |>)`;
+  }
+
+  // @CoveredBy('Expression')
+  // @Node
   *Null() {
     yield i`eat('null')`;
   }
 
   // @Node
-  *Punctuator({ attrs, value }) {
-    if (!value) throw new Error('Bad punctuator');
+  *Keyword({ attrs, value }) {
+    yield i`eat(${value})`;
 
+    return { attrs };
+  }
+
+  // @Node
+  *Punctuator({ attrs, value }) {
     yield i`eat(${value})`;
 
     return { attrs };
