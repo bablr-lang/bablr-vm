@@ -9,12 +9,27 @@ const jsonTestCases = [
   {
     matcher: spam`<Expression>`,
     sourceText: '"hello"',
-    parsed: `<String><Punctuator .open balanced='"' innerSpan='String'>'"'</><StringContent .content>'hello'</><Punctuator .close balancer=true>'"'</></>`,
+    parsed: `<String><Punctuator .open balanced='"' innerSpan='String'>'"'</><StringContent .content>'hello'</><Punctuator .close balancer>'"'</></>`,
   },
   {
     matcher: spam`<Expression>`,
     sourceText: 'true',
     parsed: "<Boolean><Keyword .value>'true'</></>",
+  },
+  {
+    matcher: spam`<Expression>`,
+    sourceText: '1',
+    parsed: "<Number><Digit .digits>'1'</></>",
+  },
+  {
+    matcher: spam`<Expression>`,
+    sourceText: 'null',
+    parsed: "<Null><Keyword .value>'null'</></>",
+  },
+  {
+    matcher: spam`<Expression>`,
+    sourceText: '[]',
+    parsed: `<Array><Punctuator .open balanced=']'>'['</><Punctuator .close balancer>']'</></>`,
   },
 ];
 
@@ -22,7 +37,10 @@ globalThis.__print = print;
 
 Error.stackTraceLimit = 20;
 
-for (const { matcher, sourceText, parsed } of jsonTestCases) {
+const onlyTest = jsonTestCases.find((case_) => case_.only);
+const testCases = onlyTest ? [onlyTest] : jsonTestCases;
+
+for (const { matcher, sourceText, parsed } of testCases) {
   try {
     const result = parseCSTML(logEnhancer(JSON), sourceText, matcher);
 
@@ -36,7 +54,3 @@ for (const { matcher, sourceText, parsed } of jsonTestCases) {
     console.error(e);
   }
 }
-
-// console.log(JSON.stringify(cst, undefined, 2));
-
-// const printed = print(cst);

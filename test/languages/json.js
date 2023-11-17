@@ -12,7 +12,15 @@ export const name = 'JSON';
 export const grammar = class JSONGrammar {
   constructor() {
     this.covers = buildCovers({
-      [node]: ['Expression', 'Property', 'Element', 'StringContent', 'Punctuator', 'Keyword'],
+      [node]: [
+        'Expression',
+        'Property',
+        'Element',
+        'StringContent',
+        'Punctuator',
+        'Keyword',
+        'Digit',
+      ],
       Expression: ['Array', 'Object', 'String', 'Boolean', 'Number', 'Null'],
     });
   }
@@ -42,10 +50,14 @@ export const grammar = class JSONGrammar {
   // @Node
   *Array() {
     yield i`eat(<| Punctuator '[' .open balanced=']' |>)`;
-    yield i`eat(<List> {
-        separator: <| Punctuator ',' .separators |>
-        element: <Element .elements>
-      })`;
+    let first = true;
+    while ((first || (yield i`match(',')`)) && !(yield i`match(']')`)) {
+      if (!first) {
+        yield i`eat(<| Punctuator ',' .separators |>)`;
+      }
+      yield i`eat(<Element .elements>)`;
+      first = false;
+    }
     yield i`eat(<| Punctuator ']' .close balancer |>)`;
   }
 
@@ -53,10 +65,14 @@ export const grammar = class JSONGrammar {
   // @Node
   *Object() {
     yield i`eat(<| Punctuator '{' .open balanced='}' |>)`;
-    yield i`eat(<List> {
-        separator: <| Punctuator ',' .separators |>
-        element: <Property .properties>
-      })`;
+    let first = true;
+    while ((first || (yield i`match(',')`)) && !(yield i`match('}')`)) {
+      if (!first) {
+        yield i`eat(<| Punctuator ',' .separators |>)`;
+      }
+      yield i`eat(<Property .properties>)`;
+      first = false;
+    }
     yield i`eat(<| Punctuator '}' .close balancer |>)`;
   }
 
@@ -78,7 +94,7 @@ export const grammar = class JSONGrammar {
   // @Node
   *String() {
     yield i`eat(<| Punctuator '"' .open balanced='"' innerSpan='String' |>)`;
-    yield i`eat(<StringContent .content>)`;
+    yield i`eat(<| StringContent '' .content |>)`;
     yield i`eat(<| Punctuator '"' .close balancer |>)`;
   }
 
@@ -90,7 +106,10 @@ export const grammar = class JSONGrammar {
   // @CoveredBy('Expression')
   // @Node
   *Number() {
-    yield i`eat(/\d+/)`;
+    while (yield i`match(/\d/)`) {
+      //                      TODO fix ''
+      yield i`eat(<| Digit '' .digits |>)`;
+    }
   }
 
   // @CoveredBy('Expression')
@@ -102,12 +121,17 @@ export const grammar = class JSONGrammar {
   // @CoveredBy('Expression')
   // @Node
   *Null() {
-    yield i`eat('null')`;
+    yield i`eat(<| Keyword 'null' .value |>)`;
+  }
+  // @Node
+  *Digit() {
+    yield i`eat(/\d/)`;
   }
 
   // @Node
   *Keyword({ attrs, value }) {
-    yield i`eat(${value})`;
+    const value_ = isString(value) ? buildString(value) : value;
+    yield i`eat(${value_})`;
 
     return { attrs };
   }
