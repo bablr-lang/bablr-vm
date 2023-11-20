@@ -1,5 +1,7 @@
 # bablr-vm
 
+[![come chat on Discord](https://img.shields.io/discord/1151914613089251388)](https://discord.gg/NfMNyYN6cX)
+
 This the home of the Javascript reference implemenation of the BABLR VM, formerly known as `cst-tokens`. It executes BABLR grammars written in Javascript to define parsers for any programming language.
 
 ## Explain Like I'm 5
