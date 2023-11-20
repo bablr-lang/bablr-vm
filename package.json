@@ -30,7 +30,6 @@
     "@bablr/eslint-config-base": "github:bablr-lang/eslint-config-base#c040bc95f2dddac160628e4757a412016044b3ef",
     "@bablr/helpers": "github:bablr-lang/helpers#8ef702024395635c9a05fe4c9f803a48f87d902c",
     "@bablr/language-enhancer-debug-log": "github:bablr-lang/language-enhancer-debug-log#51bf0686af2366fa1db71890aee6239e62c5d264",
-    "@humanwhocodes/momoa": "^3.0.0",
     "babel-plugin-macros": "3.1.0",
     "enhanced-resolve": "^5.12.0",
     "eslint": "^8.32.0",
