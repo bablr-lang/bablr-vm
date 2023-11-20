@@ -1,58 +1,53 @@
 # bablr-vm
 
-This the home of `bablr-vm` (formerly known as `cst-tokens`). This BABLR VM is implemented in Javascript, and executes BABLR grammars written using generator functions to define the syntax and semantics of a programming language. The VM is a kind of state machine known formally as as "pushdown automaton", and is intended to be sufficiently powerful to recognize the syntax and structure of any programming language. Rather than a formal schema definition, a language is defined through the provision of useful APIs for working with valid documents written in that language. The primary APIs provided are (loosely):
+This the home of the Javascript reference implemenation of the BABLR VM, formerly known as `cst-tokens`. It executes BABLR grammars written in Javascript to define parsers for any programming language.
 
-```js
-parse = (bablrGrammar, src) => tags;
-traverse = (bablrGrammar, tags) => tags;
-traverseCSTML = (bablrGrammar, cstmlDocument) => tags;
-```
+## Explain Like I'm 5
+
+Let's start with what we know for sure: `b` is a letter, and `3` is a number. Well, of course, except when `b` is a number, as it may be in the hexidecimal system where it is used to represent the value `11`. `3` can also be used to make a pictographic heart: `<3`. Programming languages are a collection of formal rules about exactly what certain characters mean when they appear in certain contexts, but so far there has been no system of notation to help undrstand how formal rules are applied. BABLR provides one, allowing our "gotcha" example to be expressed clearly as `<Number><Digit>'b'</></>`.
+
+## Features
+
+The VM is a kind of state machine known formally as as "pushdown automaton", and is intended to be sufficiently powerful to recognize the syntax and structure of any programming language. Rather than a formal schema definition, a language is defined through the provision of useful APIs for working with valid documents written in that language.
 
 This API differs from that of most other production-grade parsers, which are most often parser generators. BABLR grammars are purely runtime Javascript, and so tend to be extremely lightweight compared to comparable compiled forms. All parsing and traversal is done in a streaming manner to the extent possible.
 
-`bablr-vm` follows the semver spec but it is currently `0.x`, so any version may introduce breaking changes to any API! `1.0.0` will be the first production-ready version.
+## Usage
 
-## CSTML
+The BABLR VM is unready for production usage, and will continue to be so until `v1.0.0` is released. For right now the more people try out this code and provide me feedback, the faster I will make progress towards production-readiness!
 
-CSTML is (more or less) a set of extensions to XML, designed primarily as a machine-readable format:
+```js
+// import { parseCSTML } from 'https://esm.sh/gh/bablr-lang/bablr-vm@commitish';
+import { parseCSTML } from 'https://esm.sh/gh/bablr-lang/bablr-vm';
+import { i } from 'https://esm.sh/gh/bablr-lang/boot';
 
-- It borrows JSON's conventions for escaping
-  - e.g. it uses `'\''` instead of XML's `'&apos;'`
-- Documents are stuctured trees of nodes
-  - e.g. `<Expression path="expr"></Expression>`
-    - **nodes _must_ have children!** (omitted above)
-  - `</>` is allowed as shorter closing tag
-- It has tokens which looks like this: `<| Type 'value' |>`
-  - Token tags cannot have children
-  - All document content must be present in token values
-  - Built by a just-in-time scoped tokenizer
-- It includes gap tags like `<[Expression]>`
-  - Means "an `Expression` node is missing here"
-  - Nodes that exist may still express their gap type
-- Only whitespace is permitted outside of tags
+const digits = class {
+  constructor() {
+    this.covers = {
+      [Symbol.for('@bablr/node')]: ['Number', 'Digit'],
+    };
+  }
 
-Here is a CSTML document for the Javascript expression `2 + 2`:
+  *Number() {
+    while (yield i`eat(<| Digit .digits |>)`);
+  }
 
-```cstml
-<!doctype cstml>
-<cstml validate="https://url/to/grammar">
-  <BinaryExpression [Expression]>
-    <NumericLiteral [Expression] path="left">
-      <| Digits "2" |>
-    </>
-    <| Trivia " " |>
-    <| Punctuator "+" path="operator" |>
-    <| Trivia " " |>
-    <[Expression] path="right"/>
-  </>
-</cstml>
+  *Digit() {
+    yield i`eat(/\d/)`;
+  }
+};
+
+parseCSTML(digits, '42');
+
+// <Number>
+//   <Digit .digits>
+//     '4'
+//   </>
+//   <Digit .digits>
+//     '2'
+//   </>
+//  </>
 ```
-
-## BABLR Grammars
-
-More documentation here soon. In the mean time check out [the BABLR grammar for CSTML](https://github.com/bablr-lang/language-cstml/blob/trunk/lib/node.grammar.js)!
-
-You can also see a desugared grammar for regex [here](https://github.com/bablr-lang/language-regex-vm-pattern/blob/trunk/lib/node.grammar.js), which is a great way to get a sense for the architecture.
 
 ## Prior Art
 
