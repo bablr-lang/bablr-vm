@@ -14,7 +14,8 @@
   "sideEffects": false,
   "scripts": {
     "generate": "babel lib/transforms.js --out-file lib/transforms.generated.js",
-    "clean": "rm lib/transforms.generated.js"
+    "clean": "rm lib/transforms.generated.js",
+    "test": "node ./test/runner.js"
   },
   "dependencies": {
     "@iter-tools/imm-stack": "1.1.0",
