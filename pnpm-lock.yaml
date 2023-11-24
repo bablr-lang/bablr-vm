@@ -29,8 +29,8 @@ devDependencies:
     specifier: ^7.21.4
     version: 7.21.4
   '@bablr/boot':
-    specifier: github:bablr-lang/boot#45d9f4a10d18abc2e07619d39b8f87ebc6c9bacf
-    version: github.com/bablr-lang/boot/45d9f4a10d18abc2e07619d39b8f87ebc6c9bacf
+    specifier: github:bablr-lang/boot#849a4de00f1feffa019019ee77e06b1c8dce14c1
+    version: github.com/bablr-lang/boot/849a4de00f1feffa019019ee77e06b1c8dce14c1
   '@bablr/eslint-config-base':
     specifier: github:bablr-lang/eslint-config-base#c040bc95f2dddac160628e4757a412016044b3ef
     version: github.com/bablr-lang/eslint-config-base/c040bc95f2dddac160628e4757a412016044b3ef(eslint@8.32.0)
@@ -1991,6 +1991,20 @@ packages:
 
   github.com/bablr-lang/boot/45d9f4a10d18abc2e07619d39b8f87ebc6c9bacf:
     resolution: {tarball: https://codeload.github.com/bablr-lang/boot/tar.gz/45d9f4a10d18abc2e07619d39b8f87ebc6c9bacf}
+    name: '@bablr/boot'
+    version: 0.0.0
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      '@babel/helper-module-imports': 7.22.15
+      '@babel/template': 7.22.15
+      '@babel/types': 7.23.0
+      '@bablr/boot-helpers': github.com/bablr-lang/boot-helpers/1551598bc7257481089d06839eeec2e26885bbb2
+      escape-string-regexp: 4.0.0
+      iter-tools-es: 7.5.3
+    dev: true
+
+  github.com/bablr-lang/boot/849a4de00f1feffa019019ee77e06b1c8dce14c1:
+    resolution: {tarball: https://codeload.github.com/bablr-lang/boot/tar.gz/849a4de00f1feffa019019ee77e06b1c8dce14c1}
     name: '@bablr/boot'
     version: 0.0.0
     engines: {node: '>=12.0.0'}

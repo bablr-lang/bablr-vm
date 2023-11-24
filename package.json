@@ -26,7 +26,7 @@
   "devDependencies": {
     "@babel/cli": "7.22.15",
     "@babel/core": "7.22.20",
-    "@bablr/boot": "github:bablr-lang/boot#45d9f4a10d18abc2e07619d39b8f87ebc6c9bacf",
+    "@bablr/boot": "github:bablr-lang/boot#849a4de00f1feffa019019ee77e06b1c8dce14c1",
     "@babel/parser": "^7.21.4",
     "@bablr/eslint-config-base": "github:bablr-lang/eslint-config-base#c040bc95f2dddac160628e4757a412016044b3ef",
     "@bablr/helpers": "github:bablr-lang/helpers#8ef702024395635c9a05fe4c9f803a48f87d902c",

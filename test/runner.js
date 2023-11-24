@@ -1,6 +1,6 @@
 /* global console, URL, globalThis */
 
-import { parseCSTML, print } from '@bablr/vm';
+import { parseCSTML, printCSTML } from '@bablr/vm';
 import { spam } from '@bablr/boot';
 import { logEnhancer } from '@bablr/language-enhancer-debug-log';
 import * as JSON from './languages/json.js';
@@ -33,7 +33,7 @@ const jsonTestCases = [
   },
 ];
 
-globalThis.__print = print;
+globalThis.__print = printCSTML;
 
 Error.stackTraceLimit = 20;
 

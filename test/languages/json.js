@@ -107,8 +107,7 @@ export const grammar = class JSONGrammar {
   // @Node
   *Number() {
     while (yield i`match(/\d/)`) {
-      //                      TODO fix ''
-      yield i`eat(<| Digit '' .digits |>)`;
+      yield i`eat(<| Digit .digits |>)`;
     }
   }
 
@@ -123,6 +122,7 @@ export const grammar = class JSONGrammar {
   *Null() {
     yield i`eat(<| Keyword 'null' .value |>)`;
   }
+
   // @Node
   *Digit() {
     yield i`eat(/\d/)`;
