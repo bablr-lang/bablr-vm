@@ -94,7 +94,7 @@ export const grammar = class JSONGrammar {
   // @Node
   *String() {
     yield i`eat(<| Punctuator '"' .open balanced='"' innerSpan='String' |>)`;
-    yield i`eat(<| StringContent '' .content |>)`;
+    yield i`eat(<| StringContent .content |>)`;
     yield i`eat(<| Punctuator '"' .close balancer |>)`;
   }
 
