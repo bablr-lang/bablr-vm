@@ -18,24 +18,26 @@
     "test": "node ./test/runner.js"
   },
   "dependencies": {
-    "@iter-tools/imm-stack": "1.1.0",
     "@bablr/boot-helpers": "github:bablr-lang/boot-helpers#1551598bc7257481089d06839eeec2e26885bbb2",
     "@bablr/regex-vm": "github:bablr-lang/regex-vm#b9307e6f9587f047c762dd871137f68839bad581",
+    "@iter-tools/imm-stack": "1.1.0",
     "iter-tools-es": "^7.5.3"
   },
   "devDependencies": {
     "@babel/cli": "7.22.15",
     "@babel/core": "7.22.20",
-    "@bablr/boot": "github:bablr-lang/boot#b4341bbaa2081adc8a882c9b4dae402f3be7c642",
     "@babel/parser": "^7.21.4",
+    "@bablr/boot": "github:bablr-lang/boot#b4341bbaa2081adc8a882c9b4dae402f3be7c642",
     "@bablr/eslint-config-base": "github:bablr-lang/eslint-config-base#c040bc95f2dddac160628e4757a412016044b3ef",
     "@bablr/helpers": "github:bablr-lang/helpers#8ef702024395635c9a05fe4c9f803a48f87d902c",
     "@bablr/language-enhancer-debug-log": "github:bablr-lang/language-enhancer-debug-log#51bf0686af2366fa1db71890aee6239e62c5d264",
     "babel-plugin-macros": "3.1.0",
+    "dedent": "^1.5.1",
     "enhanced-resolve": "^5.12.0",
     "eslint": "^8.32.0",
     "eslint-import-resolver-enhanced-resolve": "^1.0.5",
     "eslint-plugin-import": "^2.27.5",
+    "indent-string": "^5.0.0",
     "iter-tools-es": "^7.3.1",
     "prettier": "^2.6.2"
   },

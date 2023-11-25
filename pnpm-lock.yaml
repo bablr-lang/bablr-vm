@@ -43,6 +43,9 @@ devDependencies:
   babel-plugin-macros:
     specifier: 3.1.0
     version: 3.1.0
+  dedent:
+    specifier: ^1.5.1
+    version: 1.5.1(babel-plugin-macros@3.1.0)
   enhanced-resolve:
     specifier: ^5.12.0
     version: 5.12.0
@@ -55,6 +58,9 @@ devDependencies:
   eslint-plugin-import:
     specifier: ^2.27.5
     version: 2.27.5(eslint@8.32.0)
+  indent-string:
+    specifier: ^5.0.0
+    version: 5.0.0
   prettier:
     specifier: ^2.6.2
     version: 2.6.2
@@ -721,6 +727,17 @@ packages:
       ms: 2.1.2
     dev: true
 
+  /dedent@1.5.1(babel-plugin-macros@3.1.0):
+    resolution: {integrity: sha512-+LxW+KLWxu3HW3M2w2ympwtqPrqYRzU8fqi6Fhd18fBALe15blJPI/I4+UHveMVG6lJqB4JNd4UG0S5cnVHwIg==}
+    peerDependencies:
+      babel-plugin-macros: ^3.1.0
+    peerDependenciesMeta:
+      babel-plugin-macros:
+        optional: true
+    dependencies:
+      babel-plugin-macros: 3.1.0
+    dev: true
+
   /deep-is@0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
     dev: true
@@ -1281,6 +1298,11 @@ packages:
   /imurmurhash@0.1.4:
     resolution: {integrity: sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==}
     engines: {node: '>=0.8.19'}
+    dev: true
+
+  /indent-string@5.0.0:
+    resolution: {integrity: sha512-m6FAo/spmsW2Ab2fU35JTYwtOKa2yAwXSwgjSv1TJzh4Mh7mC3lzAOVLBprb72XsTrgkEIsl7YrFNAiDiRhIGg==}
+    engines: {node: '>=12'}
     dev: true
 
   /inflight@1.0.6:

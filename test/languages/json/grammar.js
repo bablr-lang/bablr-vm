@@ -1,7 +1,7 @@
 import { i } from '@bablr/boot';
 import isString from 'iter-tools-es/methods/is-string';
 import { buildCovers } from '@bablr/helpers/grammar';
-import { buildString } from '../../lib/transforms.generated.js';
+import { buildString } from '../../../lib/transforms.generated.js';
 
 const node = Symbol.for('@bablr/node');
 
@@ -12,15 +12,7 @@ export const name = 'JSON';
 export const grammar = class JSONGrammar {
   constructor() {
     this.covers = buildCovers({
-      [node]: [
-        'Expression',
-        'Property',
-        'Element',
-        'StringContent',
-        'Punctuator',
-        'Keyword',
-        'Digit',
-      ],
+      [node]: ['Expression', 'Property', 'StringContent', 'Punctuator', 'Keyword', 'Digit'],
       Expression: ['Array', 'Object', 'String', 'Boolean', 'Number', 'Null'],
     });
   }
@@ -85,7 +77,6 @@ export const grammar = class JSONGrammar {
       ])`;
   }
 
-  // @Node
   *Element() {
     yield i`eat(<Expression .value>)`;
   }

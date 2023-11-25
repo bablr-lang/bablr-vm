@@ -1,39 +1,12 @@
 /* global console, URL, globalThis */
 
-import { parseCSTML, printCSTML } from '@bablr/vm';
-import { spam } from '@bablr/boot';
+import { streamParse, streamPrintPrettyCSTML } from '@bablr/vm';
 import { logEnhancer } from '@bablr/language-enhancer-debug-log';
-import * as JSON from './languages/json.js';
+import indent from 'indent-string';
+import * as JSON from './languages/json/grammar.js';
+import { testCases as jsonTestCases } from './languages/json/cases.js';
 
-const jsonTestCases = [
-  {
-    matcher: spam`<Expression>`,
-    sourceText: '"hello"',
-    parsed: `<String><Punctuator .open balanced='"' innerSpan='String'>'"'</><StringContent .content>'hello'</><Punctuator .close balancer>'"'</></>`,
-  },
-  {
-    matcher: spam`<Expression>`,
-    sourceText: 'true',
-    parsed: "<Boolean><Keyword .value>'true'</></>",
-  },
-  {
-    matcher: spam`<Expression>`,
-    sourceText: '1',
-    parsed: "<Number><Digit .digits>'1'</></>",
-  },
-  {
-    matcher: spam`<Expression>`,
-    sourceText: 'null',
-    parsed: "<Null><Keyword .value>'null'</></>",
-  },
-  {
-    matcher: spam`<Expression>`,
-    sourceText: '[]',
-    parsed: `<Array><Punctuator .open balanced=']'>'['</><Punctuator .close balancer>']'</></>`,
-  },
-];
-
-globalThis.__print = printCSTML;
+// globalThis.__print = prettyPrintCSTML;
 
 Error.stackTraceLimit = 20;
 
@@ -42,10 +15,17 @@ const testCases = onlyTest ? [onlyTest] : jsonTestCases;
 
 for (const { matcher, sourceText, parsed } of testCases) {
   try {
-    const result = parseCSTML(logEnhancer(JSON), sourceText, matcher);
+    const terminals = streamParse(logEnhancer(JSON), sourceText, matcher);
 
-    if (result !== parsed) {
-      throw new Error(`Assertion failure\n  Expected: ${parsed}\n  Received: ${result}`);
+    const printed = streamPrintPrettyCSTML(terminals);
+
+    if (printed !== parsed) {
+      throw new Error(
+        `Assertion failure\n  Expected:\n${indent(parsed, 4)}\n  Received:\n${indent(
+          printed,
+          4,
+        )}\n`,
+      );
     }
 
     console.log('');
