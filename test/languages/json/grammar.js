@@ -70,11 +70,9 @@ export const grammar = class JSONGrammar {
 
   // @Node
   *Property() {
-    yield i`eat(<All> [
-        <String .type>
-        <| Punctuator ':' .mapOperator |>
-        <Expression .value>
-      ])`;
+    yield i`eat(<String .key>)`;
+    yield i`eat(<| Punctuator ':' .mapOperator |>)`;
+    yield i`eat(<Expression .value>)`;
   }
 
   *Element() {

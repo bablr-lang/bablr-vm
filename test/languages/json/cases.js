@@ -85,4 +85,39 @@ export const testCases = [
       </>
     `,
   },
+  {
+    matcher: spam`<Expression>`,
+    sourceText: '{"foo":null}',
+    parsed: dedent`
+      <Object>
+        <Punctuator .open balanced='}'>
+          '{'
+        </>
+        <Property .properties>
+          <String .key>
+            <Punctuator .open balanced='"' innerSpan='String'>
+              '"'
+            </>
+            <StringContent .content>
+              'foo'
+            </>
+            <Punctuator .close balancer>
+              '"'
+            </>
+          </>
+          <Punctuator .mapOperator>
+            ':'
+          </>
+          <Null>
+            <Keyword .value>
+              'null'
+            </>
+          </>
+        </>
+        <Punctuator .close balancer>
+          '}'
+        </>
+      </>
+    `,
+  },
 ];
