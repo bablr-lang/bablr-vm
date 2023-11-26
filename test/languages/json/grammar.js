@@ -28,7 +28,7 @@ export const grammar = class JSONGrammar {
   }
 
   *Expression() {
-    yield i`eat(<Match> [
+    yield i`eat(<Match> null [
         [<Array> '[']
         [<Object> '{']
         [<String> '"']
@@ -41,50 +41,50 @@ export const grammar = class JSONGrammar {
   // @CoveredBy('Expression')
   // @Node
   *Array() {
-    yield i`eat(<| Punctuator '[' .open balanced=']' |>)`;
+    yield i`eat(<| Punctuator '[' balanced=']' |> 'open')`;
     let first = true;
     while ((first || (yield i`match(',')`)) && !(yield i`match(']')`)) {
       if (!first) {
-        yield i`eat(<| Punctuator ',' .separators |>)`;
+        yield i`eat(<| Punctuator ',' |> 'separators')`;
       }
-      yield i`eat(<Element .elements>)`;
+      yield i`eat(<Element> 'elements')`;
       first = false;
     }
-    yield i`eat(<| Punctuator ']' .close balancer |>)`;
+    yield i`eat(<| Punctuator ']' balancer |> 'close')`;
   }
 
   // @CoveredBy('Expression')
   // @Node
   *Object() {
-    yield i`eat(<| Punctuator '{' .open balanced='}' |>)`;
+    yield i`eat(<| Punctuator '{' balanced='}' |> 'open')`;
     let first = true;
     while ((first || (yield i`match(',')`)) && !(yield i`match('}')`)) {
       if (!first) {
-        yield i`eat(<| Punctuator ',' .separators |>)`;
+        yield i`eat(<| Punctuator ',' |> 'separators')`;
       }
-      yield i`eat(<Property .properties>)`;
+      yield i`eat(<Property> 'properties')`;
       first = false;
     }
-    yield i`eat(<| Punctuator '}' .close balancer |>)`;
+    yield i`eat(<| Punctuator '}' balancer |> 'close')`;
   }
 
   // @Node
   *Property() {
-    yield i`eat(<String .key>)`;
-    yield i`eat(<| Punctuator ':' .mapOperator |>)`;
-    yield i`eat(<Expression .value>)`;
+    yield i`eat(<String> 'key')`;
+    yield i`eat(<| Punctuator ':' |> 'mapOperator')`;
+    yield i`eat(<Expression> 'value')`;
   }
 
   *Element() {
-    yield i`eat(<Expression .value>)`;
+    yield i`eat(<Expression>)`;
   }
 
   // @CoveredBy('Expression')
   // @Node
   *String() {
-    yield i`eat(<| Punctuator '"' .open balanced='"' innerSpan='String' |>)`;
-    yield i`eat(<| StringContent .content |>)`;
-    yield i`eat(<| Punctuator '"' .close balancer |>)`;
+    yield i`eat(<| Punctuator '"' balanced='"' innerSpan='String' |> 'open')`;
+    yield i`eat(<| StringContent |> 'content')`;
+    yield i`eat(<| Punctuator '"' balancer |> 'close')`;
   }
 
   // @Node
@@ -96,20 +96,20 @@ export const grammar = class JSONGrammar {
   // @Node
   *Number() {
     while (yield i`match(/\d/)`) {
-      yield i`eat(<| Digit .digits |>)`;
+      yield i`eat(<| Digit |> 'digits')`;
     }
   }
 
   // @CoveredBy('Expression')
   // @Node
   *Boolean() {
-    yield i`eat(<| Keyword /true|false/ .value |>)`;
+    yield i`eat(<| Keyword /true|false/ |> 'value')`;
   }
 
   // @CoveredBy('Expression')
   // @Node
   *Null() {
-    yield i`eat(<| Keyword 'null' .value |>)`;
+    yield i`eat(<| Keyword 'null' |> 'value')`;
   }
 
   // @Node

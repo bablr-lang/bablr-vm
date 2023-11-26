@@ -29,8 +29,8 @@ devDependencies:
     specifier: ^7.21.4
     version: 7.21.4
   '@bablr/boot':
-    specifier: github:bablr-lang/boot#b4341bbaa2081adc8a882c9b4dae402f3be7c642
-    version: github.com/bablr-lang/boot/b4341bbaa2081adc8a882c9b4dae402f3be7c642
+    specifier: github:bablr-lang/boot#fe447a9fc90d695125594579485482607fde6f89
+    version: github.com/bablr-lang/boot/fe447a9fc90d695125594579485482607fde6f89
   '@bablr/eslint-config-base':
     specifier: github:bablr-lang/eslint-config-base#c040bc95f2dddac160628e4757a412016044b3ef
     version: github.com/bablr-lang/eslint-config-base/c040bc95f2dddac160628e4757a412016044b3ef(eslint@8.32.0)
@@ -2025,8 +2025,8 @@ packages:
       iter-tools-es: 7.5.3
     dev: true
 
-  github.com/bablr-lang/boot/b4341bbaa2081adc8a882c9b4dae402f3be7c642:
-    resolution: {tarball: https://codeload.github.com/bablr-lang/boot/tar.gz/b4341bbaa2081adc8a882c9b4dae402f3be7c642}
+  github.com/bablr-lang/boot/fe447a9fc90d695125594579485482607fde6f89:
+    resolution: {tarball: https://codeload.github.com/bablr-lang/boot/tar.gz/fe447a9fc90d695125594579485482607fde6f89}
     name: '@bablr/boot'
     version: 0.0.0
     engines: {node: '>=12.0.0'}

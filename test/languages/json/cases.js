@@ -7,13 +7,16 @@ export const testCases = [
     sourceText: '"hello"',
     parsed: dedent`
       <String>
-        <Punctuator .open balanced='"' innerSpan='String'>
+        open:
+        <Punctuator balanced='"' innerSpan='String'>
           '"'
         </>
-        <StringContent .content>
+        content:
+        <StringContent>
           'hello'
         </>
-        <Punctuator .close balancer>
+        close:
+        <Punctuator balancer>
           '"'
         </>
       </>
@@ -24,7 +27,8 @@ export const testCases = [
     sourceText: 'true',
     parsed: dedent`
       <Boolean>
-        <Keyword .value>
+        value:
+        <Keyword>
           'true'
         </>
       </>
@@ -35,7 +39,8 @@ export const testCases = [
     sourceText: '1',
     parsed: dedent`
       <Number>
-        <Digit .digits>
+        digits:
+        <Digit>
           '1'
         </>
       </>
@@ -46,7 +51,8 @@ export const testCases = [
     sourceText: 'null',
     parsed: dedent`
       <Null>
-        <Keyword .value>
+        value:
+        <Keyword>
           'null'
         </>
       </>
@@ -57,10 +63,12 @@ export const testCases = [
     sourceText: '[]',
     parsed: dedent`
       <Array>
-        <Punctuator .open balanced=']'>
+        open:
+        <Punctuator balanced=']'>
           '['
         </>
-        <Punctuator .close balancer>
+        close:
+        <Punctuator balancer>
           ']'
         </>
       </>
@@ -71,15 +79,19 @@ export const testCases = [
     sourceText: '[1]',
     parsed: dedent`
       <Array>
-        <Punctuator .open balanced=']'>
+        open:
+        <Punctuator balanced=']'>
           '['
         </>
+        elements:
         <Number>
-          <Digit .digits>
+          digits:
+          <Digit>
             '1'
           </>
         </>
-        <Punctuator .close balancer>
+        close:
+        <Punctuator balancer>
           ']'
         </>
       </>
@@ -90,31 +102,41 @@ export const testCases = [
     sourceText: '{"foo":null}',
     parsed: dedent`
       <Object>
-        <Punctuator .open balanced='}'>
+        open:
+        <Punctuator balanced='}'>
           '{'
         </>
-        <Property .properties>
-          <String .key>
-            <Punctuator .open balanced='"' innerSpan='String'>
+        properties:
+        <Property>
+          key:
+          <String>
+            open:
+            <Punctuator balanced='"' innerSpan='String'>
               '"'
             </>
-            <StringContent .content>
+            content:
+            <StringContent>
               'foo'
             </>
-            <Punctuator .close balancer>
+            close:
+            <Punctuator balancer>
               '"'
             </>
           </>
-          <Punctuator .mapOperator>
+          mapOperator:
+          <Punctuator>
             ':'
           </>
+          value:
           <Null>
-            <Keyword .value>
+            value:
+            <Keyword>
               'null'
             </>
           </>
         </>
-        <Punctuator .close balancer>
+        close:
+        <Punctuator balancer>
           '}'
         </>
       </>

@@ -27,7 +27,7 @@
     "@babel/cli": "7.22.15",
     "@babel/core": "7.22.20",
     "@babel/parser": "^7.21.4",
-    "@bablr/boot": "github:bablr-lang/boot#b4341bbaa2081adc8a882c9b4dae402f3be7c642",
+    "@bablr/boot": "github:bablr-lang/boot#fe447a9fc90d695125594579485482607fde6f89",
     "@bablr/eslint-config-base": "github:bablr-lang/eslint-config-base#c040bc95f2dddac160628e4757a412016044b3ef",
     "@bablr/helpers": "github:bablr-lang/helpers#8ef702024395635c9a05fe4c9f803a48f87d902c",
     "@bablr/language-enhancer-debug-log": "github:bablr-lang/language-enhancer-debug-log#51bf0686af2366fa1db71890aee6239e62c5d264",

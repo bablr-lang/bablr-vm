@@ -14,23 +14,13 @@ const onlyTest = jsonTestCases.find((case_) => case_.only);
 const testCases = onlyTest ? [onlyTest] : jsonTestCases;
 
 for (const { matcher, sourceText, parsed } of testCases) {
-  try {
-    const terminals = streamParse(logEnhancer(JSON), sourceText, matcher);
+  const terminals = streamParse(logEnhancer(JSON), sourceText, matcher);
 
-    const printed = streamPrintPrettyCSTML(terminals);
+  const printed = streamPrintPrettyCSTML(terminals);
 
-    if (printed !== parsed) {
-      throw new Error(
-        `Assertion failure\n  Expected:\n${indent(parsed, 4)}\n  Received:\n${indent(
-          printed,
-          4,
-        )}\n`,
-      );
-    }
-
-    console.log('');
-  } catch (e) {
-    console.log('');
-    console.error(e);
+  if (printed !== parsed) {
+    throw new Error(
+      `Assertion failure\n  Expected:\n${indent(parsed, 4)}\n  Received:\n${indent(printed, 4)}\n`,
+    );
   }
 }
