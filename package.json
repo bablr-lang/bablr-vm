@@ -18,8 +18,8 @@
     "test": "node ./test/runner.js"
   },
   "dependencies": {
-    "@bablr/boot-helpers": "github:bablr-lang/boot-helpers#1551598bc7257481089d06839eeec2e26885bbb2",
-    "@bablr/regex-vm": "github:bablr-lang/regex-vm#b9307e6f9587f047c762dd871137f68839bad581",
+    "@bablr/boot-helpers": "0.1.0",
+    "@bablr/regex-vm": "0.1.0",
     "@iter-tools/imm-stack": "1.1.0",
     "iter-tools-es": "^7.5.3"
   },
@@ -27,10 +27,10 @@
     "@babel/cli": "7.22.15",
     "@babel/core": "7.22.20",
     "@babel/parser": "^7.21.4",
-    "@bablr/boot": "github:bablr-lang/boot#fe447a9fc90d695125594579485482607fde6f89",
+    "@bablr/boot": "0.1.1",
     "@bablr/eslint-config-base": "github:bablr-lang/eslint-config-base#c040bc95f2dddac160628e4757a412016044b3ef",
-    "@bablr/helpers": "github:bablr-lang/helpers#8ef702024395635c9a05fe4c9f803a48f87d902c",
-    "@bablr/language-enhancer-debug-log": "github:bablr-lang/language-enhancer-debug-log#51bf0686af2366fa1db71890aee6239e62c5d264",
+    "@bablr/helpers": "0.1.0",
+    "@bablr/hol-debug-log": "0.1.0",
     "babel-plugin-macros": "3.1.0",
     "dedent": "^1.5.1",
     "enhanced-resolve": "^5.12.0",

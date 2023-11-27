@@ -1,7 +1,7 @@
 /* global console, URL, globalThis */
 
 import { streamParse, streamPrintPrettyCSTML } from '@bablr/vm';
-import { logEnhancer } from '@bablr/language-enhancer-debug-log';
+import { logEnhancer } from '@bablr/hol-debug-log';
 import indent from 'indent-string';
 import * as JSON from './languages/json/grammar.js';
 import { testCases as jsonTestCases } from './languages/json/cases.js';
