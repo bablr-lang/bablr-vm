@@ -29,8 +29,8 @@ devDependencies:
     specifier: ^7.21.4
     version: 7.21.4
   '@bablr/boot':
-    specifier: 0.1.1
-    version: 0.1.1
+    specifier: 0.1.2
+    version: 0.1.2
   '@bablr/eslint-config-base':
     specifier: github:bablr-lang/eslint-config-base#c040bc95f2dddac160628e4757a412016044b3ef
     version: github.com/bablr-lang/eslint-config-base/c040bc95f2dddac160628e4757a412016044b3ef(eslint@8.32.0)
@@ -355,6 +355,18 @@ packages:
 
   /@bablr/boot@0.1.1:
     resolution: {integrity: sha512-J4WMGbw9WKn7Sc9WLS42/WcI5/q4bsCvpA4lprkh1uUsAGM8WwonApO24dMGbHKlpz/9jOdITcs6cWgKnRwOdA==}
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      '@babel/helper-module-imports': 7.22.15
+      '@babel/template': 7.22.15
+      '@babel/types': 7.23.0
+      '@bablr/boot-helpers': 0.1.0
+      escape-string-regexp: 4.0.0
+      iter-tools-es: 7.5.3
+    dev: true
+
+  /@bablr/boot@0.1.2:
+    resolution: {integrity: sha512-7v8qMi/F8yCA01L3+yRv5PiPAZZEfQoaCtoeUxyKxZXmBAVYzHbk8plaDa3YRQxyezOu62h2YPa0K3Wi6MvJEA==}
     engines: {node: '>=12.0.0'}
     dependencies:
       '@babel/helper-module-imports': 7.22.15

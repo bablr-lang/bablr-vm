@@ -27,7 +27,7 @@
     "@babel/cli": "7.22.15",
     "@babel/core": "7.22.20",
     "@babel/parser": "^7.21.4",
-    "@bablr/boot": "0.1.1",
+    "@bablr/boot": "0.1.2",
     "@bablr/eslint-config-base": "github:bablr-lang/eslint-config-base#c040bc95f2dddac160628e4757a412016044b3ef",
     "@bablr/helpers": "0.1.0",
     "@bablr/hol-debug-log": "0.1.0",
