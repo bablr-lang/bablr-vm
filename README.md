@@ -19,9 +19,8 @@ This API differs from that of most other production-grade parsers, which are mos
 The BABLR VM is unready for production usage, and will continue to be so until `v1.0.0` is released. For right now the more people try out this code and provide me feedback, the faster I will make progress towards production-readiness!
 
 ```js
-// import { parseCSTML } from 'https://esm.sh/gh/bablr-lang/bablr-vm@commitish';
-import { parseCSTML } from 'https://esm.sh/gh/bablr-lang/bablr-vm';
-import { i } from 'https://esm.sh/gh/bablr-lang/boot';
+import { parseCSTML } from '@bablr/vm';
+import { i } from '@bablr/boot';
 
 const digits = class {
   constructor() {
