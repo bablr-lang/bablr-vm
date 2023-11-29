@@ -39,7 +39,7 @@ export const testCases = [
     sourceText: '1',
     parsed: dedent`
       <Number>
-        digits:
+        digits[]:
         <Digit>
           '1'
         </>
@@ -83,9 +83,9 @@ export const testCases = [
         <Punctuator balanced=']'>
           '['
         </>
-        elements:
+        elements[]:
         <Number>
-          digits:
+          digits[]:
           <Digit>
             '1'
           </>
@@ -106,7 +106,7 @@ export const testCases = [
         <Punctuator balanced='}'>
           '{'
         </>
-        properties:
+        properties[]:
         <Property>
           key:
           <String>

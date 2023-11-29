@@ -43,9 +43,9 @@ export const grammar = class JSONGrammar {
     let first = true;
     while ((first || (yield i`match(',')`)) && !(yield i`match(']')`)) {
       if (!first) {
-        yield i`eat(<| Punctuator ',' |> 'separators')`;
+        yield i`eat(<| Punctuator ',' |> 'separators[]')`;
       }
-      yield i`eat(<Element> 'elements')`;
+      yield i`eat(<Element> 'elements[]')`;
       first = false;
     }
     yield i`eat(<| Punctuator ']' balancer |> 'close')`;
@@ -58,9 +58,9 @@ export const grammar = class JSONGrammar {
     let first = true;
     while ((first || (yield i`match(',')`)) && !(yield i`match('}')`)) {
       if (!first) {
-        yield i`eat(<| Punctuator ',' |> 'separators')`;
+        yield i`eat(<| Punctuator ',' |> 'separators[]')`;
       }
-      yield i`eat(<Property> 'properties')`;
+      yield i`eat(<Property> 'properties[]')`;
       first = false;
     }
     yield i`eat(<| Punctuator '}' balancer |> 'close')`;
@@ -94,7 +94,7 @@ export const grammar = class JSONGrammar {
   // @Node
   *Number() {
     while (yield i`match(/\d/)`) {
-      yield i`eat(<| Digit |> 'digits')`;
+      yield i`eat(<| Digit |> 'digits[]')`;
     }
   }
 

@@ -29,8 +29,8 @@ devDependencies:
     specifier: ^7.21.4
     version: 7.21.4
   '@bablr/boot':
-    specifier: 0.1.2
-    version: 0.1.2
+    specifier: 0.1.3
+    version: 0.1.3
   '@bablr/eslint-config-base':
     specifier: github:bablr-lang/eslint-config-base#c040bc95f2dddac160628e4757a412016044b3ef
     version: github.com/bablr-lang/eslint-config-base/c040bc95f2dddac160628e4757a412016044b3ef(eslint@8.32.0)
@@ -38,8 +38,8 @@ devDependencies:
     specifier: 0.1.0
     version: 0.1.0
   '@bablr/hol-debug-log':
-    specifier: 0.1.0
-    version: 0.1.0
+    specifier: 0.1.1
+    version: 0.1.1
   babel-plugin-macros:
     specifier: 3.1.0
     version: 3.1.0
@@ -353,6 +353,11 @@ packages:
     resolution: {integrity: sha512-lm13pIisM6vfRI2150ztqLfLDPxY7Fgzmgr4TfxFDBVUJxn0VmMLvV888jCTs0Xe8IwoanMmeavZUauHwt4i9Q==}
     engines: {node: '>=12.0.0'}
 
+  /@bablr/boot-helpers@0.1.1:
+    resolution: {integrity: sha512-2F9ewTAQjyRkXAtYj9VLAMV1e0WDRU5pTt/qKpMRdMkJoWx4ejNYGk6rBNgI9JztvDUiEPZAPk9nbX7SwQn15w==}
+    engines: {node: '>=12.0.0'}
+    dev: true
+
   /@bablr/boot@0.1.1:
     resolution: {integrity: sha512-J4WMGbw9WKn7Sc9WLS42/WcI5/q4bsCvpA4lprkh1uUsAGM8WwonApO24dMGbHKlpz/9jOdITcs6cWgKnRwOdA==}
     engines: {node: '>=12.0.0'}
@@ -365,14 +370,14 @@ packages:
       iter-tools-es: 7.5.3
     dev: true
 
-  /@bablr/boot@0.1.2:
-    resolution: {integrity: sha512-7v8qMi/F8yCA01L3+yRv5PiPAZZEfQoaCtoeUxyKxZXmBAVYzHbk8plaDa3YRQxyezOu62h2YPa0K3Wi6MvJEA==}
+  /@bablr/boot@0.1.3:
+    resolution: {integrity: sha512-q3SnIkGsbHWie30eRZ7saDLTf6EOQKwsuiqy6coMbK7iF4ncDOKXlweCdu/fk4fpF3c91SF9ezpm+82b/z1tEg==}
     engines: {node: '>=12.0.0'}
     dependencies:
       '@babel/helper-module-imports': 7.22.15
       '@babel/template': 7.22.15
       '@babel/types': 7.23.0
-      '@bablr/boot-helpers': 0.1.0
+      '@bablr/boot-helpers': 0.1.1
       escape-string-regexp: 4.0.0
       iter-tools-es: 7.5.3
     dev: true
@@ -385,10 +390,18 @@ packages:
       iter-tools-es: 7.5.3
     dev: true
 
-  /@bablr/hol-debug-log@0.1.0:
-    resolution: {integrity: sha512-U0JcvIH0OegC+BnJk7PeFbHt2+rg4UkAQBvoH3aRQKlmE/dEPlfz/DV0u+S+iZ4DxEO/UItKNy7qQa373X/WjQ==}
+  /@bablr/helpers@0.1.1:
+    resolution: {integrity: sha512-vHaLqbCn0x+jZxKKpDXquvmmYS2ydasn1bDsmkfpJTABpbFUcnHnK6aX+yXKLyu/+ZuPGM12oJeWWquLy/H98Q==}
     dependencies:
-      '@bablr/helpers': 0.1.0
+      '@bablr/boot': 0.1.1
+      '@bablr/boot-helpers': 0.1.1
+      iter-tools-es: 7.5.3
+    dev: true
+
+  /@bablr/hol-debug-log@0.1.1:
+    resolution: {integrity: sha512-YsN2Z6UUl0ofq+38NBH1lWy0OlbhM2k6c1DNA6BDrZ9GhFEdSPeP6FOvtaa7xebcHwiVs/i8miZOmmxw3GqdTw==}
+    dependencies:
+      '@bablr/helpers': 0.1.1
     dev: true
 
   /@bablr/regex-vm@0.1.0:
