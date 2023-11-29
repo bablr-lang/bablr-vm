@@ -41,10 +41,12 @@ const digits = class {
 parseCSTML(digits, '42');
 
 // <Number>
-//   <Digit .digits>
+//   digits:
+//   <Digit>
 //     '4'
 //   </>
-//   <Digit .digits>
+//   digits:
+//   <Digit>
 //     '2'
 //   </>
 //  </>
