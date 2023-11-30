@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@bablr/boot-helpers':
-    specifier: 0.1.0
-    version: 0.1.0
+    specifier: 0.1.1
+    version: 0.1.1
   '@bablr/regex-vm':
     specifier: 0.1.0
     version: 0.1.0
@@ -29,8 +29,8 @@ devDependencies:
     specifier: ^7.21.4
     version: 7.21.4
   '@bablr/boot':
-    specifier: 0.1.3
-    version: 0.1.3
+    specifier: 0.1.4
+    version: 0.1.4
   '@bablr/eslint-config-base':
     specifier: github:bablr-lang/eslint-config-base#c040bc95f2dddac160628e4757a412016044b3ef
     version: github.com/bablr-lang/eslint-config-base/c040bc95f2dddac160628e4757a412016044b3ef(eslint@8.32.0)
@@ -352,11 +352,11 @@ packages:
   /@bablr/boot-helpers@0.1.0:
     resolution: {integrity: sha512-lm13pIisM6vfRI2150ztqLfLDPxY7Fgzmgr4TfxFDBVUJxn0VmMLvV888jCTs0Xe8IwoanMmeavZUauHwt4i9Q==}
     engines: {node: '>=12.0.0'}
+    dev: true
 
   /@bablr/boot-helpers@0.1.1:
     resolution: {integrity: sha512-2F9ewTAQjyRkXAtYj9VLAMV1e0WDRU5pTt/qKpMRdMkJoWx4ejNYGk6rBNgI9JztvDUiEPZAPk9nbX7SwQn15w==}
     engines: {node: '>=12.0.0'}
-    dev: true
 
   /@bablr/boot@0.1.1:
     resolution: {integrity: sha512-J4WMGbw9WKn7Sc9WLS42/WcI5/q4bsCvpA4lprkh1uUsAGM8WwonApO24dMGbHKlpz/9jOdITcs6cWgKnRwOdA==}
@@ -370,8 +370,8 @@ packages:
       iter-tools-es: 7.5.3
     dev: true
 
-  /@bablr/boot@0.1.3:
-    resolution: {integrity: sha512-q3SnIkGsbHWie30eRZ7saDLTf6EOQKwsuiqy6coMbK7iF4ncDOKXlweCdu/fk4fpF3c91SF9ezpm+82b/z1tEg==}
+  /@bablr/boot@0.1.4:
+    resolution: {integrity: sha512-0E+ITOGmAbf7x/+J66MdHyQq7BTI47uOknowK34IG+xEPz1UYaRV5AlMZovj2ZprftAjespKnSsuvQuejFmGdg==}
     engines: {node: '>=12.0.0'}
     dependencies:
       '@babel/helper-module-imports': 7.22.15
