@@ -24,6 +24,22 @@ export const testCases = [
   },
   {
     matcher: spam`<Expression>`,
+    sourceText: '""',
+    parsed: dedent`
+      <String>
+        open:
+        <Punctuator balanced='"' innerSpan='String'>
+          '"'
+        </>
+        close:
+        <Punctuator balancer>
+          '"'
+        </>
+      </>
+    `,
+  },
+  {
+    matcher: spam`<Expression>`,
     sourceText: 'true',
     parsed: dedent`
       <Boolean>
