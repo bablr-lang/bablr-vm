@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@bablr/boot-helpers": "0.1.1",
-    "@bablr/regex-vm": "0.1.0",
+    "@bablr/regex-vm": "0.4.0",
     "@iter-tools/imm-stack": "1.1.0",
     "iter-tools-es": "^7.5.3"
   },

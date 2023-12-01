@@ -115,6 +115,40 @@ export const testCases = [
   },
   {
     matcher: spam`<Expression>`,
+    sourceText: '[1,2]',
+    parsed: dedent`
+      <Array>
+        open:
+        <Punctuator balanced=']'>
+          '['
+        </>
+        elements[]:
+        <Number>
+          digits[]:
+          <Digit>
+            '1'
+          </>
+        </>
+        separators[]:
+        <Punctuator>
+          ','
+        </>
+        elements[]:
+        <Number>
+          digits[]:
+          <Digit>
+            '2'
+          </>
+        </>
+        close:
+        <Punctuator balancer>
+          ']'
+        </>
+      </>
+    `,
+  },
+  {
+    matcher: spam`<Expression>`,
     sourceText: '{"foo":null}',
     parsed: dedent`
       <Object>
