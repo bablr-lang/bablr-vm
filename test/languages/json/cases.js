@@ -1,11 +1,11 @@
 import { spam } from '@bablr/boot';
-import dedent from 'dedent';
+import { dedent } from '@qnighy/dedent';
 
 export const testCases = [
   {
     matcher: spam`<Expression>`,
     sourceText: '"hello"',
-    parsed: dedent`
+    parsed: dedent`\
       <String>
         open:
         <Punctuator balanced='"' innerSpan='String'>
@@ -19,13 +19,12 @@ export const testCases = [
         <Punctuator balancer>
           '"'
         </>
-      </>
-    `,
+      </>`,
   },
   {
     matcher: spam`<Expression>`,
     sourceText: '""',
-    parsed: dedent`
+    parsed: dedent`\
       <String>
         open:
         <Punctuator balanced='"' innerSpan='String'>
@@ -35,49 +34,64 @@ export const testCases = [
         <Punctuator balancer>
           '"'
         </>
-      </>
-    `,
+      </>`,
+  },
+  {
+    matcher: spam`<Expression>`,
+    sourceText: '"\\n"',
+    parsed: dedent`\
+      <String>
+        open:
+        <Punctuator balanced='"' innerSpan='String'>
+          '"'
+        </>
+        content:
+        <StringContent>
+          !'${'\\\\n'}' :'${'\\n'}'
+        </>
+        close:
+        <Punctuator balancer>
+          '"'
+        </>
+      </>`,
   },
   {
     matcher: spam`<Expression>`,
     sourceText: 'true',
-    parsed: dedent`
+    parsed: dedent`\
       <Boolean>
         value:
         <Keyword>
           'true'
         </>
-      </>
-    `,
+      </>`,
   },
   {
     matcher: spam`<Expression>`,
     sourceText: '1',
-    parsed: dedent`
+    parsed: dedent`\
       <Number>
         digits[]:
         <Digit>
           '1'
         </>
-      </>
-    `,
+      </>`,
   },
   {
     matcher: spam`<Expression>`,
     sourceText: 'null',
-    parsed: dedent`
+    parsed: dedent`\
       <Null>
         value:
         <Keyword>
           'null'
         </>
-      </>
-    `,
+      </>`,
   },
   {
     matcher: spam`<Expression>`,
     sourceText: '[]',
-    parsed: dedent`
+    parsed: dedent`\
       <Array>
         open:
         <Punctuator balanced=']'>
@@ -87,13 +101,12 @@ export const testCases = [
         <Punctuator balancer>
           ']'
         </>
-      </>
-    `,
+      </>`,
   },
   {
     matcher: spam`<Expression>`,
     sourceText: '[1]',
-    parsed: dedent`
+    parsed: dedent`\
       <Array>
         open:
         <Punctuator balanced=']'>
@@ -110,13 +123,12 @@ export const testCases = [
         <Punctuator balancer>
           ']'
         </>
-      </>
-    `,
+      </>`,
   },
   {
     matcher: spam`<Expression>`,
     sourceText: '[1,2]',
-    parsed: dedent`
+    parsed: dedent`\
       <Array>
         open:
         <Punctuator balanced=']'>
@@ -144,13 +156,12 @@ export const testCases = [
         <Punctuator balancer>
           ']'
         </>
-      </>
-    `,
+      </>`,
   },
   {
     matcher: spam`<Expression>`,
     sourceText: '{"foo":null}',
-    parsed: dedent`
+    parsed: dedent`\
       <Object>
         open:
         <Punctuator balanced='}'>
@@ -189,7 +200,6 @@ export const testCases = [
         <Punctuator balancer>
           '}'
         </>
-      </>
-    `,
+      </>`,
   },
 ];

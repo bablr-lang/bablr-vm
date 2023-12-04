@@ -29,8 +29,8 @@ devDependencies:
     specifier: ^7.21.4
     version: 7.21.4
   '@bablr/boot':
-    specifier: 0.1.4
-    version: 0.1.4
+    specifier: 0.1.5
+    version: 0.1.5
   '@bablr/eslint-config-base':
     specifier: github:bablr-lang/eslint-config-base#c040bc95f2dddac160628e4757a412016044b3ef
     version: github.com/bablr-lang/eslint-config-base/c040bc95f2dddac160628e4757a412016044b3ef(eslint@8.32.0)
@@ -40,12 +40,12 @@ devDependencies:
   '@bablr/hol-debug-log':
     specifier: 0.1.1
     version: 0.1.1
+  '@qnighy/dedent':
+    specifier: 0.1.1
+    version: 0.1.1
   babel-plugin-macros:
     specifier: 3.1.0
     version: 3.1.0
-  dedent:
-    specifier: ^1.5.1
-    version: 1.5.1(babel-plugin-macros@3.1.0)
   enhanced-resolve:
     specifier: ^5.12.0
     version: 5.12.0
@@ -370,8 +370,8 @@ packages:
       iter-tools-es: 7.5.3
     dev: true
 
-  /@bablr/boot@0.1.4:
-    resolution: {integrity: sha512-0E+ITOGmAbf7x/+J66MdHyQq7BTI47uOknowK34IG+xEPz1UYaRV5AlMZovj2ZprftAjespKnSsuvQuejFmGdg==}
+  /@bablr/boot@0.1.5:
+    resolution: {integrity: sha512-FS77D48UEYT0/e0oNY1W99RQcLp6wvZXwX5ULVAyopBFrP15FgAZSTMW10h8c773Sm29LvCcqPjhWAn7fCn/6Q==}
     engines: {node: '>=12.0.0'}
     dependencies:
       '@babel/helper-module-imports': 7.22.15
@@ -515,6 +515,10 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
+    dev: true
+
+  /@qnighy/dedent@0.1.1:
+    resolution: {integrity: sha512-1TogcOCQlxSL4fS2n3jUtwoTHIlXJN3cw3FmQKSdmVpbVr03gKeXTEskPxqqMT24xkid59bEGv4ZB6oUQqq2fw==}
     dev: true
 
   /@types/json5@0.0.29:
@@ -789,17 +793,6 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
-    dev: true
-
-  /dedent@1.5.1(babel-plugin-macros@3.1.0):
-    resolution: {integrity: sha512-+LxW+KLWxu3HW3M2w2ympwtqPrqYRzU8fqi6Fhd18fBALe15blJPI/I4+UHveMVG6lJqB4JNd4UG0S5cnVHwIg==}
-    peerDependencies:
-      babel-plugin-macros: ^3.1.0
-    peerDependenciesMeta:
-      babel-plugin-macros:
-        optional: true
-    dependencies:
-      babel-plugin-macros: 3.1.0
     dev: true
 
   /deep-is@0.1.4:

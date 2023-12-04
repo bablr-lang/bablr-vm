@@ -87,7 +87,16 @@ export const grammar = class JSONGrammar {
 
   // @Node
   *StringContent() {
-    yield i`eat(/[^"\n]+/)`;
+    let esc, lit;
+    let i_ = 0;
+    do {
+      esc = yield i`eatMatch!(/\\(u(\{\d{1,6}\}|\d{4})|x[0-9a-fA-F]{2}|[\\nrt0"])/)`;
+      lit = yield i`eatMatch(/[^\r\n\0\\"]+/)`;
+      i_++;
+    } while (esc || lit);
+    if (i_ === 1 && !esc && !lit) {
+      yield i`fail()`;
+    }
   }
 
   // @CoveredBy('Expression')
@@ -130,4 +139,37 @@ export const grammar = class JSONGrammar {
 
     return { attrs };
   }
+};
+
+const escapables = new Map(
+  Object.entries({
+    b: '\b',
+    f: '\f',
+    n: '\n',
+    r: '\r',
+    t: '\t',
+    '\\': '\\',
+    '/': '/',
+  }),
+);
+
+export const cookEscape = (escape) => {
+  if (!escape.startsWith('\\')) {
+    throw new Error('string escape must start with \\');
+  }
+
+  const hexMatch = /\\u([0-9a-f]{4})/iy.exec(escape);
+
+  if (hexMatch) {
+    return String.fromCodePoint(parseInt(hexMatch[1], 16));
+  }
+
+  const litPattern = /\\([\\/bfnrt"])/y;
+  const litMatch = litPattern.exec(escape);
+
+  if (litMatch) {
+    return escapables.get(litMatch[1]);
+  }
+
+  throw new Error('unable to cook string escape');
 };
