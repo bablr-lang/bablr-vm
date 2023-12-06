@@ -30,6 +30,8 @@ export const testCases = [
         <Punctuator balanced='"' innerSpan='String'>
           '"'
         </>
+        content:
+        null
         close:
         <Punctuator balancer>
           '"'

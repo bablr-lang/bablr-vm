@@ -6,8 +6,6 @@ import indent from 'indent-string';
 import * as JSON from './languages/json/grammar.js';
 import { testCases as jsonTestCases } from './languages/json/cases.js';
 
-// globalThis.__print = prettyPrintCSTML;
-
 Error.stackTraceLimit = 20;
 
 const onlyTest = jsonTestCases.find((case_) => case_.only);
