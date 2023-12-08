@@ -1,5 +1,6 @@
 import { i } from '@bablr/boot';
 import { buildCovers } from '@bablr/helpers/grammar';
+import { triviaEnhancer } from '@bablr/helpers/trivia';
 
 const node = Symbol.for('@bablr/node');
 
@@ -7,139 +8,140 @@ export const dependencies = {};
 
 export const name = 'JSON';
 
-export const grammar = class JSONGrammar {
-  constructor() {
-    this.covers = buildCovers({
-      [node]: ['Expression', 'Property', 'StringContent', 'Punctuator', 'Keyword', 'Digit'],
-      Expression: ['Array', 'Object', 'String', 'Boolean', 'Number', 'Null'],
-    });
-  }
+export const grammar = triviaEnhancer(
+  {
+    spaceIsAllowed: (s) => s.span === 'Bare',
+    eatMatchTrivia: i`eatMatch#(/(\s+|\/\*([^*]+(\*\/^|\*))+\*\/|\/\/[^\n]+)+/)`,
+  },
+  class JSONGrammar {
+    constructor() {
+      this.covers = buildCovers({
+        [node]: ['Expression', 'Property', 'StringContent', 'Punctuator', 'Keyword', 'Digit'],
+        Expression: ['Array', 'Object', 'String', 'Boolean', 'Number', 'Null'],
+      });
+    }
 
-  *Match(cases, _, ctx) {
-    for (const case_ of ctx.unbox(cases)) {
-      const { 0: matcher, 1: guard } = ctx.unbox(case_);
-      if (yield i`match(${guard})`) {
-        yield i`eat(${matcher})`;
-        break;
+    *Match(cases, _, ctx) {
+      for (const case_ of ctx.unbox(cases)) {
+        const { 0: matcher, 1: guard } = ctx.unbox(case_);
+        if (yield i`match(${guard})`) {
+          yield i`eat(${matcher})`;
+          break;
+        }
       }
     }
-  }
 
-  *Expression() {
-    yield i`eat(<Match> null [
+    *Expression() {
+      yield i`eat(<Match> null [
         [<Array> '[']
         [<Object> '{']
         [<String> '"']
-        [<Number> /\d/]
+        [<Number span='Number'> /\d/]
         [<Null> 'null']
         [<Boolean> /true|false/]
       ])`;
-  }
+    }
 
-  // @CoveredBy('Expression')
-  // @Node
-  *Array() {
-    yield i`eat(<| Punctuator '[' balanced=']' |> 'open')`;
-    let first = true;
-    while ((first || (yield i`match(',')`)) && !(yield i`match(']')`)) {
-      if (!first) {
-        yield i`eat(<| Punctuator ',' |> 'separators[]')`;
+    // @CoveredBy('Expression')
+    // @Node
+    *Array() {
+      yield i`eat(<| Punctuator '[' balanced=']' |> 'open')`;
+      let first = true;
+      while ((first || (yield i`match(',')`)) && !(yield i`match(']')`)) {
+        if (!first) {
+          yield i`eat(<| Punctuator ',' |> 'separators[]')`;
+        }
+        yield i`eat(<Element> 'elements[]')`;
+        first = false;
       }
-      yield i`eat(<Element> 'elements[]')`;
-      first = false;
+      yield i`eat(<| Punctuator ']' balancer |> 'close')`;
     }
-    yield i`eat(<| Punctuator ']' balancer |> 'close')`;
-  }
 
-  // @CoveredBy('Expression')
-  // @Node
-  *Object() {
-    yield i`eat(<| Punctuator '{' balanced='}' |> 'open')`;
-    let first = true;
-    while ((first || (yield i`match(',')`)) && !(yield i`match('}')`)) {
-      if (!first) {
-        yield i`eat(<| Punctuator ',' |> 'separators[]')`;
+    // @CoveredBy('Expression')
+    // @Node
+    *Object() {
+      yield i`eat(<| Punctuator '{' balanced='}' |> 'open')`;
+      let first = true;
+      while ((first || (yield i`match(',')`)) && !(yield i`match('}')`)) {
+        if (!first) {
+          yield i`eat(<| Punctuator ',' |> 'separators[]')`;
+        }
+        yield i`eat(<Property> 'properties[]')`;
+        first = false;
       }
-      yield i`eat(<Property> 'properties[]')`;
-      first = false;
+      yield i`eat(<| Punctuator '}' balancer |> 'close')`;
     }
-    yield i`eat(<| Punctuator '}' balancer |> 'close')`;
-  }
 
-  // @Node
-  *Property() {
-    yield i`eat(<String> 'key')`;
-    yield i`eat(<| Punctuator ':' |> 'mapOperator')`;
-    yield i`eat(<Expression> 'value')`;
-  }
-
-  *Element() {
-    yield i`eat(<Expression>)`;
-  }
-
-  // @CoveredBy('Expression')
-  // @Node
-  *String() {
-    yield i`eat(<| Punctuator '"' balanced='"' innerSpan='String' |> 'open')`;
-    yield i`eatMatch(<| StringContent |> 'content')`;
-    yield i`eat(<| Punctuator '"' balancer |> 'close')`;
-  }
-
-  // @Node
-  *StringContent() {
-    let esc, lit;
-    let i_ = 0;
-    do {
-      esc = yield i`eatMatch!(/\\(u(\{\d{1,6}\}|\d{4})|x[0-9a-fA-F]{2}|[\\nrt0"])/)`;
-      lit = yield i`eatMatch(/[^\r\n\0\\"]+/)`;
-      i_++;
-    } while (esc || lit);
-    if (i_ === 1 && !esc && !lit) {
-      yield i`fail()`;
+    // @Node
+    *Property() {
+      yield i`eat(<String> 'key')`;
+      yield i`eat(<| Punctuator ':' |> 'mapOperator')`;
+      yield i`eat(<Expression> 'value')`;
     }
-  }
 
-  // @CoveredBy('Expression')
-  // @Node
-  *Number() {
-    while (yield i`match(/\d/)`) {
-      yield i`eat(<| Digit |> 'digits[]')`;
+    *Element() {
+      yield i`eat(<Expression>)`;
     }
-  }
 
-  // @CoveredBy('Expression')
-  // @Node
-  *Boolean() {
-    yield i`eat(<| Keyword /true|false/ |> 'value')`;
-  }
+    // @CoveredBy('Expression')
+    // @Node
+    *String() {
+      yield i`eat(<| Punctuator '"' balanced='"' lexicalSpan='String' |> 'open')`;
+      yield i`eatMatch(<| StringContent |> 'content')`;
+      yield i`eat(<| Punctuator '"' balancer |> 'close')`;
+    }
 
-  // @CoveredBy('Expression')
-  // @Node
-  *Null() {
-    yield i`eat(<| Keyword 'null' |> 'value')`;
-  }
+    // @Node
+    *StringContent() {
+      let esc, lit;
+      do {
+        esc = yield i`eatMatch!(/\\(u(\{\d{1,6}\}|\d{4})|x[0-9a-fA-F]{2}|[\\nrt0"])/)`;
+        lit = yield i`eatMatch(/[^\r\n\0\\"]+/)`;
+      } while (esc || lit);
+    }
 
-  // @Node
-  *Digit() {
-    yield i`eat(/\d/)`;
-  }
+    // @CoveredBy('Expression')
+    // @Node
+    *Number() {
+      while (yield i`match(/\d/)`) {
+        yield i`eat(<| Digit |> 'digits[]')`;
+      }
+    }
 
-  // @Node
-  *Keyword(obj, _, ctx) {
-    const { value, attrs } = ctx.unbox(obj);
-    yield i`eat(${value})`;
+    // @CoveredBy('Expression')
+    // @Node
+    *Boolean() {
+      yield i`eat(<| Keyword /true|false/ |> 'value')`;
+    }
 
-    return { attrs };
-  }
+    // @CoveredBy('Expression')
+    // @Node
+    *Null() {
+      yield i`eat(<| Keyword 'null' |> 'value')`;
+    }
 
-  // @Node
-  *Punctuator(obj, _, ctx) {
-    const { value, attrs } = ctx.unbox(obj);
-    yield i`eat(${value})`;
+    // @Node
+    *Digit() {
+      yield i`eat(/\d/)`;
+    }
 
-    return { attrs };
-  }
-};
+    // @Node
+    *Keyword(obj, _, ctx) {
+      const { value, attrs } = ctx.unbox(obj);
+      yield i`eat(${value})`;
+
+      return { attrs };
+    }
+
+    // @Node
+    *Punctuator(obj, _, ctx) {
+      const { value, attrs } = ctx.unbox(obj);
+      yield i`eat(${value})`;
+
+      return { attrs };
+    }
+  },
+);
 
 const escapables = new Map(
   Object.entries({

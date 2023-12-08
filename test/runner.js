@@ -8,17 +8,31 @@ import { testCases as jsonTestCases } from './languages/json/cases.js';
 
 Error.stackTraceLimit = 20;
 
-const onlyTest = jsonTestCases.find((case_) => case_.only);
-const testCases = onlyTest ? [onlyTest] : jsonTestCases;
+let testCases = jsonTestCases;
 
-for (const { matcher, sourceText, parsed } of testCases) {
-  const terminals = streamParse(logEnhancer(JSON), sourceText, matcher);
+const onlyCases = testCases.filter((case_) => case_.only);
 
-  const printed = streamPrintPrettyCSTML(terminals);
+if (onlyCases.length) {
+  testCases = onlyCases;
+}
 
-  if (printed !== parsed) {
-    throw new Error(
-      `Assertion failure\n  Expected:\n${indent(parsed, 4)}\n  Received:\n${indent(printed, 4)}\n`,
-    );
+for (const { matcher, sourceText, parsed, skip } of testCases) {
+  const skipped = skip ? ' (skipped)' : '';
+  console.log(`Input: \`${sourceText.replace(/[`\\]/g, '\\$&')}\`${skipped}`);
+
+  if (!skip) {
+    const terminals = streamParse(logEnhancer(JSON), sourceText, matcher);
+
+    const printed = streamPrintPrettyCSTML(terminals);
+
+    if (printed !== parsed) {
+      throw new Error(
+        `Assertion failure\n  Expected:\n${indent(parsed, 4)}\n  Received:\n${indent(
+          printed,
+          4,
+        )}\n`,
+      );
+    }
   }
+  console.log();
 }

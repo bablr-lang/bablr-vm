@@ -4,20 +4,31 @@ import { dedent } from '@qnighy/dedent';
 export const testCases = [
   {
     matcher: spam`<Expression>`,
+    sourceText: ' ',
+    parsed: dedent`\
+      <>
+        #' '
+      </>`,
+  },
+  {
+    matcher: spam`<Expression>`,
     sourceText: '"hello"',
     parsed: dedent`\
-      <String>
-        open:
-        <Punctuator balanced='"' innerSpan='String'>
-          '"'
-        </>
-        content:
-        <StringContent>
-          'hello'
-        </>
-        close:
-        <Punctuator balancer>
-          '"'
+      <>
+        children[]:
+        <String>
+          open:
+          <Punctuator balanced='"' lexicalSpan='String'>
+            '"'
+          </>
+          content:
+          <StringContent>
+            'hello'
+          </>
+          close:
+          <Punctuator balancer>
+            '"'
+          </>
         </>
       </>`,
   },
@@ -25,35 +36,88 @@ export const testCases = [
     matcher: spam`<Expression>`,
     sourceText: '""',
     parsed: dedent`\
-      <String>
-        open:
-        <Punctuator balanced='"' innerSpan='String'>
-          '"'
+      <>
+        children[]:
+        <String>
+          open:
+          <Punctuator balanced='"' lexicalSpan='String'>
+            '"'
+          </>
+          content:
+          null
+          close:
+          <Punctuator balancer>
+            '"'
+          </>
         </>
-        content:
-        null
-        close:
-        <Punctuator balancer>
-          '"'
+      </>`,
+  },
+  {
+    matcher: spam`<Expression>`,
+    sourceText: '" "',
+    parsed: dedent`\
+      <>
+        children[]:
+        <String>
+          open:
+          <Punctuator balanced='"' lexicalSpan='String'>
+            '"'
+          </>
+          content:
+          <StringContent>
+            ' '
+          </>
+          close:
+          <Punctuator balancer>
+            '"'
+          </>
         </>
+      </>`,
+  },
+  {
+    skip: true,
+    matcher: spam`<Expression>`,
+    sourceText: ' " " ',
+    parsed: dedent`\
+      <>
+        #' '
+        children[]:
+        <String>
+          open:
+          <Punctuator balanced='"' lexicalSpan='String'>
+            '"'
+          </>
+          content:
+          <StringContent>
+            ' '
+          </>
+          close:
+          <Punctuator balancer>
+            '"'
+          </>
+        </>
+        #' '
       </>`,
   },
   {
     matcher: spam`<Expression>`,
     sourceText: '"\\n"',
     parsed: dedent`\
-      <String>
-        open:
-        <Punctuator balanced='"' innerSpan='String'>
-          '"'
-        </>
-        content:
-        <StringContent>
-          !'${'\\\\n'}' :'${'\\n'}'
-        </>
-        close:
-        <Punctuator balancer>
-          '"'
+      <>
+        children[]:
+        <String>
+          open:
+          <Punctuator balanced='"' lexicalSpan='String'>
+            '"'
+          </>
+          content:
+          <StringContent>
+            !'${'\\\\n'}' :'${'\\n'}'
+          </>
+          close:
+          <Punctuator balancer>
+            '"'
+          </>
         </>
       </>`,
   },
@@ -61,10 +125,13 @@ export const testCases = [
     matcher: spam`<Expression>`,
     sourceText: 'true',
     parsed: dedent`\
-      <Boolean>
-        value:
-        <Keyword>
-          'true'
+      <>
+        children[]:
+        <Boolean>
+          value:
+          <Keyword>
+            'true'
+          </>
         </>
       </>`,
   },
@@ -72,10 +139,13 @@ export const testCases = [
     matcher: spam`<Expression>`,
     sourceText: '1',
     parsed: dedent`\
-      <Number>
-        digits[]:
-        <Digit>
-          '1'
+      <>
+        children[]:
+        <Number span='Number'>
+          digits[]:
+          <Digit>
+            '1'
+          </>
         </>
       </>`,
   },
@@ -83,10 +153,13 @@ export const testCases = [
     matcher: spam`<Expression>`,
     sourceText: 'null',
     parsed: dedent`\
-      <Null>
-        value:
-        <Keyword>
-          'null'
+      <>
+        children[]:
+        <Null>
+          value:
+          <Keyword>
+            'null'
+          </>
         </>
       </>`,
   },
@@ -94,14 +167,17 @@ export const testCases = [
     matcher: spam`<Expression>`,
     sourceText: '[]',
     parsed: dedent`\
-      <Array>
-        open:
-        <Punctuator balanced=']'>
-          '['
-        </>
-        close:
-        <Punctuator balancer>
-          ']'
+      <>
+        children[]:
+        <Array>
+          open:
+          <Punctuator balanced=']'>
+            '['
+          </>
+          close:
+          <Punctuator balancer>
+            ']'
+          </>
         </>
       </>`,
   },
@@ -109,21 +185,24 @@ export const testCases = [
     matcher: spam`<Expression>`,
     sourceText: '[1]',
     parsed: dedent`\
-      <Array>
-        open:
-        <Punctuator balanced=']'>
-          '['
-        </>
-        elements[]:
-        <Number>
-          digits[]:
-          <Digit>
-            '1'
+      <>
+        children[]:
+        <Array>
+          open:
+          <Punctuator balanced=']'>
+            '['
           </>
-        </>
-        close:
-        <Punctuator balancer>
-          ']'
+          elements[]:
+          <Number span='Number'>
+            digits[]:
+            <Digit>
+              '1'
+            </>
+          </>
+          close:
+          <Punctuator balancer>
+            ']'
+          </>
         </>
       </>`,
   },
@@ -131,32 +210,35 @@ export const testCases = [
     matcher: spam`<Expression>`,
     sourceText: '[1,2]',
     parsed: dedent`\
-      <Array>
-        open:
-        <Punctuator balanced=']'>
-          '['
-        </>
-        elements[]:
-        <Number>
-          digits[]:
-          <Digit>
-            '1'
+      <>
+        children[]:
+        <Array>
+          open:
+          <Punctuator balanced=']'>
+            '['
           </>
-        </>
-        separators[]:
-        <Punctuator>
-          ','
-        </>
-        elements[]:
-        <Number>
-          digits[]:
-          <Digit>
-            '2'
+          elements[]:
+          <Number span='Number'>
+            digits[]:
+            <Digit>
+              '1'
+            </>
           </>
-        </>
-        close:
-        <Punctuator balancer>
-          ']'
+          separators[]:
+          <Punctuator>
+            ','
+          </>
+          elements[]:
+          <Number span='Number'>
+            digits[]:
+            <Digit>
+              '2'
+            </>
+          </>
+          close:
+          <Punctuator balancer>
+            ']'
+          </>
         </>
       </>`,
   },
@@ -164,43 +246,46 @@ export const testCases = [
     matcher: spam`<Expression>`,
     sourceText: '{"foo":null}',
     parsed: dedent`\
-      <Object>
-        open:
-        <Punctuator balanced='}'>
-          '{'
-        </>
-        properties[]:
-        <Property>
-          key:
-          <String>
-            open:
-            <Punctuator balanced='"' innerSpan='String'>
-              '"'
-            </>
-            content:
-            <StringContent>
-              'foo'
-            </>
-            close:
-            <Punctuator balancer>
-              '"'
-            </>
+      <>
+        children[]:
+        <Object>
+          open:
+          <Punctuator balanced='}'>
+            '{'
           </>
-          mapOperator:
-          <Punctuator>
-            ':'
-          </>
-          value:
-          <Null>
+          properties[]:
+          <Property>
+            key:
+            <String>
+              open:
+              <Punctuator balanced='"' lexicalSpan='String'>
+                '"'
+              </>
+              content:
+              <StringContent>
+                'foo'
+              </>
+              close:
+              <Punctuator balancer>
+                '"'
+              </>
+            </>
+            mapOperator:
+            <Punctuator>
+              ':'
+            </>
             value:
-            <Keyword>
-              'null'
+            <Null>
+              value:
+              <Keyword>
+                'null'
+              </>
             </>
           </>
-        </>
-        close:
-        <Punctuator balancer>
-          '}'
+          close:
+          <Punctuator balancer>
+            '}'
+          </>
         </>
       </>`,
   },
