@@ -1,7 +1,7 @@
 {
   "name": "@bablr/vm",
   "description": "A VM for executing BABLR grammars",
-  "version": "0.0.0",
+  "version": "0.1.10",
   "author": "Conrad Buck<conartist6@gmail.com>",
   "type": "module",
   "files": [
