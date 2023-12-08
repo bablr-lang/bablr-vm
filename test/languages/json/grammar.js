@@ -11,7 +11,7 @@ export const name = 'JSON';
 export const grammar = triviaEnhancer(
   {
     spaceIsAllowed: (s) => s.span === 'Bare',
-    eatMatchTrivia: i`eatMatch#(/(\s+|\/\*([^*]+(\*\/^|\*))+\*\/|\/\/[^\n]+)+/)`,
+    eatMatchTrivia: i`eatMatch#(/(\s+|\/\*.*?\*\/|\/\/[^\n]+)+/)`,
   },
   class JSONGrammar {
     constructor() {
