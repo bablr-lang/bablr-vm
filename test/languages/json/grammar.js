@@ -103,9 +103,7 @@ export const grammar = triviaEnhancer(
     // @CoveredBy('Expression')
     // @Node
     *Number() {
-      while (yield i`match(/\d/)`) {
-        yield i`eat(<| Digit |> 'digits[]')`;
-      }
+      while (yield i`eatMatch(<| Digit |> 'digits[]')`);
     }
 
     // @CoveredBy('Expression')

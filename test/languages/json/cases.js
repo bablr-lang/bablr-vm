@@ -208,6 +208,24 @@ export const testCases = [
   },
   {
     matcher: spam`<Expression>`,
+    sourceText: '21',
+    parsed: dedent`\
+      <>
+        children[]:
+        <Number span='Number'>
+          digits[]:
+          <Digit>
+            '2'
+          </>
+          digits[]:
+          <Digit>
+            '1'
+          </>
+        </>
+      </>`,
+  },
+  {
+    matcher: spam`<Expression>`,
     sourceText: '[1,2]',
     parsed: dedent`\
       <>
