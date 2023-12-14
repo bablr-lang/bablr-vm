@@ -29,17 +29,17 @@ devDependencies:
     specifier: ^7.21.4
     version: 7.21.4
   '@bablr/boot':
-    specifier: 0.1.7
-    version: 0.1.7
+    specifier: 0.1.8
+    version: 0.1.8
   '@bablr/eslint-config-base':
     specifier: github:bablr-lang/eslint-config-base#c040bc95f2dddac160628e4757a412016044b3ef
     version: github.com/bablr-lang/eslint-config-base/c040bc95f2dddac160628e4757a412016044b3ef(eslint@8.32.0)
   '@bablr/helpers':
+    specifier: 0.1.4
+    version: 0.1.4
+  '@bablr/hol-debug-log':
     specifier: 0.1.3
     version: 0.1.3
-  '@bablr/hol-debug-log':
-    specifier: 0.1.2
-    version: 0.1.2
   '@qnighy/dedent':
     specifier: 0.1.1
     version: 0.1.1
@@ -370,8 +370,8 @@ packages:
       iter-tools-es: 7.5.3
     dev: true
 
-  /@bablr/boot@0.1.7:
-    resolution: {integrity: sha512-w6cDH1UH4i1stv8pyZ3iPm2Iq8Fwz43s7JFPHDQoSymmnXhcv6zDTNdU/1ebwMv4NeP1avMpuZTEAzEAxl+V2A==}
+  /@bablr/boot@0.1.8:
+    resolution: {integrity: sha512-dWOOtXJTki/L9AtIFfJgI08Ry6NGXqqbbSr3ON70r0289BvvJmu/Un/903fyS2k636IKSBrmoXgESVJSFD5q2w==}
     engines: {node: '>=12.0.0'}
     dependencies:
       '@babel/helper-module-imports': 7.22.15
@@ -390,16 +390,16 @@ packages:
       iter-tools-es: 7.5.3
     dev: true
 
-  /@bablr/helpers@0.1.3:
-    resolution: {integrity: sha512-AzOaOfmNy2qRdLiL3xNhTf06M1ZC97CopSKzv1MvMQJxuUgtAHpGH+zh1aVEaIy7mXVDKnokdgbFB6uiZ9/t8A==}
+  /@bablr/helpers@0.1.4:
+    resolution: {integrity: sha512-S7SpGdJJiueB5dQ5kRdbZcg7GOF4+73vRseOktEL4k90urvBh9dxLOWz3mJbPN4M1h5q8bSqTV/GhZLxxPBEUA==}
     dependencies:
-      '@bablr/boot': 0.1.6
+      '@bablr/boot': 0.1.8
       '@bablr/boot-helpers': 0.1.3
       iter-tools-es: 7.5.3
     dev: true
 
-  /@bablr/hol-debug-log@0.1.2:
-    resolution: {integrity: sha512-/8KVt6Icp/TrOmekma2jP0BbA4PRaUMFIgcS1ubJ6jlGHKPsM9lIPG2QnGFWUQIMmvoS9pDewTfS0+xzr729gQ==}
+  /@bablr/hol-debug-log@0.1.3:
+    resolution: {integrity: sha512-pRG/uo3YvSUnXZE/DR6WEpgQRdvTWKggRI2jh0A1PQKD5rkcx3kMriUEfi2nJgzVyZn0vI/j6dYagyF7HjOmDg==}
     dependencies:
       '@bablr/helpers': 0.1.2
     dev: true

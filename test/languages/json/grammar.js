@@ -10,7 +10,7 @@ export const name = 'JSON';
 
 export const grammar = triviaEnhancer(
   {
-    spaceIsAllowed: (s) => s.span === 'Bare',
+    triviaIsAllowed: (s) => s.span === 'Bare',
     eatMatchTrivia: i`eatMatch#(/(\s+|\/\*.*?\*\/|\/\/[^\n]+)+/)`,
   },
   class JSONGrammar {
@@ -53,6 +53,10 @@ export const grammar = triviaEnhancer(
         }
         yield i`eat(<Element> 'elements[]')`;
         first = false;
+      }
+      if (first) {
+        yield i`eat(null 'elements[]')`;
+        yield i`eat(null 'separators[]')`;
       }
       yield i`eat(<| Punctuator ']' balancer |> 'close')`;
     }

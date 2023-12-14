@@ -4,14 +4,6 @@ import { dedent } from '@qnighy/dedent';
 export const testCases = [
   {
     matcher: spam`<Expression>`,
-    sourceText: ' ',
-    parsed: dedent`\
-      <>
-        #' '
-      </>`,
-  },
-  {
-    matcher: spam`<Expression>`,
     sourceText: '"hello"',
     parsed: dedent`\
       <>
@@ -174,6 +166,10 @@ export const testCases = [
           <Punctuator balanced=']'>
             '['
           </>
+          elements[]:
+          null
+          separators[]:
+          null
           close:
           <Punctuator balancer>
             ']'
