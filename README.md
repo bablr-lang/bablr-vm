@@ -2,11 +2,15 @@
 
 [![come chat on Discord](https://img.shields.io/discord/1151914613089251388)](https://discord.gg/NfMNyYN6cX)
 
-This the home of the Javascript reference implemenation of the BABLR VM, formerly known as `cst-tokens`. It executes BABLR grammars written in Javascript to define parsers for any programming language.
+It's a parser! It's a linter! It's a formatter! It's an IDE! It's BABLR!
 
-## Explain Like I'm 5
+BABLR helps people write code by letting them easily use Javascript code to create and modify code written in any language. In particular, it enables more accurate analysis of code than has previously been possible in order to support the creation of new fully-semantic (visual, tactile) code editors.
 
-Let's start with what we know for sure: `b` is a letter, and `3` is a number. Well, of course, except when `b` is a number, as it may be in the hexidecimal system where it is used to represent the value `11`. `3` can also be used to make a pictographic heart: `<3`. Programming languages are a collection of formal rules about exactly what certain characters mean when they appear in certain contexts, but so far there has been no system of notation to help undrstand how formal rules are applied. BABLR provides one, allowing our "gotcha" example to be expressed clearly as `<Number><Digit>'b'</></>`.
+An HTML-like streaming serialization format called CSTML supports efficient streaming of BABLR parse trees across language or device barriers.
+
+## Why a VM?
+
+VMs are an incredibly powerful pattern for abstraction. Modern websites rely on being able to run Javascript code in a well-defined VM. A VM can have many implementations (there are many web browsers) and it can be used to many purposes, including those not explicitly foreseen by the VM's authors. VMs will always be vulnerable to bad programs, including those that cause infinite loops and other disruptions, but in return for assuming some risks VMs which achieve political success create whole massive ecosystems of content, code, ideas, and even other ecosystems flourishing within them. The idea of BABLR is to learn from the internet in both political and technical ways and create a new universal way of "doing math" about programs that can simplify many kinds of common programming tasks, and otherwise align incentives towards the creation of a new ecosystem.
 
 ## Features
 
