@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@bablr/agast-helpers": "github:bablr-lang/agast-helpers#8644252e73c979c9b98184c1a5ba978c26d6d8df",
-    "@bablr/agast-vm-helpers": "github:bablr-lang/agast-vm-helpers#0d205d520d575b9e71660f6add8662a917c56fed",
+    "@bablr/agast-vm-helpers": "github:bablr-lang/agast-vm-helpers#56c702578f4ccd68bf38e77f629cdba30f7c775d",
     "@bablr/boot-helpers": "github:bablr-lang/boot-helpers#0ce932e2c2f4a7749f1935f30dbba62f61abae66",
     "@bablr/coroutine": "github:bablr-lang/coroutine#2342d82713731288034df588f11f540d1b76603d",
     "@bablr/regex-vm": "0.4.0",
