@@ -1,6 +1,6 @@
 {
-  "name": "@bablr/agast-vm",
-  "description": "A VM providing DOM-like guarantees about agAST trees",
+  "name": "@bablr/bablr-vm",
+  "description": "A VM for parsing using BABLR languages",
   "version": "0.0.0",
   "author": "Conrad Buck<conartist6@gmail.com>",
   "type": "module",
@@ -12,12 +12,10 @@
     "./warmup": "./lib/warmup.js"
   },
   "sideEffects": false,
-  "scripts": {
-    "test": "node ./test/runner.js"
-  },
   "dependencies": {
-    "@bablr/agast-helpers": "github:bablr-lang/agast-helpers#06894387f6d302a35d61a016cc5054fa5a69d768",
-    "@bablr/agast-vm-helpers": "github:bablr-lang/agast-vm-helpers#5f778842db996fc6e610984dda70ec6a72899e4f",
+    "@bablr/agast-helpers": "github:bablr-lang/agast-helpers#9d8566be64bb358ff72b35c54fc104c9a7ab5cd4",
+    "@bablr/agast-vm": "github:bablr-lang/agast-vm#bfc771dadb6fcf14cf3d7675465755ecec7b2040",
+    "@bablr/agast-vm-helpers": "github:bablr-lang/agast-vm-helpers#32e7d34c07a9f81b321c6f418c5d04bf4977f172",
     "@bablr/coroutine": "github:bablr-lang/coroutine#2342d82713731288034df588f11f540d1b76603d",
     "@bablr/regex-vm": "github:bablr-lang/regex-vm#eca0b3ebdcee67f68f7f6b9addc147cf97a63902",
     "@bablr/weak-stack": "github:bablr-lang/weak-stack#9448f4a9a550900698c072fb39d77307763b5cd8",
@@ -31,12 +29,10 @@
     "eslint": "^8.32.0",
     "eslint-import-resolver-enhanced-resolve": "^1.0.5",
     "eslint-plugin-import": "^2.27.5",
-    "expect": "29.7.0",
-    "indent-string": "^5.0.0",
     "iter-tools-es": "^7.3.1",
     "prettier": "^2.6.2"
   },
-  "repository": "github:bablr-lang/agast-vm",
-  "homepage": "https://github.com/bablr-lang/agast-vm",
+  "repository": "github:bablr-lang/bablr-vm",
+  "homepage": "https://github.com/bablr-lang/bablr-vm",
   "license": "MIT"
 }
