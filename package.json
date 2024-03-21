@@ -13,8 +13,8 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@bablr/agast-helpers": "github:bablr-lang/agast-helpers#90448dbbce32f902affe36efc2cc3bb17fd9e032",
-    "@bablr/agast-vm-helpers": "github:bablr-lang/agast-vm-helpers#b770edcd3ef0d9e3a08f5201b27e3045df12a82b",
+    "@bablr/agast-helpers": "github:bablr-lang/agast-helpers#c08b0717e1c69837d640def28a52519bee52d04c",
+    "@bablr/agast-vm-helpers": "github:bablr-lang/agast-vm-helpers#58093b613d49efcab426ef0a482fbd16f80c1b39",
     "@bablr/coroutine": "github:bablr-lang/coroutine#2342d82713731288034df588f11f540d1b76603d",
     "@bablr/regex-vm": "github:bablr-lang/regex-vm#21efdb6fba919be89f3989ff810f675db2661e5e",
     "@bablr/weak-stack": "github:bablr-lang/weak-stack#b153132f150f3927f75af0645614c986c7610ab9",
