@@ -13,11 +13,11 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@bablr/agast-helpers": "github:bablr-lang/agast-helpers#5ed0288b0c9ffa794a11e8afed7583f1e3100bf3",
-    "@bablr/agast-vm-helpers": "github:bablr-lang/agast-vm-helpers#1d5b9c9bd54b4fd9816f5876488f4459a4c33641",
+    "@bablr/agast-helpers": "github:bablr-lang/agast-helpers#caaa3389b422a03bc0f79e377fb499278bcd9109",
+    "@bablr/agast-vm-helpers": "github:bablr-lang/agast-vm-helpers#06490d8a33a192a39df2cd35ea97292d23f63675",
     "@bablr/coroutine": "github:bablr-lang/coroutine#2342d82713731288034df588f11f540d1b76603d",
-    "@bablr/helpers": "github:bablr-lang/bablr-helpers#3b7124900d97329e38a444f099a2f751cf3a5724",
-    "@bablr/regex-vm": "github:bablr-lang/regex-vm#e5a6f9b62ec8968e43f00c34932b742a663e7763",
+    "@bablr/helpers": "github:bablr-lang/bablr-helpers#7315ea97e7a5fd3890ba76ea50ac689d01cbc446",
+    "@bablr/regex-vm": "github:bablr-lang/regex-vm#26c0151f4dc441d35d722a2996db28e3c0a4e5c0",
     "@bablr/weak-stack": "github:bablr-lang/weak-stack#b153132f150f3927f75af0645614c986c7610ab9",
     "@iter-tools/imm-stack": "1.1.0",
     "iter-tools-es": "^7.5.3"
