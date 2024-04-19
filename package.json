@@ -13,17 +13,17 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@bablr/agast-helpers": "github:bablr-lang/agast-helpers#caaa3389b422a03bc0f79e377fb499278bcd9109",
-    "@bablr/agast-vm-helpers": "github:bablr-lang/agast-vm-helpers#06490d8a33a192a39df2cd35ea97292d23f63675",
+    "@bablr/agast-helpers": "github:bablr-lang/agast-helpers#f0c2037f94137cd56fc4f3131756b6ef6f079649",
+    "@bablr/agast-vm-helpers": "github:bablr-lang/agast-vm-helpers#1f880965b61bf36fd75496b8f2f7c7a90bf978d1",
     "@bablr/coroutine": "github:bablr-lang/coroutine#2342d82713731288034df588f11f540d1b76603d",
-    "@bablr/helpers": "github:bablr-lang/bablr-helpers#7315ea97e7a5fd3890ba76ea50ac689d01cbc446",
+    "@bablr/helpers": "github:bablr-lang/bablr-helpers#926d7cd12aa4ecc932539ba01c6f531c2a256367",
     "@bablr/regex-vm": "github:bablr-lang/regex-vm#26c0151f4dc441d35d722a2996db28e3c0a4e5c0",
     "@bablr/weak-stack": "github:bablr-lang/weak-stack#b153132f150f3927f75af0645614c986c7610ab9",
     "@iter-tools/imm-stack": "1.1.0",
     "iter-tools-es": "^7.5.3"
   },
   "devDependencies": {
-    "@bablr/eslint-config-base": "github:bablr-lang/eslint-config-base#49f5952efed27f94ee9b94340eb1563c440bf64e",
+    "@bablr/eslint-config-base": "github:bablr-lang/eslint-config-base#d834ccc52795d6c3b96ecc6c419960fceed221a6",
     "enhanced-resolve": "^5.12.0",
     "eslint": "^8.32.0",
     "eslint-import-resolver-enhanced-resolve": "^1.0.5",
