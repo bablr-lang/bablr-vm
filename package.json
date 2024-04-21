@@ -16,8 +16,8 @@
     "@bablr/agast-helpers": "github:bablr-lang/agast-helpers#06c2deeda4804fcb6a5022cf2db677f8e89eb249",
     "@bablr/agast-vm-helpers": "github:bablr-lang/agast-vm-helpers#7236964708edb1ba2f596f1c0d0abb11b961e70f",
     "@bablr/coroutine": "github:bablr-lang/coroutine#2342d82713731288034df588f11f540d1b76603d",
-    "@bablr/helpers": "github:bablr-lang/bablr-helpers#e26f876f56dc7cc5513d37dabb0ba2f73b5b5605",
-    "@bablr/regex-vm": "github:bablr-lang/regex-vm#716e59160560c4b3a07873829af3f4246bf15675",
+    "@bablr/helpers": "github:bablr-lang/bablr-helpers#71ca8e0ef002daa49849b4d77b2747786d295124",
+    "@bablr/regex-vm": "github:bablr-lang/regex-vm#337222e6de7fe854a0299e84c6d0d91cb2d79e37",
     "@bablr/weak-stack": "github:bablr-lang/weak-stack#b153132f150f3927f75af0645614c986c7610ab9",
     "@iter-tools/imm-stack": "1.1.0",
     "iter-tools-es": "^7.5.3"
