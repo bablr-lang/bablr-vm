@@ -8,8 +8,7 @@
     "lib"
   ],
   "exports": {
-    ".": "./lib/index.js",
-    "./warmup": "./lib/warmup.js"
+    ".": "./lib/index.js"
   },
   "sideEffects": false,
   "dependencies": {
@@ -17,7 +16,7 @@
     "@bablr/agast-vm-helpers": "github:bablr-lang/agast-vm-helpers#7236964708edb1ba2f596f1c0d0abb11b961e70f",
     "@bablr/coroutine": "github:bablr-lang/coroutine#2342d82713731288034df588f11f540d1b76603d",
     "@bablr/helpers": "github:bablr-lang/bablr-helpers#71ca8e0ef002daa49849b4d77b2747786d295124",
-    "@bablr/regex-vm": "github:bablr-lang/regex-vm#337222e6de7fe854a0299e84c6d0d91cb2d79e37",
+    "@bablr/regex-vm": "github:bablr-lang/regex-vm#f305a99346190365e7927f6099cef1c74b423fdc",
     "@bablr/weak-stack": "github:bablr-lang/weak-stack#b153132f150f3927f75af0645614c986c7610ab9",
     "@iter-tools/imm-stack": "1.1.0",
     "iter-tools-es": "^7.5.3"
