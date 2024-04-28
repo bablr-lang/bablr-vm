@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "author": "Conrad Buck<conartist6@gmail.com>",
   "type": "module",
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "exports": {
     ".": "./lib/index.js"
   },
@@ -13,7 +15,7 @@
     "@bablr/agast-helpers": "github:bablr-lang/agast-helpers#49df418cbd8b3f96318bd3dc52cd18195bc57637",
     "@bablr/agast-vm-helpers": "github:bablr-lang/agast-vm-helpers#187423544f4d96b981653c8b373062b2578595ee",
     "@bablr/coroutine": "github:bablr-lang/coroutine#2342d82713731288034df588f11f540d1b76603d",
-    "@bablr/helpers": "github:bablr-lang/bablr-helpersfcc6e8835ac00d208d9d6560682cae48a6bbae17",
+    "@bablr/helpers": "github:bablr-lang/bablr-helpers#fcc6e8835ac00d208d9d6560682cae48a6bbae17",
     "@bablr/regex-vm": "github:bablr-lang/regex-vm#f305a99346190365e7927f6099cef1c74b423fdc",
     "@bablr/weak-stack": "github:bablr-lang/weak-stack#b153132f150f3927f75af0645614c986c7610ab9",
     "@iter-tools/imm-stack": "1.1.0",
