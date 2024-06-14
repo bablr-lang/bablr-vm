@@ -1,4 +1,4 @@
-# @bablr/vm
+# @bablr/bablr-vm
 
 [![come chat on Discord](https://img.shields.io/discord/1151914613089251388)](https://discord.gg/NfMNyYN6cX)
 
