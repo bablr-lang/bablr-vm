@@ -12,10 +12,10 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@bablr/agast-helpers": "0.1.6",
-    "@bablr/agast-vm-helpers": "0.1.5",
+    "@bablr/agast-helpers": "0.2.0",
+    "@bablr/agast-vm-helpers": "0.2.0",
     "@bablr/coroutine": "0.1.0",
-    "@bablr/helpers": "0.16.0",
+    "@bablr/helpers": "0.17.0",
     "@bablr/regex-vm": "0.5.1",
     "@bablr/weak-stack": "0.1.0",
     "@iter-tools/imm-stack": "1.1.0",
