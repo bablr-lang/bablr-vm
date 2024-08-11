@@ -12,11 +12,11 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@bablr/agast-helpers": "0.2.0",
-    "@bablr/agast-vm-helpers": "0.2.0",
+    "@bablr/agast-helpers": "0.3.1",
+    "@bablr/agast-vm-helpers": "0.3.1",
     "@bablr/coroutine": "0.1.0",
-    "@bablr/helpers": "0.17.0",
-    "@bablr/regex-vm": "0.5.1",
+    "@bablr/helpers": "0.18.0",
+    "@bablr/regex-vm": "0.6.0",
     "@bablr/weak-stack": "0.1.0",
     "@iter-tools/imm-stack": "1.1.0",
     "iter-tools-es": "^7.5.3"
