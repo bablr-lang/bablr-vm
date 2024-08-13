@@ -16,7 +16,7 @@
     "@bablr/agast-vm-helpers": "0.3.2",
     "@bablr/coroutine": "0.1.0",
     "@bablr/helpers": "0.18.0",
-    "@bablr/regex-vm": "0.6.0",
+    "@bablr/regex-vm": "0.7.0",
     "@bablr/weak-stack": "0.1.0",
     "@iter-tools/imm-stack": "1.1.0",
     "iter-tools-es": "^7.5.3"
