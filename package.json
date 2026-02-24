@@ -19,7 +19,6 @@
     "@bablr/helpers": "0.25.5",
     "@bablr/regex-vm": "0.14.2",
     "@bablr/stream-iterator": "2.0.0",
-    "@iter-tools/imm-stack": "1.2.0",
     "iter-tools-es": "7.5.3"
   },
   "devDependencies": {
