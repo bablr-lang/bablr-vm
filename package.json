@@ -17,8 +17,7 @@
     "@bablr/agast-vm-helpers": "0.10.5",
     "@bablr/helpers": "0.25.5",
     "@bablr/regex-vm": "0.14.2",
-    "@bablr/stream-iterator": "2.0.0",
-    "iter-tools-es": "7.5.3"
+    "@bablr/stream-iterator": "2.0.0"
   },
   "devDependencies": {
     "@bablr/eslint-config-base": "github:bablr-lang/eslint-config-base#23b94fb3bdfdbc3ac7ed9cb58d7979d8f07dce2b",
@@ -26,7 +25,6 @@
     "eslint": "^8.32.0",
     "eslint-import-resolver-enhanced-resolve": "^1.0.5",
     "eslint-plugin-import": "^2.27.5",
-    "iter-tools-es": "^7.3.1",
     "prettier": "^2.6.2"
   },
   "repository": {
