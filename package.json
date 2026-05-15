@@ -12,12 +12,12 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@bablr/agast-helpers": "0.11.0",
-    "@bablr/agast-vm": "0.12.0",
-    "@bablr/agast-vm-helpers": "0.11.0",
-    "@bablr/helpers": "0.26.0",
+    "@bablr/agast-helpers": "0.11.1",
+    "@bablr/agast-vm": "0.12.1",
+    "@bablr/agast-vm-helpers": "0.11.1",
+    "@bablr/helpers": "0.26.2",
     "@bablr/record": "1.0.0",
-    "@bablr/regex-vm": "1.0.0",
+    "@bablr/regex-vm": "1.0.1",
     "@bablr/stream-iterator": "3.0.0"
   },
   "devDependencies": {
