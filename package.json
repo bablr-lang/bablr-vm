@@ -18,7 +18,9 @@
     "@bablr/helpers": "0.26.5",
     "@bablr/record": "1.0.0",
     "@bablr/regex-vm": "1.0.4",
-    "@bablr/stream-iterator": "3.0.0"
+    "@bablr/stream-iterator": "3.0.0",
+    "agast": "^1.0.0",
+    "property-weak-map": "1.0.0"
   },
   "devDependencies": {
     "@bablr/eslint-config-base": "github:bablr-lang/eslint-config-base#23b94fb3bdfdbc3ac7ed9cb58d7979d8f07dce2b",
